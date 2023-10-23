@@ -42,23 +42,18 @@ public class ControlPanelStarter {
   }
 
   private void start() {
-    // Create a socket connection when the application starts
-    if (!fake) {
-      connectToServer();
-    }
+    connectToServer();
+    sendControlMessage("hdaw");
 
     ControlPanelLogic logic = new ControlPanelLogic();
     CommunicationChannel channel = initiateCommunication(logic, fake);
     ControlPanelApplication.startApp(logic, channel);
 
-    // ... Your application logic ...
+//    if (!fake) {
+//      stopCommunication();
+//    }
 
-    // Close the socket when the application exits
-    if (!fake) {
-      stopCommunication();
-    }
-
-    Logger.info("Exiting the control panel application");
+//    Logger.info("Exiting the control panel application");
   }
 
   private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
@@ -78,35 +73,16 @@ public class ControlPanelStarter {
     return null;
   }
 
-  private boolean connect() {
-    boolean success = false;
-    try {
-      Socket socket = new Socket("ntnu.no",80);
-      System.out.println("Connected to server");
-        success = true;
-    } catch (IOException e) {
-      System.out.println("Failed to connect to server"+e.getMessage());
-    }
-      return success;
-  }
-
-  private void disconnect() {
-    try {
-      socket.close();
-      System.out.println("Disconnected from server");
-    } catch (IOException e) {
-      System.out.println("Failed to disconnect from server"+e.getMessage());
-    }
-  }
-
   private void connectToServer() {
     try {
-      socket = new Socket("ntnu.no", 80); // Replace with the actual server details
-      Logger.info("Connected to the server");
+      Socket socket = new Socket("localhost", 81); // Use the correct server address
+      System.out.println("Connected to server");
     } catch (IOException e) {
+      System.out.println("Failed to connect to server: " + e.getMessage());
       e.printStackTrace();
     }
   }
+
 
   private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
     // Here we pretend that some events will be received with a given delay
@@ -147,14 +123,6 @@ public class ControlPanelStarter {
     }
   }
 
-  private void run() {
-    if(connect()) {
-        disconnect();
-    }
-    System.out.println("Exiting the control panel application");
-
-    // TODO - here you run the TCP/UDP socket communication
-  }
 
   public void sendControlMessage(String message) {
     if (!fake && socket != null && socket.isConnected()) {
