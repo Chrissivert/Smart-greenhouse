@@ -60,10 +60,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
   @Override
   public void start(Stage stage) {
-    if (channel == null) {
-      throw new IllegalStateException(
-          "No communication channel. See the README on how to use fake event spawner!");
-    }
+//    if (channel == null) {
+//      throw new IllegalStateException(
+//          "No communication channel. See the README on how to use fake event spawner!");
+//    }
 
     stage.setMinWidth(WIDTH);
     stage.setMinHeight(HEIGHT);
@@ -73,9 +73,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     stage.show();
     logic.addListener(this);
     logic.setCommunicationChannelListener(this);
-    if (!channel.open()) {
-      logic.onCommunicationChannelClosed();
-    }
+//    if (!channel.open()) {
+//      logic.onCommunicationChannelClosed();
+//    }
   }
 
   private static Label createEmptyContent() {

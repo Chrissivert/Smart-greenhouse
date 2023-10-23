@@ -6,6 +6,10 @@ import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
+import java.io.IOException;
+import java.io.OutputStream;
+import java.net.Socket;
+
 /**
  * Starter class for the control panel.
  * Note: we could launch the Application class directly, but then we would have issues with the
@@ -13,6 +17,8 @@ import no.ntnu.tools.Logger;
  */
 public class ControlPanelStarter {
   private final boolean fake;
+  private Socket socket;
+
 
   public ControlPanelStarter(boolean fake) {
     this.fake = fake;
@@ -36,12 +42,23 @@ public class ControlPanelStarter {
   }
 
   private void start() {
+    // Create a socket connection when the application starts
+    if (!fake) {
+      connectToServer();
+    }
+
     ControlPanelLogic logic = new ControlPanelLogic();
     CommunicationChannel channel = initiateCommunication(logic, fake);
     ControlPanelApplication.startApp(logic, channel);
-    // This code is reached only after the GUI-window is closed
+
+    // ... Your application logic ...
+
+    // Close the socket when the application exits
+    if (!fake) {
+      stopCommunication();
+    }
+
     Logger.info("Exiting the control panel application");
-    stopCommunication();
   }
 
   private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
@@ -59,6 +76,36 @@ public class ControlPanelStarter {
     // You communication class(es) may want to get reference to the logic and call necessary
     // logic methods when events happen (for example, when sensor data is received)
     return null;
+  }
+
+  private boolean connect() {
+    boolean success = false;
+    try {
+      Socket socket = new Socket("ntnu.no",80);
+      System.out.println("Connected to server");
+        success = true;
+    } catch (IOException e) {
+      System.out.println("Failed to connect to server"+e.getMessage());
+    }
+      return success;
+  }
+
+  private void disconnect() {
+    try {
+      socket.close();
+      System.out.println("Disconnected from server");
+    } catch (IOException e) {
+      System.out.println("Failed to disconnect from server"+e.getMessage());
+    }
+  }
+
+  private void connectToServer() {
+    try {
+      socket = new Socket("ntnu.no", 80); // Replace with the actual server details
+      Logger.info("Connected to the server");
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
   private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
@@ -89,6 +136,37 @@ public class ControlPanelStarter {
   }
 
   private void stopCommunication() {
-    // TODO - here you stop the TCP/UDP socket communication
+    // Close the socket connection when done
+    try {
+      if (socket != null) {
+        socket.close();
+        Logger.info("Disconnected from the server");
+      }
+    } catch (IOException e) {
+      e.printStackTrace(); // Handle any errors when closing the socket
+    }
   }
+
+  private void run() {
+    if(connect()) {
+        disconnect();
+    }
+    System.out.println("Exiting the control panel application");
+
+    // TODO - here you run the TCP/UDP socket communication
+  }
+
+  public void sendControlMessage(String message) {
+    if (!fake && socket != null && socket.isConnected()) {
+      try {
+        OutputStream out = socket.getOutputStream();
+        out.write(message.getBytes());
+        out.flush();
+        Logger.info("Sent message: " + message);
+      } catch (IOException e) {
+        e.printStackTrace(); // Handle errors while sending data
+      }
+    }
+  }
+
 }
