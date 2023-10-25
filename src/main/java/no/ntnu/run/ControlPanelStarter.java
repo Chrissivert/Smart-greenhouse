@@ -3,8 +3,10 @@ package no.ntnu.run;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.FakeCommunicationChannel;
+import no.ntnu.controlpanel.RealCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
+import no.ntnu.tools.WaitTask;
 
 import java.io.IOException;
 import java.io.OutputStream;
@@ -42,7 +44,6 @@ public class ControlPanelStarter {
   }
 
   private void start() {
-    connectToServer();
     sendControlMessage("hdaw");
 
     ControlPanelLogic logic = new ControlPanelLogic();
@@ -61,12 +62,23 @@ public class ControlPanelStarter {
     if (fake) {
       channel = initiateFakeSpawner(logic);
     } else {
-      channel = initiateSocketCommunication(logic);
+     channel = initiateSocketCommunication(logic);
+//      channel = initiateFakeSpawner(logic);
     }
     return channel;
   }
 
   private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
+    connectToServer();
+    WaitTask waitTask = new WaitTask(8);
+    Thread thread = new Thread(waitTask);
+    thread.start();
+
+//    RealCommunicationChannel spawner = new RealCommunicationChannel(logic);
+//    logic.setCommunicationChannel(spawner);
+//    spawner.spawnNode("4;3_window", 2);
+//    spawner.spawnNode("1", 3);
+//    spawner.spawnNode("1", 4);
     // TODO - here you initiate TCP/UDP socket communication
     // You communication class(es) may want to get reference to the logic and call necessary
     // logic methods when events happen (for example, when sensor data is received)
@@ -75,7 +87,7 @@ public class ControlPanelStarter {
 
   private void connectToServer() {
     try {
-      Socket socket = new Socket("localhost", 81); // Use the correct server address
+      Socket socket = new Socket("localhost", 1234); // Use the correct server address
       System.out.println("Connected to server");
     } catch (IOException e) {
       System.out.println("Failed to connect to server: " + e.getMessage());
@@ -85,7 +97,6 @@ public class ControlPanelStarter {
 
 
   private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
-    // Here we pretend that some events will be received with a given delay
     FakeCommunicationChannel spawner = new FakeCommunicationChannel(logic);
     logic.setCommunicationChannel(spawner);
     spawner.spawnNode("4;3_window", 2);
@@ -134,6 +145,15 @@ public class ControlPanelStarter {
       } catch (IOException e) {
         e.printStackTrace(); // Handle errors while sending data
       }
+    }
+  }
+
+  public static void waitFiveSeconds() {
+    try {
+      Thread.sleep(5000); // Sleep for 5 seconds (5000 milliseconds)
+    } catch (InterruptedException e) {
+      // Handle any exceptions that may occur during sleep
+      e.printStackTrace();
     }
   }
 
