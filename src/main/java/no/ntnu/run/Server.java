@@ -1,7 +1,6 @@
 package no.ntnu.run;
 
-import java.io.IOException;
-import java.io.InputStream;
+import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
@@ -20,6 +19,7 @@ public class Server {
                     int bytesRead = in.read(buffer);
                     if (bytesRead != -1) {
                         String message = new String(buffer, 0, bytesRead);
+                        clientSocket.getOutputStream();
                         // Process the message and take appropriate action
                         System.out.println("Received message from client: " + message);
                     }

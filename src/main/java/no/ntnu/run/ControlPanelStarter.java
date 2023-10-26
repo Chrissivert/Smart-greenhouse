@@ -6,11 +6,12 @@ import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.controlpanel.RealCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
-import no.ntnu.tools.WaitTask;
 
 import java.io.IOException;
 import java.io.OutputStream;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Starter class for the control panel.
@@ -20,6 +21,8 @@ import java.net.Socket;
 public class ControlPanelStarter {
   private final boolean fake;
   private Socket socket;
+
+  private List<String> spawnActions = new ArrayList<>();
 
 
   public ControlPanelStarter(boolean fake) {
@@ -44,48 +47,22 @@ public class ControlPanelStarter {
   }
 
   private void start() {
-    sendControlMessage("hdaw");
-
     ControlPanelLogic logic = new ControlPanelLogic();
     CommunicationChannel channel = initiateCommunication(logic, fake);
     ControlPanelApplication.startApp(logic, channel);
-
-//    if (!fake) {
-//      stopCommunication();
-//    }
-
-//    Logger.info("Exiting the control panel application");
   }
 
   private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
     CommunicationChannel channel;
     if (fake) {
-      channel = initiateFakeSpawner(logic);
+      channel = null;
     } else {
-     channel = initiateSocketCommunication(logic);
-//      channel = initiateFakeSpawner(logic);
+     channel = initiateEmptySpawner(logic);
     }
     return channel;
   }
 
-  private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
-    connectToServer();
-    WaitTask waitTask = new WaitTask(8);
-    Thread thread = new Thread(waitTask);
-    thread.start();
-
-//    RealCommunicationChannel spawner = new RealCommunicationChannel(logic);
-//    logic.setCommunicationChannel(spawner);
-//    spawner.spawnNode("4;3_window", 2);
-//    spawner.spawnNode("1", 3);
-//    spawner.spawnNode("1", 4);
-    // TODO - here you initiate TCP/UDP socket communication
-    // You communication class(es) may want to get reference to the logic and call necessary
-    // logic methods when events happen (for example, when sensor data is received)
-    return null;
-  }
-
-  private void connectToServer() {
+  private void createSocketCommunication() {
     try {
       Socket socket = new Socket("localhost", 1234); // Use the correct server address
       System.out.println("Connected to server");
@@ -95,32 +72,54 @@ public class ControlPanelStarter {
     }
   }
 
+    private CommunicationChannel initiateEmptySpawner(ControlPanelLogic logic) {
+      createSocketCommunication();
+      RealCommunicationChannel spawner = new RealCommunicationChannel(logic);
+      logic.setCommunicationChannel(spawner);
+      spawnStuff(spawner,logic);
+      sendWhatHasBeenSpawned();
 
-  private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
-    FakeCommunicationChannel spawner = new FakeCommunicationChannel(logic);
-    logic.setCommunicationChannel(spawner);
-    spawner.spawnNode("4;3_window", 2);
-    spawner.spawnNode("1", 3);
-    spawner.spawnNode("1", 4);
-    spawner.advertiseSensorData("4;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %", 4);
-    spawner.spawnNode("8;2_heater", 5);
-    spawner.advertiseActuatorState(4, 1, true, 5);
-    spawner.advertiseActuatorState(4,  1, false, 6);
-    spawner.advertiseActuatorState(4,  1, true, 7);
-    spawner.advertiseActuatorState(4,  2, true, 7);
-    spawner.advertiseActuatorState(4,  1, false, 8);
-    spawner.advertiseActuatorState(4,  2, false, 8);
-    spawner.advertiseActuatorState(4,  1, true, 9);
-    spawner.advertiseActuatorState(4,  2, true, 9);
-    spawner.advertiseSensorData("4;temperature=22.4 °C,temperature=26.0 °C,humidity=81 %", 9);
-    spawner.advertiseSensorData("1;humidity=80 %,humidity=82 %", 10);
-    spawner.advertiseRemovedNode(8, 11);
-    spawner.advertiseRemovedNode(8, 12);
-    spawner.advertiseSensorData("1;temperature=25.4 °C,temperature=27.0 °C,humidity=67 %", 13);
-    spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", 14);
-    spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", 16);
-    return spawner;
+      return new RealCommunicationChannel(logic);
+    }
+
+  private void spawnStuff(RealCommunicationChannel a, ControlPanelLogic logic) {
+    a.spawnNode("4;3_window", 2);
+    a.spawnNode("1", 3);
+    a.spawnNode("1", 4);
+    a.spawnNode("4;3_window", 2);
+    a.spawnNode("1", 3);
+        a.spawnNode("1", 4);
+        a.spawnNode("8;2_heater", 5);
+
+    // Collect the spawn actions in the list
+    spawnActions.add("4;3_window,2");
+    spawnActions.add("1,3");
+    spawnActions.add("1,4");
+    spawnActions.add("8;2_heater,5");
+
   }
+
+  public void sendWhatHasBeenSpawned() {
+    // Construct a single message containing all the spawn actions
+    StringBuilder messageBuilder = new StringBuilder();
+    for (String action : spawnActions) {
+      messageBuilder.append(action).append("\n");
+    }
+
+    String message = messageBuilder.toString();
+
+    // Send the combined message to the server
+    try (Socket clientSocket = new Socket("localhost", 1234);
+         OutputStream out = clientSocket.getOutputStream()) {
+      byte[] messageBytes = message.getBytes();
+      out.write(messageBytes);
+      out.flush();
+      System.out.println("Sent message to server: " + message);
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+  }
+
 
   private void stopCommunication() {
     // Close the socket connection when done
@@ -143,9 +142,10 @@ public class ControlPanelStarter {
         out.flush();
         Logger.info("Sent message: " + message);
       } catch (IOException e) {
-        e.printStackTrace(); // Handle errors while sending data
+        System.out.println("error when sending message" + e.getMessage());
       }
     }
+    System.out.println("sendMessage was not performed");
   }
 
   public static void waitFiveSeconds() {
@@ -158,3 +158,26 @@ public class ControlPanelStarter {
   }
 
 }
+
+
+
+//spawner.spawnNode("4;3_window", 2);
+//        spawner.spawnNode("1", 3);
+//        spawner.spawnNode("1", 4);
+//        spawner.advertiseSensorData("4;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %", 4);
+//        spawner.spawnNode("8;2_heater", 5);
+//        spawner.advertiseActuatorState(4, 1, true, 5);
+//        spawner.advertiseActuatorState(4,  1, false, 6);
+//        spawner.advertiseActuatorState(4,  1, true, 7);
+//        spawner.advertiseActuatorState(4,  2, true, 7);
+//        spawner.advertiseActuatorState(4,  1, false, 8);
+//        spawner.advertiseActuatorState(4,  2, false, 8);
+//        spawner.advertiseActuatorState(4,  1, true, 9);
+//        spawner.advertiseActuatorState(4,  2, true, 9);
+//        spawner.advertiseSensorData("4;temperature=22.4 °C,temperature=26.0 °C,humidity=81 %", 9);
+//        spawner.advertiseSensorData("1;humidity=80 %,humidity=82 %", 10);
+//        spawner.advertiseRemovedNode(8, 11);
+//        spawner.advertiseRemovedNode(8, 12);
+//        spawner.advertiseSensorData("1;temperature=25.4 °C,temperature=27.0 °C,humidity=67 %", 13);
+//        spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", 14);
+//        spawner.advertiseSensorData("4;temperature=25.4 °C,temperature=27.0 °C,humidity=82 %", 16);
