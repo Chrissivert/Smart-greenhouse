@@ -2,7 +2,6 @@ package no.ntnu.run;
 
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.controlpanel.RealCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
@@ -64,7 +63,7 @@ public class ControlPanelStarter {
 
   private void createSocketCommunication() {
     try {
-      Socket socket = new Socket("localhost", 1234); // Use the correct server address
+      socket = new Socket("localhost", 1234); // Use the correct server address
       System.out.println("Connected to server");
     } catch (IOException e) {
       System.out.println("Failed to connect to server: " + e.getMessage());
@@ -77,7 +76,6 @@ public class ControlPanelStarter {
       RealCommunicationChannel spawner = new RealCommunicationChannel(logic);
       logic.setCommunicationChannel(spawner);
       spawnStuff(spawner,logic);
-      sendWhatHasBeenSpawned();
 
       return new RealCommunicationChannel(logic);
     }
@@ -86,31 +84,12 @@ public class ControlPanelStarter {
     a.spawnNode("4;3_window", 2);
     a.spawnNode("1", 3);
     a.spawnNode("1", 4);
-    a.spawnNode("4;3_window", 2);
-    a.spawnNode("1", 3);
-        a.spawnNode("1", 4);
-        a.spawnNode("8;2_heater", 5);
 
-    // Collect the spawn actions in the list
-    spawnActions.add("4;3_window,2");
-    spawnActions.add("1,3");
-    spawnActions.add("1,4");
-    spawnActions.add("8;2_heater,5");
-
+    sendMessageToServer("HELLLLLLLLLLLLLLLLOOOO");
   }
 
-  public void sendWhatHasBeenSpawned() {
-    // Construct a single message containing all the spawn actions
-    StringBuilder messageBuilder = new StringBuilder();
-    for (String action : spawnActions) {
-      messageBuilder.append(action).append("\n");
-    }
-
-    String message = messageBuilder.toString();
-
-    // Send the combined message to the server
-    try (Socket clientSocket = new Socket("localhost", 1234);
-         OutputStream out = clientSocket.getOutputStream()) {
+  public void sendMessageToServer(String message) {
+    try (OutputStream out = socket.getOutputStream()) {
       byte[] messageBytes = message.getBytes();
       out.write(messageBytes);
       out.flush();
@@ -119,6 +98,7 @@ public class ControlPanelStarter {
       e.printStackTrace();
     }
   }
+
 
 
   private void stopCommunication() {
@@ -131,21 +111,6 @@ public class ControlPanelStarter {
     } catch (IOException e) {
       e.printStackTrace(); // Handle any errors when closing the socket
     }
-  }
-
-
-  public void sendControlMessage(String message) {
-    if (!fake && socket != null && socket.isConnected()) {
-      try {
-        OutputStream out = socket.getOutputStream();
-        out.write(message.getBytes());
-        out.flush();
-        Logger.info("Sent message: " + message);
-      } catch (IOException e) {
-        System.out.println("error when sending message" + e.getMessage());
-      }
-    }
-    System.out.println("sendMessage was not performed");
   }
 
   public static void waitFiveSeconds() {
