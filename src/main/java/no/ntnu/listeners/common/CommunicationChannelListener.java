@@ -5,8 +5,8 @@ package no.ntnu.listeners.common;
  * The channel can be a TCP socket, or other type of channel.
  */
 public interface CommunicationChannelListener {
-  /**
-   * This event is fired when the communication channel is closed.
-   */
-  void onCommunicationChannelClosed();
+    /**
+     * This event is fired when the communication channel is closed.
+     */
+    void onCommunicationChannelClosed();
 }

@@ -8,11 +8,11 @@ import no.ntnu.greenhouse.Actuator;
  * on the control panel side.
  */
 public interface ActuatorListener {
-  /**
-   * An event that is fired every time an actuator changes state.
-   *
-   * @param nodeId   ID of the node on which this actuator is placed
-   * @param actuator The actuator that has changed its state
-   */
-  void actuatorUpdated(int nodeId, Actuator actuator);
+    /**
+     * An event that is fired every time an actuator changes state.
+     *
+     * @param nodeId   ID of the node on which this actuator is placed
+     * @param actuator The actuator that has changed its state
+     */
+    void actuatorUpdated(int nodeId, Actuator actuator);
 }
