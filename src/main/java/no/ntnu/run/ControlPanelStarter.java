@@ -2,7 +2,7 @@ package no.ntnu.run;
 
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.RealCommunicationChannel;
+import no.ntnu.controlpanel.Client;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
@@ -73,19 +73,17 @@ public class ControlPanelStarter {
 
     private CommunicationChannel initiateEmptySpawner(ControlPanelLogic logic) {
       createSocketCommunication();
-      RealCommunicationChannel spawner = new RealCommunicationChannel(logic);
+      Client spawner = new Client(logic);
       logic.setCommunicationChannel(spawner);
-      spawnStuff(spawner,logic);
+      spawnFakeStuff(spawner,logic);
 
-      return new RealCommunicationChannel(logic);
+      return new Client(logic);
     }
 
-  private void spawnStuff(RealCommunicationChannel a, ControlPanelLogic logic) {
+  private void spawnFakeStuff(Client a, ControlPanelLogic logic) {
     a.spawnNode("4;3_window", 2);
     a.spawnNode("1", 3);
     a.spawnNode("1", 4);
-
-    sendMessageToServer("HELLLLLLLLLLLLLLLLOOOO");
   }
 
   public void sendMessageToServer(String message) {

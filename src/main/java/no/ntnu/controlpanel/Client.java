@@ -9,7 +9,7 @@ import java.util.TimerTask;
 
 import static no.ntnu.tools.Parser.parseIntegerOrError;
 
-public class RealCommunicationChannel implements CommunicationChannel {
+public class Client implements CommunicationChannel {
 
     private Socket socket;
     private PrintWriter out;
@@ -18,7 +18,7 @@ public class RealCommunicationChannel implements CommunicationChannel {
 
     private final int TARGET_NODE_PORT = 1234;
 
-    public RealCommunicationChannel(ControlPanelLogic logic) {
+    public Client(ControlPanelLogic logic) {
         this.logic = logic;
 
         try {
@@ -44,9 +44,6 @@ public class RealCommunicationChannel implements CommunicationChannel {
         return socket.isConnected();
     }
 
-    // Andre metoder for kommunikasjon kan implementeres på lignende måte
-
-    // Lukk strømmer og socket-tilkobling når du er ferdig
     public void close() {
         try {
             out.close();

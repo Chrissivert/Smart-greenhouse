@@ -12,23 +12,28 @@ public class Server {
             System.out.println("Server is listening on port " + port);
 
             while (true) {
-                try (Socket clientSocket = serverSocket.accept();
-                     InputStream in = clientSocket.getInputStream()) {
-                    // Read and process client messages here
-                    byte[] buffer = new byte[1024];
-                    int bytesRead = in.read(buffer);
-                    if (bytesRead != -1) {
-                        String message = new String(buffer, 0, bytesRead);
-                        clientSocket.getOutputStream();
-                        // Process the message and take appropriate action
-                        System.out.println("Received message from client: " + message);
-                    }
+                try {
+                    Socket clientSocket = serverSocket.accept();
+                    Thread clientThread = new Thread(() -> {
+                        try (InputStream in = clientSocket.getInputStream()) {
+                            // Read and process client messages here
+                            byte[] buffer = new byte[1024];
+                            int bytesRead;
+                            while ((bytesRead = in.read(buffer)) != -1) {
+                                String message = new String(buffer, 0, bytesRead);
+                                // Process the message and take appropriate action
+                                System.out.println("Received message from client: " + message);
+                            }
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    });
+                    clientThread.start();
                 } catch (IOException e) {
                     e.printStackTrace();
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
         }
     }
 }
