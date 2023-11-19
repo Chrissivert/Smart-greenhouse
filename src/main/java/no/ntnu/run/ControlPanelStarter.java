@@ -82,6 +82,7 @@ public class ControlPanelStarter {
 
     private void spawnFakeStuff(Client a, ControlPanelLogic logic) {
         a.spawnNode("4;3_window", 2);
+        a.spawnNode("2;3_heater", 2);
         a.spawnNode("1", 3);
         a.spawnNode("1", 4);
     }

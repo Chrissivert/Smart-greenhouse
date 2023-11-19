@@ -79,7 +79,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     @Override
     public void actuatorUpdated(int nodeId, Actuator actuator) {
         if (communicationChannel != null) {
-            communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn());
+            communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn(), actuator.getType());
         }
         listeners.forEach(listener ->
                 listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())

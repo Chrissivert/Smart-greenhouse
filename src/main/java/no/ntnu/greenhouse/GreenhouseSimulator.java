@@ -14,6 +14,7 @@ import no.ntnu.tools.Logger;
  * Application entrypoint - a simulator for a greenhouse.
  */
 public class GreenhouseSimulator {
+    private static final int PORT_NUMBER = 1234;
     private final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
 
     private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();

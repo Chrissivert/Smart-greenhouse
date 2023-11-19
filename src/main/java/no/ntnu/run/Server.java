@@ -16,6 +16,7 @@ public class Server {
                     Socket clientSocket = serverSocket.accept();
                     Thread clientThread = new Thread(() -> {
                         try (InputStream in = clientSocket.getInputStream()) {
+
                             // Read and process client messages here
                             byte[] buffer = new byte[1024];
                             int bytesRead;

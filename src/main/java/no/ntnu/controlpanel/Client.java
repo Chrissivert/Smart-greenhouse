@@ -32,9 +32,10 @@ public class Client implements CommunicationChannel {
     }
 
     @Override
-    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn) {
+    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
         // Send en kommando til målnoden
-        String command = "ACTUATOR " + nodeId + " " + actuatorId + " " + (isOn ? "ON" : "OFF");
+        String command = "Actuator" + " " + actuatorId + " " + type +
+            " ON NODE" + " " + nodeId + " " + "turned" + " " + (isOn ? "ON" : "OFF");
         out.println(command);
     }
 
