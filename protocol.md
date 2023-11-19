@@ -18,8 +18,20 @@ distributed application.
 
 ## The underlying transport protocol
 
-TODO - what transport-layer protocol do you use? TCP? UDP? What port number(s)? Why did you 
-choose this transport layer protocol?
+The group choose to use TCP instead of UDP. TCP is a connection-oriented protocol which means that
+a connection is established before any useful data is transferred.
+TCP provides features such as error-checking, acknowledgment of received data and retransmission of lost packets.
+This ensures that each packet is delivered in the correct order and none is lost or duplicated.
+In our greenhouse we need to be sure that each packet is delivered. For instance if one node turns on or off
+an actuator, we need to be sure that the other nodes receive this information. TCP also has flow control 
+which ensures that the sender doesn't overwhelm the receiver with data.
+
+## Choosing of port number
+
+When deciding which port number to use, the group wanted to have an unassigned port number. Ports above 1024
+are usually available and not reserved for specific services. This also ensures that well-known ports like 80 (HTTP)
+443 (HTTPS) or 22 (SSH) are not used. The group decided to use port 1234.
+
 
 ## The architecture
 

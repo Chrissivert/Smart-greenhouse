@@ -1,5 +1,7 @@
 package no.ntnu.greenhouse;
 
+import java.io.IOException;
+import java.net.ServerSocket;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -66,9 +68,15 @@ public class GreenhouseSimulator {
         }
     }
 
-    private void initiateRealCommunication() {
-        // TODO - here you can set up the TCP or UDP communication
-    }
+    private ServerSocket initiateRealCommunication() {
+            ServerSocket listeningSocket = null;
+            try {
+                listeningSocket = new ServerSocket(PORT_NUMBER);
+            } catch (IOException e) {
+                System.err.println("Could not open server socket: " + e.getMessage());
+            }
+            return listeningSocket;
+        }
 
     private void initiateFakePeriodicSwitches() {
         periodicSwitches.add(new PeriodicSwitch("Window DJ", nodes.get(1), 2, 20000));
