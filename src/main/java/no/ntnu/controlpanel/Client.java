@@ -1,6 +1,8 @@
 package no.ntnu.controlpanel;
 
+import com.sun.javafx.event.EventHandlerManager;
 import no.ntnu.greenhouse.Actuator;
+import no.ntnu.listeners.common.ActuatorListener;
 
 import java.io.*;
 import java.net.Socket;
@@ -9,8 +11,9 @@ import java.util.TimerTask;
 
 import static no.ntnu.tools.Parser.parseIntegerOrError;
 
-public class Client implements CommunicationChannel {
+public class Client implements CommunicationChannel, ActuatorListener {
 
+    private EventManager eventManager;
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
@@ -18,8 +21,10 @@ public class Client implements CommunicationChannel {
 
     private final int TARGET_NODE_PORT = 1234;
 
-    public Client(ControlPanelLogic logic) {
+    public Client(ControlPanelLogic logic, EventManager eventManager) {
         this.logic = logic;
+        this.eventManager = eventManager;
+        this.eventManager.subscribe(this);
 
         try {
             // Opprett en socket-tilkobling til målnoden
@@ -29,6 +34,13 @@ public class Client implements CommunicationChannel {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public void actuatorUpdated(int nodeId, Actuator actuator) {
+        // Handle actuator update events here
+        // Update the logic or UI of the control panel based on the received actuator change
+        logic. onActuatorStateChanged(nodeId, actuator.getId(),actuator.isOn());
     }
 
     @Override

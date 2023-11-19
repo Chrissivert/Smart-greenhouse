@@ -1,10 +1,19 @@
 package no.ntnu.run;
 
+import no.ntnu.controlpanel.EventManager;
+import no.ntnu.greenhouse.Actuator;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
 
 public class Server {
+
+    private EventManager eventManager;
+
+    public Server(EventManager eventManager) {
+        this.eventManager = eventManager;
+    }
     public static void main(String[] args) {
         int port = 1234;
 
@@ -37,4 +46,10 @@ public class Server {
         } catch (IOException e) {
         }
     }
+
+        public void broadcastActuatorChange(int nodeId, Actuator actuator) {
+            eventManager.publishActuatorChange(nodeId, actuator);
+        }
+
+
 }
