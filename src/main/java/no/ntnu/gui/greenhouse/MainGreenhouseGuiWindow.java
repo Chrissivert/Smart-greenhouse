@@ -37,7 +37,7 @@ public class MainGreenhouseGuiWindow extends Scene {
 
         // Wrap the VBox container in a ScrollPane
         ScrollPane scrollPane = new ScrollPane(container);
-        scrollPane.setFitToHeight(true);// Allow horizontal scrolling if necessary
+        scrollPane.setFitToHeight(true);
         scrollPane.setFitToWidth(true);
 
         scrollPane.setMaxWidth(Double.MAX_VALUE);

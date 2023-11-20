@@ -65,7 +65,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         sensorPane = new SensorPane(node.getSensors());
 
         VBox contentVBox = new VBox(sensorPane, actuatorPane);
-        contentVBox.setSpacing(10); // Add spacing between nodes if needed
+        contentVBox.setSpacing(10);
 
         ScrollPane scrollPane = new ScrollPane(contentVBox);
         scrollPane.setFitToWidth(true);

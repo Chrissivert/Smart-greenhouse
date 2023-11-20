@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Map;
 
 import javafx.scene.control.Button;
+import no.ntnu.controlpanel.AddNodeActionHandler;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
@@ -29,6 +30,7 @@ public class GreenhouseSimulator {
      */
     public GreenhouseSimulator(boolean fake) {
         this.fake = fake;
+        new AddNodeActionHandler(this);
     }
 
     /**
@@ -53,6 +55,7 @@ public class GreenhouseSimulator {
     public void start() {
         initiateCommunication();
         for (SensorActuatorNode node : nodes.values()) {
+            System.out.println("daokdwaldadmmwa" + nodes.get(2).getId());
             node.start();
         }
         for (PeriodicSwitch periodicSwitch : periodicSwitches) {
@@ -68,6 +71,15 @@ public class GreenhouseSimulator {
         } else {
             initiateRealCommunication();
         }
+    }
+
+    public void addNode(SensorActuatorNode newNode) {
+        System.out.println("Added a new NODEEEE");
+        System.out.println(newNode.getId());
+        System.out.println(newNode.getSensors());
+        System.out.println(nodes.values());
+        System.out.println("WHY not all nodes closed?");
+        nodes.put(newNode.getId(), newNode);
     }
 
     private ServerSocket initiateRealCommunication() {
@@ -91,6 +103,7 @@ public class GreenhouseSimulator {
     public void stop() {
         stopCommunication();
         for (SensorActuatorNode node : nodes.values()) {
+            System.out.println("STOPPING NODE " + node.getId());
             node.stop();
         }
     }

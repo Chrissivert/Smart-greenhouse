@@ -4,11 +4,11 @@ import javafx.scene.Scene;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
 import no.ntnu.greenhouse.DeviceFactory;
+import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.gui.greenhouse.NodeGuiWindow;
 
@@ -19,8 +19,11 @@ public class AddNodeWindow extends Stage {
     private TextField fansField;
     private TextField heatersField;
 
+    GreenhouseSimulator simulator;
 
-    public AddNodeWindow() {
+
+    public AddNodeWindow(GreenhouseSimulator simulator) {
+        this.simulator = simulator;
         VBox root = new VBox();
 
         temperatureField = createCustomTextField("Amount of temperature sensors", 1, 200);
@@ -30,7 +33,7 @@ public class AddNodeWindow extends Stage {
         heatersField = createCustomTextField("Amount of heaters", 1, 200);
 
         root.getChildren().addAll(
-                temperatureField, humidityField, windowsField, fansField, heatersField, createNodeButtons() /* Add other fields here */);
+                temperatureField, humidityField, windowsField, fansField, heatersField, createNodeButtons());
 
         ScrollPane scrollPane = new ScrollPane(root);
         scrollPane.setFitToWidth(true);
@@ -40,9 +43,6 @@ public class AddNodeWindow extends Stage {
         setScene(scene);
     }
 
-
-
-    // Method to retrieve entered values
     public int getTemperature() {
         return Integer.parseInt(temperatureField.getText());
     }
@@ -64,8 +64,10 @@ public class AddNodeWindow extends Stage {
     }
 
 
-    private void createNodeFromFields() {
+    private void createNodeFromFields(GreenhouseSimulator simulator) {
         SensorActuatorNode newNode = DeviceFactory.createNode(getTemperature(), getHumidity(), getMyWindows(), getFans(), getHeaters());
+        simulator.addNode(newNode);
+        newNode.start();
         NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(newNode);
         nodeGuiWindow.show();
     }
@@ -73,10 +75,10 @@ public class AddNodeWindow extends Stage {
     private HBox createNodeButtons() {
         HBox root = new HBox();
         Button createNodeButton = new Button("Create Node");
-        createNodeButton.setOnAction(e -> createNodeFromFields());
+        createNodeButton.setOnAction(e -> createNodeFromFields(simulator));
 
         Button goBackButton = new Button("Go Back");
-        goBackButton.setOnAction(e -> close()); // Close the window on "Go Back" button click
+        goBackButton.setOnAction(e -> close());
 
         root.getChildren().addAll(createNodeButton, goBackButton);
         return root;
