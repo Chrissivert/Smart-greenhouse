@@ -4,6 +4,7 @@ import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.Client;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
+import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.tools.Logger;
 
 import java.io.IOException;

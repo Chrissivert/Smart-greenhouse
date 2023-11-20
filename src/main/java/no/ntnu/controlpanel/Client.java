@@ -11,7 +11,7 @@ import java.util.TimerTask;
 
 import static no.ntnu.tools.Parser.parseIntegerOrError;
 
-public class Client implements CommunicationChannel, ActuatorListener {
+public class Client implements CommunicationChannel {
 
     private EventManager eventManager;
     private Socket socket;
@@ -21,10 +21,10 @@ public class Client implements CommunicationChannel, ActuatorListener {
 
     private final int TARGET_NODE_PORT = 1234;
 
-    public Client(ControlPanelLogic logic, EventManager eventManager) {
+    public Client(ControlPanelLogic logic) {
         this.logic = logic;
-        this.eventManager = eventManager;
-        this.eventManager.subscribe(this);
+//        this.eventManager = eventManager;
+//        this.eventManager.subscribe(this);
 
         try {
             // Opprett en socket-tilkobling til målnoden
@@ -34,13 +34,6 @@ public class Client implements CommunicationChannel, ActuatorListener {
         } catch (IOException e) {
             e.printStackTrace();
         }
-    }
-
-    @Override
-    public void actuatorUpdated(int nodeId, Actuator actuator) {
-        // Handle actuator update events here
-        // Update the logic or UI of the control panel based on the received actuator change
-        logic. onActuatorStateChanged(nodeId, actuator.getId(),actuator.isOn());
     }
 
     @Override
@@ -57,15 +50,15 @@ public class Client implements CommunicationChannel, ActuatorListener {
         return socket.isConnected();
     }
 
-    public void close() {
-        try {
-            out.close();
-            in.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void close() {
+//        try {
+//            out.close();
+//            in.close();
+//            socket.close();
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public void spawnNode(String specification, int delay) {
         SensorActuatorNodeInfo nodeInfo = createSensorNodeInfoFrom(specification);
@@ -73,9 +66,25 @@ public class Client implements CommunicationChannel, ActuatorListener {
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
-                logic.onNodeAdded(nodeInfo);
+                logic.onNodeAdded(nodeInfo); // Notifying ControlPanelLogic about node addition
+
+                // Add code here to inform the server about node addition
+                int nodeId = nodeInfo.getId();
+                broadcastNodeAdded(nodeId); // Function to send node addition info to the server
             }
         }, delay * 1000L);
+    }
+
+    private void broadcastNodeAdded(int nodeId) {
+        String command = "NodeAdded" + " " + nodeId; // Custom format for node addition
+        out.println(command); // Sending the message to the server
+    }
+
+    public void removeNode (int nodeId) {
+        logic.onNodeRemoved(nodeId); // Notify ControlPanelLogic about node removal
+
+        // Add code here to inform the server about node removal
+//            broadcastNodeRemoved(nodeId); // Function to send node removal info to the server
     }
 
     private SensorActuatorNodeInfo createSensorNodeInfoFrom(String specification) {
