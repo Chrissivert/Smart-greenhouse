@@ -7,6 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import javafx.scene.control.Button;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
@@ -40,10 +41,14 @@ public class GreenhouseSimulator {
         Logger.info("Greenhouse initialized");
     }
 
-    private void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
+    public void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
         SensorActuatorNode node = DeviceFactory.createNode(
                 temperature, humidity, windows, fans, heaters);
         nodes.put(node.getId(), node);
+    }
+
+    public Button addNodeButton() {
+        return new Button("Click me!");
     }
 
     /**

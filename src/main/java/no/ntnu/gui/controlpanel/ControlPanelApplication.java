@@ -86,15 +86,19 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         return l;
     }
 
+
     @Override
     public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
         Platform.runLater(() -> addNodeTab(nodeInfo));
+        System.out.println("hello");
     }
 
     @Override
     public void onNodeRemoved(int nodeId) {
+        System.out.println("Inside onNodeRemoved ConrolApplication");
         Tab nodeTab = nodeTabs.get(nodeId);
         if (nodeTab != null) {
+            System.out.println("2Inside onNodeRemoved ConrolApplication");
             Platform.runLater(() -> {
                 removeNodeTab(nodeId, nodeTab);
                 forgetNodeInfo(nodeId);

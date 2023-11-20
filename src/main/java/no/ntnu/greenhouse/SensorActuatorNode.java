@@ -127,6 +127,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
      */
     public void start() {
         if (!running) {
+            Logger.info("-- Starting simulation of node " + id);
             startPeriodicSensorReading();
             running = true;
             notifyStateChanges(true);

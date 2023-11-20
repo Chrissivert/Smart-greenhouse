@@ -10,6 +10,7 @@ import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
+import no.ntnu.controlpanel.AddNodeActionHandler;
 
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
@@ -28,6 +29,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
         mainStage.setTitle("Greenhouse simulator");
         mainStage.show();
         Logger.info("GUI subscribes to lifecycle events");
+        new AddNodeActionHandler(simulator);
         simulator.initialize();
         simulator.subscribeToLifecycleUpdates(this);
         mainStage.setOnCloseRequest(event -> closeApplication());

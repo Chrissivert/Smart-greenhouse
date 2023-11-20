@@ -84,7 +84,13 @@ public class Client implements CommunicationChannel {
         logic.onNodeRemoved(nodeId); // Notify ControlPanelLogic about node removal
 
         // Add code here to inform the server about node removal
-//            broadcastNodeRemoved(nodeId); // Function to send node removal info to the server
+            broadcastNodeRemoved(nodeId); // Function to send node removal info to the server
+    }
+
+    private void broadcastNodeRemoved(int nodeId) {
+        // Similar to broadcastNodeAdded, create a method to send node removal info
+        String command = "NodeRemoved" + " " + nodeId; // Custom format for node removal
+        out.println(command); // Sending the message to the server
     }
 
     private SensorActuatorNodeInfo createSensorNodeInfoFrom(String specification) {
