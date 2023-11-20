@@ -3,14 +3,13 @@ package no.ntnu.controlpanel;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 
 public class AddNodeActionHandler {
-    private static GreenhouseSimulator simulator;
 
-    public AddNodeActionHandler(GreenhouseSimulator simulator) {
-        this.simulator = simulator;
+    public AddNodeActionHandler() {
+
     }
 
     public static void handleAddNodeAction() {
-        AddNodeWindow inputWindow = new AddNodeWindow(simulator);
+        AddNodeWindow inputWindow = new AddNodeWindow();
         inputWindow.showAndWait();
         System.out.println("Button clicked: Add node functionality");
     }

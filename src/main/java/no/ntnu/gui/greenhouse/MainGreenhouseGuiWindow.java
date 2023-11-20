@@ -11,6 +11,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
@@ -33,7 +34,16 @@ public class MainGreenhouseGuiWindow extends Scene {
         container.setPadding(new Insets(20));
         container.setAlignment(Pos.CENTER);
         container.setSpacing(5);
-        return container;
+
+        // Wrap the VBox container in a ScrollPane
+        ScrollPane scrollPane = new ScrollPane(container);
+        scrollPane.setFitToHeight(true);// Allow horizontal scrolling if necessary
+        scrollPane.setFitToWidth(true);
+
+        scrollPane.setMaxWidth(Double.MAX_VALUE);
+        scrollPane.setMaxHeight(Double.MAX_VALUE);
+
+        return scrollPane;
     }
 
     private static Button createAddNodeButton() {
