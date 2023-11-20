@@ -47,10 +47,6 @@ public class GreenhouseSimulator {
         nodes.put(node.getId(), node);
     }
 
-    public Button addNodeButton() {
-        return new Button("Click me!");
-    }
-
     /**
      * Start a simulation of a greenhouse - all the sensor and actuator nodes inside it.
      */

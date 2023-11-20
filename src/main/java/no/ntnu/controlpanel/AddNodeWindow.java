@@ -6,7 +6,11 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
+import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.greenhouse.SensorActuatorNode;
+import no.ntnu.gui.greenhouse.GreenhouseApplication;
+import no.ntnu.gui.greenhouse.NodeGuiWindow;
 
 public class AddNodeWindow extends Stage {
     private TextField temperatureField;
@@ -55,8 +59,16 @@ public class AddNodeWindow extends Stage {
     }
 
 
-    private void createNodeFromFields(GreenhouseSimulator greenhouseSimulator) {
-    simulator.createNode(getTemperature(), getHumidity(), getMyWindows(), getFans(), getHeaters());
+    private void createNodeFromFields(GreenhouseSimulator simulator) {
+        int temperature = getTemperature();
+        int humidity = getHumidity();
+        int windows = getMyWindows();
+        int fans = getFans();
+        int heaters = getHeaters();
+
+        SensorActuatorNode newNode = DeviceFactory.createNode(temperature, humidity, windows, fans, heaters);
+        NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(newNode);
+        nodeGuiWindow.show();
     }
 
     private HBox createNodeButtons() {
