@@ -1,4 +1,4 @@
-package no.ntnu.run;
+package no.ntnu.endclients;
 
 import java.io.*;
 import java.net.ServerSocket;

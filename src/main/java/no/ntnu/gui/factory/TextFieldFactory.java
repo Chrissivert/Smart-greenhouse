@@ -1,6 +1,7 @@
-package no.ntnu.controlpanel;
+package no.ntnu.gui.factory;
 
 import javafx.scene.control.TextField;
+import no.ntnu.gui.builder.TextFieldBuilder;
 
 /**
  * Factory class for creating text fields.

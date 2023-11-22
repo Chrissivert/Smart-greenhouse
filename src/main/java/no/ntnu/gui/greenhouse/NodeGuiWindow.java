@@ -74,9 +74,6 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         return scrollPane;
     }
 
-
-
-
     @Override
     public void sensorsUpdated(List<Sensor> sensors) {
         if (sensorPane != null) {

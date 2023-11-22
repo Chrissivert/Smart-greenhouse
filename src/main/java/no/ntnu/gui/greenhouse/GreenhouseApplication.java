@@ -10,7 +10,6 @@ import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
-import no.ntnu.controlpanel.AddNodeActionHandler;
 
 /**
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.

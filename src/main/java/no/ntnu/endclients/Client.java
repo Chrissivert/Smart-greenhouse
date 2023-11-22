@@ -1,8 +1,9 @@
-package no.ntnu.controlpanel;
+package no.ntnu.endclients;
 
-import com.sun.javafx.event.EventHandlerManager;
+import no.ntnu.controlpanel.CommunicationChannel;
+import no.ntnu.controlpanel.ControlPanelLogic;
+import no.ntnu.controlpanel.SensorActuatorNodeInfo;
 import no.ntnu.greenhouse.Actuator;
-import no.ntnu.listeners.common.ActuatorListener;
 
 import java.io.*;
 import java.net.Socket;
@@ -13,28 +14,12 @@ import static no.ntnu.tools.Parser.parseIntegerOrError;
 
 public class Client implements CommunicationChannel {
 
-    private EventManager eventManager;
     private Socket socket;
     private PrintWriter out;
     private BufferedReader in;
     private final ControlPanelLogic logic;
     private BufferedReader serverIn;
     private final int TARGET_NODE_PORT = 1234;
-
-//    public Client(ControlPanelLogic logic) {
-//        this.logic = logic;
-////        this.eventManager = eventManager;
-////        this.eventManager.subscribe(this);
-//
-//        try {
-//            // Opprett en socket-tilkobling til målnoden
-//            socket = new Socket("localhost", TARGET_NODE_PORT);
-//            out = new PrintWriter(socket.getOutputStream(), true);
-//            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
     public Client(ControlPanelLogic logic) {
         this.logic = logic;
@@ -68,48 +53,44 @@ public class Client implements CommunicationChannel {
 
     @Override
     public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
-        // Send en kommando til målnoden
         String command = "Actuator" + " " + actuatorId + " " + type +
             " ON NODE" + " " + nodeId + " " + "turned" + " " + (isOn ? "ON" : "OFF");
         out.println(command);
+
+        //HER MÅ VI SENDE INFORMASJONEN VIDRE SLIK AT HVER CLIENT BLIR OPPDATERT MED ENDRINGENE
+//        handleNodeUpdate();
     }
 
     @Override
     public boolean open() {
-        // Implementer åpning av kommunikasjon (kan være tilkoblingen ovenfor)
         return socket.isConnected();
     }
 
-//    public void close() {
-//        try {
-//            out.close();
-//            in.close();
-//            socket.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//    }
+    public void close() {
+        try {
+            out.close();
+            in.close();
+            socket.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void spawnNode(String specification, int delay) {
+        //Dummy method to simulate node addition
         SensorActuatorNodeInfo nodeInfo = createSensorNodeInfoFrom(specification);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
-            public void run() {
-                logic.onNodeAdded(nodeInfo); // Notifying ControlPanelLogic about node addition
-
-                // Add code here to inform the server about node addition
+            public void run() {logic.onNodeAdded(nodeInfo);
                 int nodeId = nodeInfo.getId();
-                broadcastNodeAdded(nodeId); // Function to send node addition info to the server
+                broadcastNodeAdded(nodeId);
             }
         }, delay * 1000L);
     }
 
     private void handleNodeUpdate(String serverMessage) {
-        // Process the server message and update node information locally
-        // Example:
-        // Extract information from the server message and update the client's nodes accordingly
-        // logic.updateNode(serverMessage);
+         logic.checkWhatChanged(serverMessage);
     }
 
     private void broadcastNodeAdded(int nodeId) {
@@ -117,12 +98,12 @@ public class Client implements CommunicationChannel {
         out.println(command); // Sending the message to the server
     }
 
-    public void removeNode (int nodeId) {
-        logic.onNodeRemoved(nodeId); // Notify ControlPanelLogic about node removal
-
-        // Add code here to inform the server about node removal
-            broadcastNodeRemoved(nodeId); // Function to send node removal info to the server
-    }
+//    public void removeNode (int nodeId) {
+//        logic.onNodeRemoved(nodeId); // Notify ControlPanelLogic about node removal
+//
+//        // Add code here to inform the server about node removal
+//            broadcastNodeRemoved(nodeId); // Function to send node removal info to the server
+//    }
 
     private void broadcastNodeRemoved(int nodeId) {
         // Similar to broadcastNodeAdded, create a method to send node removal info

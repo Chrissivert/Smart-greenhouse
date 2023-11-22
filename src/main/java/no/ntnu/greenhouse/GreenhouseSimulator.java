@@ -7,8 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import javafx.scene.control.Button;
-import no.ntnu.controlpanel.AddNodeActionHandler;
+import no.ntnu.gui.greenhouse.AddNodeActionHandler;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 

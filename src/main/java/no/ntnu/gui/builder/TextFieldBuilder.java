@@ -1,4 +1,4 @@
-package no.ntnu.controlpanel;
+package no.ntnu.gui.builder;
 
 import javafx.scene.control.TextField;
 
@@ -14,8 +14,6 @@ public class TextFieldBuilder {
 
     private TextField textField;
 
-    private Consumer<Boolean> validationCallback;
-
     /**
      * Instantiates a new Text field builder.
      *
@@ -26,7 +24,7 @@ public class TextFieldBuilder {
     }
 
     /**
-     * With prompt text text field builder.
+     * With prompt text Textfield builder.
      *
      * @param promptText the prompt text
      * @return the text field builder
@@ -65,35 +63,6 @@ public class TextFieldBuilder {
         return this;
     }
 
-    /**
-     * Check for valid input string text field builder.
-     *
-     * @return the text field builder
-     */
-    public TextFieldBuilder checkForValidInputString() {
-        textField.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (!newValue.matches("^[a-zA-Z]+$")) {
-                textField.getStyleClass().add("red-textField");
-                validationCallback.accept(false);
-            } else {
-                textField.getStyleClass().removeAll("red-textField");
-                validationCallback.accept(true);
-
-            }
-        });
-        return this;
-    }
-
-    /**
-     * With validation callback text field builder.
-     *
-     * @param callback the callback
-     * @return the text field builder
-     */
-    public TextFieldBuilder withValidationCallback(Consumer<Boolean> callback) {
-        this.validationCallback = callback;
-        return this;
-    }
 
     /**
      * Set prefered size text field builder.

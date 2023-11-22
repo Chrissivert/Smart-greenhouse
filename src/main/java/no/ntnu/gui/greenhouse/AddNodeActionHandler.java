@@ -1,4 +1,4 @@
-package no.ntnu.controlpanel;
+package no.ntnu.gui.greenhouse;
 
 import no.ntnu.greenhouse.GreenhouseSimulator;
 

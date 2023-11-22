@@ -1,4 +1,4 @@
-package no.ntnu.controlpanel;
+package no.ntnu.tools;
 
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.listeners.common.ActuatorListener;
@@ -22,4 +22,6 @@ public class EventManager {
             listener.actuatorUpdated(nodeId, actuator);
         }
     }
+
+    //CLASS NOT USED
 }
