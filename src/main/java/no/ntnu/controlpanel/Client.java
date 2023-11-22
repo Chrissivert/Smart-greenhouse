@@ -18,19 +18,49 @@ public class Client implements CommunicationChannel {
     private PrintWriter out;
     private BufferedReader in;
     private final ControlPanelLogic logic;
-
+    private BufferedReader serverIn;
     private final int TARGET_NODE_PORT = 1234;
+
+//    public Client(ControlPanelLogic logic) {
+//        this.logic = logic;
+////        this.eventManager = eventManager;
+////        this.eventManager.subscribe(this);
+//
+//        try {
+//            // Opprett en socket-tilkobling til målnoden
+//            socket = new Socket("localhost", TARGET_NODE_PORT);
+//            out = new PrintWriter(socket.getOutputStream(), true);
+//            in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     public Client(ControlPanelLogic logic) {
         this.logic = logic;
-//        this.eventManager = eventManager;
-//        this.eventManager.subscribe(this);
 
         try {
             // Opprett en socket-tilkobling til målnoden
             socket = new Socket("localhost", TARGET_NODE_PORT);
             out = new PrintWriter(socket.getOutputStream(), true);
             in = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            serverIn = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+
+            // Create a thread to listen for server updates
+            Thread serverListener = new Thread(() -> {
+                try {
+                    String serverMessage;
+                    while ((serverMessage = serverIn.readLine()) != null) {
+                        // Process the server message and update node information locally
+                        System.out.println("Received update from server: " + serverMessage);
+                        // Update your nodes based on the received message
+                        // Example: handleNodeUpdate(serverMessage);
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            });
+            serverListener.start();
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -73,6 +103,13 @@ public class Client implements CommunicationChannel {
                 broadcastNodeAdded(nodeId); // Function to send node addition info to the server
             }
         }, delay * 1000L);
+    }
+
+    private void handleNodeUpdate(String serverMessage) {
+        // Process the server message and update node information locally
+        // Example:
+        // Extract information from the server message and update the client's nodes accordingly
+        // logic.updateNode(serverMessage);
     }
 
     private void broadcastNodeAdded(int nodeId) {

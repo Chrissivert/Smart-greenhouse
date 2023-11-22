@@ -1,55 +1,49 @@
 package no.ntnu.run;
 
-import no.ntnu.controlpanel.EventManager;
-import no.ntnu.greenhouse.Actuator;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
 public class Server {
 
-    private EventManager eventManager;
+    private List<PrintWriter> clientWriters = new ArrayList<>();
 
-    public Server(EventManager eventManager) {
-        this.eventManager = eventManager;
-    }
     public static void main(String[] args) {
         int port = 1234;
+        Server server = new Server();
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is listening on port " + port);
 
             while (true) {
-                try {
-                    Socket clientSocket = serverSocket.accept();
-                    Thread clientThread = new Thread(() -> {
-                        try (InputStream in = clientSocket.getInputStream()) {
+                Socket clientSocket = serverSocket.accept();
+                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
+                server.clientWriters.add(writer);
 
-                            // Read and process client messages here
-                            byte[] buffer = new byte[1024];
-                            int bytesRead;
-                            while ((bytesRead = in.read(buffer)) != -1) {
-                                String message = new String(buffer, 0, bytesRead);
-                                // Process the message and take appropriate action
-                                System.out.println("Received message from client: " + message);
-                            }
-                        } catch (IOException e) {
-                            e.printStackTrace();
+                Thread clientThread = new Thread(() -> {
+                    try (InputStream in = clientSocket.getInputStream()) {
+                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+                        String message;
+                        while ((message = reader.readLine()) != null) {
+                            System.out.println("Received message from client: " + message);
+                            server.broadcast(message);
                         }
-                    });
-                    clientThread.start();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+                    } catch (IOException e) {
+                        e.printStackTrace();
+                    }
+                });
+                clientThread.start();
             }
         } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
-        public void broadcastActuatorChange(int nodeId, Actuator actuator) {
-            eventManager.publishActuatorChange(nodeId, actuator);
+    private void broadcast(String message) {
+        for (PrintWriter writer : clientWriters) {
+            writer.println(message);
         }
-
-
+    }
 }
