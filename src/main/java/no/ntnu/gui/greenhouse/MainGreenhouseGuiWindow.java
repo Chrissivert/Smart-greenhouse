@@ -29,7 +29,7 @@ public class MainGreenhouseGuiWindow extends Scene {
     }
 
     private static Parent createMainContent() {
-        VBox container = new VBox(createAddNodeButton(), createTurnOnAllActuatorsButton(), createTurnOffAllActuatorsButton(), createInfoLabel(), createMasterImage(), createCopyrightNotice());
+        VBox container = new VBox(createAddNodeButton(), createTurnOnAllActuatorsButton(), createTurnOffAllActuatorsButton(), createTurnOffSpecificActuator(), createInfoLabel(), createMasterImage(), createCopyrightNotice());
         container.setPadding(new Insets(20));
         container.setAlignment(Pos.CENTER);
         container.setSpacing(5);
@@ -61,6 +61,12 @@ public class MainGreenhouseGuiWindow extends Scene {
         Button turnOnAllActuatorsButton = new Button("Turn off all actuators");
         turnOnAllActuatorsButton.setOnAction(e -> ButtonActionHanlder.handleTurnOffAllActuators());
         return turnOnAllActuatorsButton;
+    }
+
+    private static Button createTurnOffSpecificActuator(){
+        Button turnOffSpecificActuatorButton = new Button("Turn off specific actuator");
+        turnOffSpecificActuatorButton.setOnAction(e -> ButtonActionHanlder.handleStateOfSpecificActuator());
+        return turnOffSpecificActuatorButton;
     }
 
     private static Label createInfoLabel() {

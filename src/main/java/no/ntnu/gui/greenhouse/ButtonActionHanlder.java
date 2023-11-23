@@ -1,7 +1,6 @@
 package no.ntnu.gui.greenhouse;
 
 import no.ntnu.greenhouse.GreenhouseSimulator;
-import no.ntnu.greenhouse.SensorActuatorNode;
 
 public class ButtonActionHanlder {
 
@@ -30,4 +29,13 @@ public class ButtonActionHanlder {
             }
         }
     }
+    public static void handleStateOfSpecificActuator() {
+        simulator.nodes.get(1).setActuator(2, true);
+        System.out.println(simulator.nodes.get(1));
+    }
+
+//    public static void handleStateOfSpecificActuator(int node, int actuatorId, boolean state){
+//        simulator.nodes.get(node).setActuator(actuatorId, state);
+//        System.out.println(simulator.nodes.get(1));
+//    }
 }
