@@ -7,7 +7,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
-import no.ntnu.gui.greenhouse.AddNodeActionHandler;
+import no.ntnu.gui.greenhouse.ButtonActionHanlder;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
@@ -16,7 +16,7 @@ import no.ntnu.tools.Logger;
  */
 public class GreenhouseSimulator {
     private static final int PORT_NUMBER = 1234;
-    private final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
+    public final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
 
     private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
     private final boolean fake;
@@ -29,7 +29,7 @@ public class GreenhouseSimulator {
      */
     public GreenhouseSimulator(boolean fake) {
         this.fake = fake;
-        new AddNodeActionHandler(this);
+        new ButtonActionHanlder(this);
     }
 
     /**
