@@ -1,6 +1,13 @@
 package no.ntnu.gui.greenhouse;
 
+import javafx.scene.Scene;
+import javafx.scene.control.Button;
+import javafx.scene.control.TextField;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.gui.factory.TextFieldFactory;
 
 public class ButtonActionHanlder {
 
@@ -29,13 +36,8 @@ public class ButtonActionHanlder {
             }
         }
     }
-    public static void handleStateOfSpecificActuator() {
-        simulator.nodes.get(1).setActuator(2, true);
+    public static void handleStateOfSpecificActuator(int node, int actuatorId, boolean state){
+        simulator.nodes.get(node).setActuator(actuatorId, state);
         System.out.println(simulator.nodes.get(1));
     }
-
-//    public static void handleStateOfSpecificActuator(int node, int actuatorId, boolean state){
-//        simulator.nodes.get(node).setActuator(actuatorId, state);
-//        System.out.println(simulator.nodes.get(1));
-//    }
 }

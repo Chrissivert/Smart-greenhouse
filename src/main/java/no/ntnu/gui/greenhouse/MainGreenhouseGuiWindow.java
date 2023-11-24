@@ -20,7 +20,7 @@ import javafx.scene.text.Font;
 /**
  * The main GUI window for greenhouse simulator.
  */
-public class MainGreenhouseGuiWindow extends Scene {
+public class MainGreenhouseGuiWindow extends Scene{
     public static final int WIDTH = 300;
     public static final int HEIGHT = 300;
 
@@ -29,7 +29,7 @@ public class MainGreenhouseGuiWindow extends Scene {
     }
 
     private static Parent createMainContent() {
-        VBox container = new VBox(createAddNodeButton(), createTurnOnAllActuatorsButton(), createTurnOffAllActuatorsButton(), createTurnOffSpecificActuator(), createInfoLabel(), createMasterImage(), createCopyrightNotice());
+        VBox container = new VBox(createAddNodeButton(), createTurnOnAllActuatorsButton(), createTurnOffAllActuatorsButton(), createChangeSpecificActuatorStateStage(), createInfoLabel(), createMasterImage(), createCopyrightNotice());
         container.setPadding(new Insets(20));
         container.setAlignment(Pos.CENTER);
         container.setSpacing(5);
@@ -63,9 +63,9 @@ public class MainGreenhouseGuiWindow extends Scene {
         return turnOnAllActuatorsButton;
     }
 
-    private static Button createTurnOffSpecificActuator(){
+    private static Button createChangeSpecificActuatorStateStage(){
         Button turnOffSpecificActuatorButton = new Button("Turn off specific actuator");
-        turnOffSpecificActuatorButton.setOnAction(e -> ButtonActionHanlder.handleStateOfSpecificActuator());
+        turnOffSpecificActuatorButton.setOnAction(e -> AddNodeWindow.createAndShowStage());
         return turnOffSpecificActuatorButton;
     }
 
