@@ -63,6 +63,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
 
     @Override
     public void onNodeRemoved(int nodeId) {
+        System.out.println("is it being executed?");
         listeners.forEach(listener -> listener.onNodeRemoved(nodeId));
     }
 
@@ -107,8 +108,8 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         }
     }
 
-    // Method to extract node ID from the message
-    private int extractNodeId(String serverMessage) {
+
+    public int extractNodeId(String serverMessage) {
         String[] parts = serverMessage.split(" ");
         return Integer.parseInt(parts[1]);
     }

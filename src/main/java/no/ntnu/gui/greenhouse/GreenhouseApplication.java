@@ -6,6 +6,8 @@ import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import no.ntnu.controlpanel.ControlPanelLogic;
+//import no.ntnu.endclients.Server;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.listeners.greenhouse.NodeStateListener;

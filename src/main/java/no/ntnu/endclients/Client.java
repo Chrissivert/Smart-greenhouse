@@ -7,6 +7,8 @@ import no.ntnu.greenhouse.Actuator;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -38,6 +40,8 @@ public class Client implements CommunicationChannel {
                     while ((serverMessage = serverIn.readLine()) != null) {
                         // Process the server message and update node information locally
                         System.out.println("Received update from server: " + serverMessage);
+                        int nodeId = logic.extractNodeId(serverMessage);
+                        logic.onActuatorStateChanged(nodeId, 1, true);
                         // Update your nodes based on the received message
                         // Example: handleNodeUpdate(serverMessage);
                     }
@@ -50,6 +54,7 @@ public class Client implements CommunicationChannel {
             e.printStackTrace();
         }
     }
+
 
     @Override
     public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
@@ -66,15 +71,6 @@ public class Client implements CommunicationChannel {
         return socket.isConnected();
     }
 
-    public void close() {
-        try {
-            out.close();
-            in.close();
-            socket.close();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     public void spawnNode(String specification, int delay) {
         //Dummy method to simulate node addition
@@ -85,25 +81,17 @@ public class Client implements CommunicationChannel {
             public void run() {logic.onNodeAdded(nodeInfo);
                 int nodeId = nodeInfo.getId();
                 broadcastNodeAdded(nodeId);
+//                logic.onNodeRemoved(nodeId);
             }
         }, delay * 1000L);
     }
 
-    private void handleNodeUpdate(String serverMessage) {
-         logic.checkWhatChanged(serverMessage);
-    }
 
     private void broadcastNodeAdded(int nodeId) {
         String command = "NodeAdded" + " " + nodeId; // Custom format for node addition
         out.println(command); // Sending the message to the server
     }
 
-//    public void removeNode (int nodeId) {
-//        logic.onNodeRemoved(nodeId); // Notify ControlPanelLogic about node removal
-//
-//        // Add code here to inform the server about node removal
-//            broadcastNodeRemoved(nodeId); // Function to send node removal info to the server
-//    }
 
     private void broadcastNodeRemoved(int nodeId) {
         // Similar to broadcastNodeAdded, create a method to send node removal info
@@ -148,5 +136,6 @@ public class Client implements CommunicationChannel {
             info.addActuator(actuator);
         }
     }
+
 }
 

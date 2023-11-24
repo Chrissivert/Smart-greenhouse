@@ -1,49 +1,63 @@
 package no.ntnu.endclients;
 
+import no.ntnu.controlpanel.ControlPanelLogic;
+
+import no.ntnu.controlpanel.ControlPanelLogic;
+
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.ArrayList;
-import java.util.List;
 
 public class Server {
 
-    private List<PrintWriter> clientWriters = new ArrayList<>();
+    private ControlPanelLogic logic; // Not static anymore
 
-    public static void main(String[] args) {
+    public Server() {
+        // You can initialize logic here if needed
+    }
+
+    // Setter method to set the logic instance
+    public void setLogic(ControlPanelLogic logic) {
+        this.logic = logic;
+    }
+
+    public static void main(String[] args) throws IOException {
         int port = 1234;
         Server server = new Server();
 
+        ControlPanelLogic logic = new ControlPanelLogic(); // Instantiate ControlPanelLogic
+        server.setLogic(logic); // Set the logic instance in the server
+
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is listening on port " + port);
-
             while (true) {
-                Socket clientSocket = serverSocket.accept();
-                PrintWriter writer = new PrintWriter(clientSocket.getOutputStream(), true);
-                server.clientWriters.add(writer);
-
-                Thread clientThread = new Thread(() -> {
-                    try (InputStream in = clientSocket.getInputStream()) {
-                        BufferedReader reader = new BufferedReader(new InputStreamReader(in));
-                        String message;
-                        while ((message = reader.readLine()) != null) {
-                            System.out.println("Received message from client: " + message);
-                            server.broadcast(message);
-                        }
-                    } catch (IOException e) {
-                        e.printStackTrace();
-                    }
-                });
-                clientThread.start();
+                Socket socket = serverSocket.accept();
+                System.out.println("New client connected");
+                ClientHandler clientHandler = new ClientHandler(socket, server, logic);
+                Thread thread = new Thread(clientHandler); // Start a new thread for this client
+                thread.start();
             }
-        } catch (IOException e) {
-            e.printStackTrace();
         }
+    }
+    public void addClient(ClientHandler clientHandler) {
+
     }
 
-    private void broadcast(String message) {
-        for (PrintWriter writer : clientWriters) {
-            writer.println(message);
-        }
-    }
 }
+
+//    private void broadcast(String message) {
+//        for (PrintWriter writer : clientWriters) {
+//            writer.println(message);
+//        }
+//    }
+
+//    public void startServer() {
+//        // Code to start the server socket and accept incoming connections
+//        // For each incoming connection, create a ClientHandler instance
+//    }
+
+
+//    public void addClient(ClientHandler clientHandler) {
+//
+//    }
+

@@ -30,7 +30,7 @@ import no.ntnu.tools.Logger;
  */
 public class ControlPanelApplication extends Application implements GreenhouseEventListener,
         CommunicationChannelListener {
-    private static ControlPanelLogic logic;
+    public static ControlPanelLogic logic;
     private static final int WIDTH = 500;
     private static final int HEIGHT = 400;
     private static CommunicationChannel channel;
@@ -94,10 +94,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     @Override
     public void onNodeRemoved(int nodeId) {
-        System.out.println("Inside onNodeRemoved ConrolApplication");
+        System.out.println("Inside on NodeRemoved ConrolApplication");
         Tab nodeTab = nodeTabs.get(nodeId);
         if (nodeTab != null) {
-            System.out.println("2Inside onNodeRemoved ConrolApplication");
+            System.out.println("2Inside on NodeRemoved ConrolApplication");
             Platform.runLater(() -> {
                 removeNodeTab(nodeId, nodeTab);
                 forgetNodeInfo(nodeId);
@@ -202,5 +202,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     public void onCommunicationChannelClosed() {
         Logger.info("Communication closed, closing the GUI");
         Platform.runLater(Platform::exit);
+    }
+
+    public void setCommunicationChannel(CommunicationChannel channel) {
+        this.channel = channel;
     }
 }
