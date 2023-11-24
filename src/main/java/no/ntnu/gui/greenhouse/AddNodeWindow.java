@@ -23,13 +23,11 @@ public class AddNodeWindow extends Stage {
     private TextField fansField;
     private TextField heatersField;
 
-    private static TextField nodeId;
-
     private static TextField actuatorId;
 
     private static ChoiceBox<String> trueFalseChoiceBox;
-
     private ChoiceBox<String> currentNodeChoiceBox;
+
     GreenhouseSimulator simulator;
 
     static ButtonActionHandler buttonActionHandler;
@@ -120,7 +118,6 @@ public class AddNodeWindow extends Stage {
 
     public void createAndShowStage() {
         VBox vBox = new VBox();
-        nodeId = createCustomTextField("Enter nodeId", 3, 200);
         actuatorId = createCustomTextField("Enter actuatorId", 3, 200);
         vBox.getChildren().addAll(createAmountOfNodesChoiceBox(), actuatorId, createTurnOnOffChoiceBox(), handleActuatorChange());
 
@@ -164,14 +161,8 @@ public class AddNodeWindow extends Stage {
     }
 
     public static boolean getTrueOrFalse() {
-        String selectedValue = (String) trueFalseChoiceBox.getValue();
+        String selectedValue = trueFalseChoiceBox.getValue();
         return selectedValue != null && selectedValue.equals("Turn on");
     }
-
-    //   private static Button confirmSpecificActuatorStateButton(){
-//        Button confirmSpecificActuatorStateButton = new Button("Confirm");
-//        confirmSpecificActuatorStateButton.setOnAction(e -> AddNodeWindow.handleActuatorChange());
-//        return confirmSpecificActuatorStateButton;
-//    }
 }
 

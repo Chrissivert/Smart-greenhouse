@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.Sensor;
@@ -66,6 +67,15 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
 
         VBox contentVBox = new VBox(sensorPane, actuatorPane);
         contentVBox.setSpacing(10);
+
+        for (Actuator actuator : node.getActuators()) {
+            Integer actuatorId = actuator.getId();
+            String actuatorType = actuator.getType();
+                String displayText = "ActuatorId " + actuatorId + " Type: " + actuatorType;
+                Text actuatorIdText = new Text(displayText);
+                contentVBox.getChildren().add(actuatorIdText);
+
+        }
 
         ScrollPane scrollPane = new ScrollPane(contentVBox);
         scrollPane.setFitToWidth(true);
