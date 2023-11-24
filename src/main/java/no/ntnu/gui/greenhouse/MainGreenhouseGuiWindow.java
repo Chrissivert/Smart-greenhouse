@@ -16,6 +16,7 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 
 /**
  * The main GUI window for greenhouse simulator.
@@ -24,12 +25,12 @@ public class MainGreenhouseGuiWindow extends Scene {
     public static final int WIDTH = 300;
     public static final int HEIGHT = 300;
 
-    public MainGreenhouseGuiWindow() {
-        super(createMainContent(), WIDTH, HEIGHT);
+    public MainGreenhouseGuiWindow(NodeStateListener nodeStateListener) {
+        super(createMainContent(nodeStateListener), WIDTH, HEIGHT);
     }
 
-    private static Parent createMainContent() {
-        VBox container = new VBox(createAddNodeButton(), createTurnOnAllActuatorsButton(), createTurnOffAllActuatorsButton(), createTurnOffSpecificActuator(), createInfoLabel(), createMasterImage(), createCopyrightNotice());
+    private static Parent createMainContent(NodeStateListener nodeStateListener) {
+        VBox container = new VBox(createAddNodeButton(nodeStateListener), createTurnOnAllActuatorsButton(), createTurnOffAllActuatorsButton(), createTurnOffSpecificActuator(), createInfoLabel(), createMasterImage(), createCopyrightNotice());
         container.setPadding(new Insets(20));
         container.setAlignment(Pos.CENTER);
         container.setSpacing(5);
@@ -45,9 +46,9 @@ public class MainGreenhouseGuiWindow extends Scene {
         return scrollPane;
     }
 
-    private static Button createAddNodeButton() {
+    private static Button createAddNodeButton(NodeStateListener nodeStateListener) {
         Button addNodeButton = new Button("Add node");
-        addNodeButton.setOnAction(e -> ButtonActionHanlder.handleAddNodeAction());
+        addNodeButton.setOnAction(e -> ButtonActionHanlder.handleAddNodeAction(nodeStateListener));
         return addNodeButton;
     }
 

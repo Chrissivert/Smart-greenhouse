@@ -11,6 +11,7 @@ import no.ntnu.gui.factory.TextFieldFactory;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 
 public class AddNodeWindow extends Stage {
     private TextField temperatureField;
@@ -19,11 +20,14 @@ public class AddNodeWindow extends Stage {
     private TextField fansField;
     private TextField heatersField;
 
-    GreenhouseSimulator simulator;
+    // Girts comment: you are not going to change the simulator, right?
+    private final GreenhouseSimulator simulator;
+    private final NodeStateListener nodeStateListener;
 
 
-    public AddNodeWindow(GreenhouseSimulator simulator) {
+    public AddNodeWindow(GreenhouseSimulator simulator, NodeStateListener nodeStateListener) {
         this.simulator = simulator;
+        this.nodeStateListener = nodeStateListener;
         VBox root = new VBox();
 
         temperatureField = createCustomTextField("Amount of temperature sensors", 1, 200);
@@ -67,9 +71,8 @@ public class AddNodeWindow extends Stage {
     private void createNodeFromFields(GreenhouseSimulator simulator) {
         SensorActuatorNode newNode = DeviceFactory.createNode(getTemperature(), getHumidity(), getMyWindows(), getFans(), getHeaters());
         simulator.addNode(newNode);
+        newNode.addStateListener(nodeStateListener);
         newNode.start();
-        NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(newNode);
-        nodeGuiWindow.show();
     }
 
     private HBox createNodeButtons() {

@@ -1,7 +1,9 @@
 package no.ntnu.gui.greenhouse;
 
 import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.listeners.greenhouse.NodeStateListener;
 
+// Girts comment: check spelling errors ;)
 public class ButtonActionHanlder {
 
     static GreenhouseSimulator simulator;
@@ -10,8 +12,8 @@ public class ButtonActionHanlder {
         this.simulator = simulator;
     }
 
-    public static void handleAddNodeAction() {
-        AddNodeWindow inputWindow = new AddNodeWindow(simulator);
+    public static void handleAddNodeAction(NodeStateListener nodeStateListener) {
+        AddNodeWindow inputWindow = new AddNodeWindow(simulator, nodeStateListener);
         inputWindow.showAndWait();
     }
 

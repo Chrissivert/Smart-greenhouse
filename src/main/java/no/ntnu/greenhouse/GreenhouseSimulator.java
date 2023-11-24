@@ -29,6 +29,9 @@ public class GreenhouseSimulator {
      */
     public GreenhouseSimulator(boolean fake) {
         this.fake = fake;
+        // Girts comment: this is a bit weird way - to create an object which is thrown away,
+        // and all this just to get a reference to simulator inside the ButtonActionHandler.
+        // You should create a singleton ButtonActionHandler instead.
         new ButtonActionHanlder(this);
     }
 
