@@ -2,12 +2,9 @@ package no.ntnu.greenhouse;
 
 import java.io.IOException;
 import java.net.ServerSocket;
-import java.util.HashMap;
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
-import no.ntnu.gui.greenhouse.ButtonActionHanlder;
+import no.ntnu.gui.greenhouse.ButtonActionHandler;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
@@ -29,7 +26,7 @@ public class GreenhouseSimulator {
      */
     public GreenhouseSimulator(boolean fake) {
         this.fake = fake;
-        new ButtonActionHanlder(this);
+        new ButtonActionHandler(this);
     }
 
     /**
@@ -105,6 +102,10 @@ public class GreenhouseSimulator {
             System.out.println("STOPPING NODE " + node.getId());
             node.stop();
         }
+    }
+
+    public List<Integer> getAmountOfNodes() {
+        return new ArrayList<>(nodes.keySet());
     }
 
     private void stopCommunication() {

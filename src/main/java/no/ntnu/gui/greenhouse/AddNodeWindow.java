@@ -8,11 +8,13 @@ import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.scene.control.Button;
-import no.ntnu.greenhouse.Sensor;
 import no.ntnu.gui.factory.TextFieldFactory;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class AddNodeWindow extends Stage {
     private TextField temperatureField;
@@ -26,11 +28,16 @@ public class AddNodeWindow extends Stage {
     private static TextField actuatorId;
 
     private static ChoiceBox<String> trueFalseChoiceBox;
+
+    private ChoiceBox<String> currentNodeChoiceBox;
     GreenhouseSimulator simulator;
+
+    static ButtonActionHandler buttonActionHandler;
 
 
     public AddNodeWindow(GreenhouseSimulator simulator) {
         this.simulator = simulator;
+        buttonActionHandler = new ButtonActionHandler(simulator);
         VBox root = new VBox();
 
         temperatureField = createCustomTextField("Amount of temperature sensors", 1, 200);
@@ -80,6 +87,16 @@ public class AddNodeWindow extends Stage {
         close();
     }
 
+    public List<String> getNodeNames() {
+        List<String> nodeNames = new ArrayList<>();
+        for (SensorActuatorNode node : simulator.nodes.values()) {
+            System.out.println("value added" + node.getId());
+            nodeNames.add(String.valueOf(node.getId())); // Assuming a method getName() returns the node name
+        }
+        return nodeNames;
+    }
+
+
     private HBox createNodeButtons() {
         HBox root = new HBox();
         Button createNodeButton = new Button("Create Node");
@@ -101,11 +118,11 @@ public class AddNodeWindow extends Stage {
                 .build();
     }
 
-    public static void createAndShowStage() {
+    public void createAndShowStage() {
         VBox vBox = new VBox();
         nodeId = createCustomTextField("Enter nodeId", 3, 200);
         actuatorId = createCustomTextField("Enter actuatorId", 3, 200);
-        vBox.getChildren().addAll(nodeId, actuatorId, createChoiceBox(), handleActuatorChange());
+        vBox.getChildren().addAll(createAmountOfNodesChoiceBox(), actuatorId, createTurnOnOffChoiceBox(), handleActuatorChange());
 
         Scene scene = new Scene(vBox, 300, 200);
 
@@ -114,27 +131,32 @@ public class AddNodeWindow extends Stage {
         newStage.show();
     }
 
-    public static ChoiceBox<String> createChoiceBox(){
+    public ChoiceBox<String> createTurnOnOffChoiceBox(){
         trueFalseChoiceBox = new ChoiceBox<>();
         trueFalseChoiceBox.getItems().addAll("Turn on", "Turn off");
         return trueFalseChoiceBox;
     }
 
-    public static HBox handleActuatorChange() {
+    public  ChoiceBox<String> createAmountOfNodesChoiceBox(){
+        currentNodeChoiceBox = new ChoiceBox<>();
+        currentNodeChoiceBox.getItems().addAll(getNodeNames());
+        return currentNodeChoiceBox;
+    }
+
+    public HBox handleActuatorChange() {
         Button createNodeButton = new Button("Confirm");
-        createNodeButton.setOnAction(e -> ButtonActionHanlder.handleStateOfSpecificActuator(getNodeId(),getActuatorId(),getTrueOrFalse()));
+        createNodeButton.setOnAction(e -> buttonActionHandler.handleStateOfSpecificActuator(getParsedNodeChoice(),getActuatorId(),getTrueOrFalse()));
         return new HBox(createNodeButton);
     }
 
-
-//    private static Button confirmSpecificActuatorStateButton(){
-//        Button confirmSpecificActuatorStateButton = new Button("Confirm");
-//        confirmSpecificActuatorStateButton.setOnAction(e -> AddNodeWindow.handleActuatorChange());
-//        return confirmSpecificActuatorStateButton;
-//    }
-
-    public static int getNodeId() {
-        return Integer.parseInt(nodeId.getText());
+    public int getParsedNodeChoice() {
+        String selectedValue = currentNodeChoiceBox.getValue();
+        if (selectedValue != null) {
+            return Integer.parseInt(selectedValue);
+        } else {
+            System.out.println("Please choice a currently active node");
+            return -1;
+        }
     }
 
     public static int getActuatorId() {
@@ -145,5 +167,11 @@ public class AddNodeWindow extends Stage {
         String selectedValue = (String) trueFalseChoiceBox.getValue();
         return selectedValue != null && selectedValue.equals("Turn on");
     }
+
+    //   private static Button confirmSpecificActuatorStateButton(){
+//        Button confirmSpecificActuatorStateButton = new Button("Confirm");
+//        confirmSpecificActuatorStateButton.setOnAction(e -> AddNodeWindow.handleActuatorChange());
+//        return confirmSpecificActuatorStateButton;
+//    }
 }
 
