@@ -7,7 +7,6 @@ import java.io.InputStream;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
-import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
@@ -41,6 +40,7 @@ public class MainGreenhouseGuiWindow extends Scene {
                     createTurnOnAllActuatorsButton(),
                     createTurnOffAllActuatorsButton(),
                     createChangeSpecificActuatorStateStage(),
+                    createGetStateOfSpecificActuator(),
                     createInfoLabel(),
                     createMasterImage(),
                     createCopyrightNotice()
@@ -98,8 +98,14 @@ public class MainGreenhouseGuiWindow extends Scene {
 
     private Button createChangeSpecificActuatorStateStage() {
         Button changeSpecificActuatorButton = new Button("Change state of specific actuator");
-        changeSpecificActuatorButton.setOnAction(e -> buttonActionHandler.handleCreateChangeSpecificActuatorStateStage());
+        changeSpecificActuatorButton.setOnAction(e -> buttonActionHandler.createSetActuatorStateStage());
         return changeSpecificActuatorButton;
+    }
+
+    private Button createGetStateOfSpecificActuator() {
+        Button turnOnAllActuatorsButton = new Button("Get state of specific actuator");
+        turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.getStateOfActuatorStage());
+        return turnOnAllActuatorsButton;
     }
 
     private Button createTurnOnAllActuatorsButton() {

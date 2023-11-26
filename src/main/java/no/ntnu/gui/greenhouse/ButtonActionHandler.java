@@ -30,17 +30,31 @@ public class ButtonActionHandler {
             }
         }
     }
-    public void handleStateOfSpecificActuator(int node, int actuatorId, boolean state) {
+    public void setStateOfActuator(int node, int actuatorId, boolean state) {
         SensorActuatorNode sensorActuatorNode = simulator.nodes.get(node);
         if (sensorActuatorNode != null) {
             sensorActuatorNode.setActuator(actuatorId, state);
-            System.out.println(simulator.nodes.get(1));
-        }  //System.out.println("Node not found or is null");
-
+        }
     }
 
-    public void handleCreateChangeSpecificActuatorStateStage() {
+    public boolean getStateOfActuator(int node, int actuatorId) {
+        SensorActuatorNode sensorActuatorNode = simulator.nodes.get(node);
+        if (simulator.nodes.get(node).getActuators().get(actuatorId)==null){
+            System.out.println("Actuator does not exist");
+        }else{
+            System.out.println(sensorActuatorNode.getActuators().get(actuatorId).isOn());
+        }
+        return sensorActuatorNode.getActuators().get(actuatorId).isOn();
+    }
+
+
+    public void createSetActuatorStateStage() {
         AddNodeWindow inputWindow = new AddNodeWindow(simulator);
-        inputWindow.createAndShowStage();
+        inputWindow.createSetActuatorStage();
+     }
+
+    public void getStateOfActuatorStage() {
+        AddNodeWindow inputWindow = new AddNodeWindow(simulator);
+        inputWindow.createGetActuatorStage();
     }
 }
