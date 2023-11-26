@@ -18,6 +18,8 @@ import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.SensorActuatorNodeInfo;
 import no.ntnu.greenhouse.Actuator;
+import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
@@ -74,6 +76,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         stage.show();
         logic.addListener(this);
         logic.setCommunicationChannelListener(this);
+        setCommunicationChannel(channel);
 //    if (!channel.open()) {
 //      logic.onCommunicationChannelClosed();
 //    }
@@ -82,6 +85,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     private static Label createEmptyContent() {
         Label l = new Label("Waiting for node data...");
         l.setAlignment(Pos.CENTER);
+        GreenhouseSimulator simulator = new GreenhouseSimulator(true);
         return l;
     }
 

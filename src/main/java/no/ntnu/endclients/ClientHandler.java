@@ -1,8 +1,7 @@
 package no.ntnu.endclients;
 
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.endclients.ClientHandler;
-import no.ntnu.endclients.Server;
+
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -15,41 +14,47 @@ public class ClientHandler implements Runnable {
     private ControlPanelLogic logic;
     private final Server server;
 
+    private BufferedReader reader;
+    private PrintWriter writer;
+
     public ClientHandler(Socket socket, Server server, ControlPanelLogic logic) {
         this.socket = socket;
         this.server = server;
         this.logic = logic;
         server.addClient(this);
-    }
 
-    public void sendMessage(String message) {
-        // Implementer logikken for å sende melding til klienten
+        try {
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(socket.getOutputStream(), true);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @Override
     public void run() {
-        try (
-                BufferedReader reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
-                PrintWriter writer = new PrintWriter(socket.getOutputStream(), true)
-        ) {
-            // Handle client communication here using reader and writer
-            System.out.println("Client connectdahdbwajdawohj");
+        try {
+            System.out.println("Client on port: " + socket.getPort() + " is connected");
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
-                System.out.println("dadwakda");
-                logic.onNodeRemoved(1);
-                System.out.println("Client: " + inputLine);
-                // Process client input and send response
+                System.out.println("Client on port " + socket.getPort() + " sent message: " + inputLine);
+                server.broadcastMessage("hello clients");
                 writer.println("Server: " + inputLine);
             }
         } catch (IOException e) {
             e.printStackTrace();
         } finally {
             try {
-                socket.close(); // Close the socket when done
+                socket.close();
             } catch (IOException e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    public void sendMessage(String message) {
+        System.out.println("Sending message: " + message); // Debug statement
+        writer.println(message);
+        System.out.println("Message sent to client on port " + socket.getPort()); // Debug statement
     }
 }

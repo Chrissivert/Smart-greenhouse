@@ -6,18 +6,22 @@ import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
-import java.io.IOException;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.Socket;
+
+import static no.ntnu.gui.controlpanel.ControlPanelApplication.logic;
 
 /**
  * Starter class for the control panel.
  * Note: we could launch the Application class directly, but then we would have issues with the
  * debugger (JavaFX modules not found)
  */
-public class ControlPanelStarter {
+public class ControlPanelStarter implements CommunicationChannel {
     private final boolean fake;
     private Socket socket;
+
+    private PrintWriter writer;
+    private BufferedReader reader;
 
 
     public ControlPanelStarter(boolean fake) {
@@ -45,6 +49,7 @@ public class ControlPanelStarter {
         ControlPanelLogic logic = new ControlPanelLogic();
         CommunicationChannel channel = initiateCommunication(logic, fake);
         ControlPanelApplication.startApp(logic, channel);
+        startListening();
     }
 
     private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
@@ -71,15 +76,16 @@ public class ControlPanelStarter {
 
 
     private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
-        // TODO - here you initiate TCP/UDP socket communication
         try {
-            Socket socket = new Socket("ntnu.no",80);
+            socket = new Socket("localhost", 1234);
+            reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
+            writer = new PrintWriter(socket.getOutputStream(), true);
+            sendMessageToServer("Initial message");
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
+            return null;
         }
-        // You communication class(es) may want to get reference to the logic and call necessary
-        // logic methods when events happen (for example, when sensor data is received)
-        return null;
+        return this; // Return 'this' as the communication channel
     }
 
     private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
@@ -105,5 +111,31 @@ public class ControlPanelStarter {
         } catch (IOException e) {
             e.printStackTrace(); // Handle any errors when closing the socket
         }
+    }
+
+    @Override
+    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
+        String state = isOn ? "ON" : "off";
+        String message = "actuator " + state + " " + type + " " + actuatorId + " " + nodeId;
+        sendMessageToServer(message);
+    }
+
+    private void startListening() {
+        new Thread(() -> {
+            try {
+                String serverMessage;
+                while ((serverMessage = reader.readLine()) != null) {
+                    System.out.println("Received from server: " + serverMessage);
+                    // Process the message received from the server as needed
+                }
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }).start();
+    }
+
+    @Override
+    public boolean open() {
+        return socket.isConnected();
     }
 }

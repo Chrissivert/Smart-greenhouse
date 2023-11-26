@@ -72,16 +72,23 @@ public class Client implements CommunicationChannel {
     }
 
 
+//    public void spawnNode(String specification, int delay) {
+//        //Dummy method to simulate node addition
+//        SensorActuatorNodeInfo nodeInfo = createSensorNodeInfoFrom(specification);
+//        Timer timer = new Timer();
+//        timer.schedule(new TimerTask() {
+//            @Override
+//            public void run() {logic.onNodeAdded(nodeInfo);
+//                int nodeId = nodeInfo.getId();
+//                broadcastNodeAdded(nodeId);
+////                logic.onNodeRemoved(nodeId);
+//            }
+//        }, delay * 1000L);
+//    }
+
 
     private void broadcastNodeAdded(int nodeId) {
         String command = "NodeAdded" + " " + nodeId; // Custom format for node addition
-        out.println(command); // Sending the message to the server
-    }
-
-
-    private void broadcastNodeRemoved(int nodeId) {
-        // Similar to broadcastNodeAdded, create a method to send node removal info
-        String command = "NodeRemoved" + " " + nodeId; // Custom format for node removal
         out.println(command); // Sending the message to the server
     }
 

@@ -51,7 +51,7 @@ public class GreenhouseSimulator {
     public void start() {
         initiateCommunication();
         for (SensorActuatorNode node : nodes.values()) {
-            System.out.println("daokdwaldadmmwa" + nodes.get(2).getId());
+            System.out.println("communicaten has been initaited" + nodes.get(2).getId());
             node.start();
         }
         for (PeriodicSwitch periodicSwitch : periodicSwitches) {
@@ -70,10 +70,6 @@ public class GreenhouseSimulator {
     }
 
     public void addNode(SensorActuatorNode newNode) {
-        System.out.println("Added a new NODEEEE");
-        System.out.println(newNode.getId());
-        System.out.println(newNode.getSensors());
-        System.out.println(nodes.values());
         System.out.println("WHY not all nodes closed?");
         nodes.put(newNode.getId(), newNode);
     }

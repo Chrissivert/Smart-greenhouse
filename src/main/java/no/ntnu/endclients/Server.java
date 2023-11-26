@@ -1,20 +1,23 @@
 package no.ntnu.endclients;
 
+import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
+import java.util.ArrayList;
+import java.util.List;
 
-public class Server {
+public class Server implements CommunicationChannel {
 
-    private ControlPanelLogic logic; // Not static anymore
+    private ControlPanelLogic logic;
+
+    private List<ClientHandler> clients = new ArrayList<>();
 
     public Server() {
-        // You can initialize logic here if needed
     }
 
-    // Setter method to set the logic instance
     public void setLogic(ControlPanelLogic logic) {
         this.logic = logic;
     }
@@ -23,8 +26,8 @@ public class Server {
         int port = 1234;
         Server server = new Server();
 
-        ControlPanelLogic logic = new ControlPanelLogic(); // Instantiate ControlPanelLogic
-        server.setLogic(logic); // Set the logic instance in the server
+        ControlPanelLogic logic = new ControlPanelLogic();
+        server.setLogic(logic);
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is listening on port " + port);
@@ -37,25 +40,32 @@ public class Server {
             }
         }
     }
-    public void addClient(ClientHandler clientHandler) {
 
+    public synchronized void addClient(ClientHandler client) {
+        clients.add(client);
     }
 
+    public synchronized void removeClient(ClientHandler client) {
+        clients.remove(client);
+    }
+
+    public void broadcastMessage(String message) {
+        for (ClientHandler client : clients) {
+//            System.out.println("Sending message to client on port " + client);
+//            sendActuatorChange(1, 1, true, "heater");
+            client.sendMessage(message);
+        }
+    }
+
+    @Override
+    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
+        String state = isOn ? "ON" : "off";
+        String message = "actuator " + state + " " + type + " " + actuatorId + " " + nodeId;
+       // broadcastMessage(message);
+    }
+
+    @Override
+    public boolean open() {
+        return false;
+    }
 }
-
-//    private void broadcast(String message) {
-//        for (PrintWriter writer : clientWriters) {
-//            writer.println(message);
-//        }
-//    }
-
-//    public void startServer() {
-//        // Code to start the server socket and accept incoming connections
-//        // For each incoming connection, create a ClientHandler instance
-//    }
-
-
-//    public void addClient(ClientHandler clientHandler) {
-//
-//    }
-
