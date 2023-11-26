@@ -1,13 +1,10 @@
 package no.ntnu.gui.greenhouse;
 
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.ScrollPane;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import javafx.scene.control.Button;
 import no.ntnu.gui.factory.TextFieldFactory;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
@@ -59,6 +56,10 @@ public class AddNodeWindow extends Stage {
         return Integer.parseInt(temperatureField.getText());
     }
 
+    public boolean isTemperatureValid() {
+        return temperatureField.getText().isEmpty();
+    }
+
     public int getHumidity() {
         return Integer.parseInt(humidityField.getText());
     }
@@ -76,7 +77,20 @@ public class AddNodeWindow extends Stage {
     }
 
 
-    private void createNodeFromFields(GreenhouseSimulator simulator) {
+    private void createNodeFromFields() {
+
+        if (temperatureField.getText().isEmpty() || humidityField.getText().isEmpty() || windowsField.getText().isEmpty() || fansField.getText().isEmpty() || heatersField.getText().isEmpty()) {
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Warning");
+            alert.setHeaderText("Empty Fields");
+            alert.setContentText("Please fill in all fields or provide valid values.");
+            alert.showAndWait();
+        } else {
+            createNewNode();
+        }
+    }
+
+    private void createNewNode() {
         SensorActuatorNode newNode = DeviceFactory.createNode(getTemperature(), getHumidity(), getMyWindows(), getFans(), getHeaters());
         simulator.addNode(newNode);
         newNode.start();
@@ -98,7 +112,7 @@ public class AddNodeWindow extends Stage {
     private HBox createNodeButtons() {
         HBox root = new HBox();
         Button createNodeButton = new Button("Create Node");
-        createNodeButton.setOnAction(e -> createNodeFromFields(simulator));
+        createNodeButton.setOnAction(e -> createNodeFromFields());
 
         Button goBackButton = new Button("Go Back");
         goBackButton.setOnAction(e -> close());
