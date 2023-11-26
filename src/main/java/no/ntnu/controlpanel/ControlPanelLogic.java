@@ -95,19 +95,6 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         }
     }
 
-    public void checkWhatChanged(String serverMessage) {
-        if (serverMessage.startsWith("NodeAdded")) {
-            int nodeId = extractNodeId(serverMessage);
-        } else if (serverMessage.startsWith("Actuator")) {
-            String[] parts = serverMessage.split(" ");
-            int actuatorId = Integer.parseInt(parts[1]);
-            boolean isOn = parts[5].equals("ON");
-
-            int nodeId = extractNodeId(serverMessage);
-            System.out.println("Actuator " + actuatorId + " on node " + nodeId + " is " + (isOn ? "ON" : "OFF"));
-        }
-    }
-
 
     public int extractNodeId(String serverMessage) {
         String[] parts = serverMessage.split(" ");

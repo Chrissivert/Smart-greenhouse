@@ -2,8 +2,6 @@ package no.ntnu.endclients;
 
 import no.ntnu.controlpanel.ControlPanelLogic;
 
-import no.ntnu.controlpanel.ControlPanelLogic;
-
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;

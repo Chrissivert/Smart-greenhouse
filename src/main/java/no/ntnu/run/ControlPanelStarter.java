@@ -2,7 +2,7 @@ package no.ntnu.run;
 
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.endclients.Client;
+import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
@@ -50,37 +50,11 @@ public class ControlPanelStarter {
     private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
         CommunicationChannel channel;
         if (fake) {
-            channel = null;
+            channel = initiateFakeSpawner(logic);
         } else {
-            channel = initiateEmptySpawner(logic);
+            channel = initiateSocketCommunication(logic);
         }
         return channel;
-    }
-
-    private void createSocketCommunication() {
-        try {
-            socket = new Socket("localhost", 1234); // Use the correct server address
-            System.out.println("Connected to server");
-        } catch (IOException e) {
-            System.out.println("Failed to connect to server: " + e.getMessage());
-            e.printStackTrace();
-        }
-    }
-
-    private CommunicationChannel initiateEmptySpawner(ControlPanelLogic logic) {
-        createSocketCommunication();
-        Client spawner = new Client(logic);
-        logic.setCommunicationChannel(spawner);
-        spawnFakeStuff(spawner);
-
-        return new Client(logic);
-    }
-
-    private void spawnFakeStuff(Client a) {
-        a.spawnNode("4;3_window", 2);
-        a.spawnNode("2;3_heater", 2);
-        a.spawnNode("1", 3);
-        a.spawnNode("1", 4);
     }
 
     public void sendMessageToServer(String message) {
@@ -94,6 +68,32 @@ public class ControlPanelStarter {
         }
     }
 
+
+
+    private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
+        // TODO - here you initiate TCP/UDP socket communication
+        try {
+            Socket socket = new Socket("ntnu.no",80);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // You communication class(es) may want to get reference to the logic and call necessary
+        // logic methods when events happen (for example, when sensor data is received)
+        return null;
+    }
+
+    private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
+        FakeCommunicationChannel spawner = new FakeCommunicationChannel(logic);
+        logic.setCommunicationChannel(spawner);
+        spawner.spawnNode("4;3_window", 2);
+        spawner.spawnNode("1", 3);
+        spawner.spawnNode("1", 4);
+        spawner.advertiseSensorData("4;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %", 4);
+        spawner.spawnNode("8;2_heater", 5);
+        spawner.advertiseActuatorState(4, 1, true, 5);
+        spawner.advertiseActuatorState(4,  1, false, 6);
+        return spawner;
+    }
 
     private void stopCommunication() {
         // Close the socket connection when done
