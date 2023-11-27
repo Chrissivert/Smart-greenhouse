@@ -39,7 +39,8 @@ public class ClientHandler implements Runnable {
             while ((inputLine = reader.readLine()) != null) {
                 System.out.println("Client on port " + socket.getPort() + " sent message: " + inputLine);
                 server.broadcastMessage("hello clients");
-                writer.println("Server: " + inputLine);
+                logic.setCommunicationChannel(logic.getCommunicationChannel());
+                writer.println(inputLine);
             }
         } catch (IOException e) {
             e.printStackTrace();

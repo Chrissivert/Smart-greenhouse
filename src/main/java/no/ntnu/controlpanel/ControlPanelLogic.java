@@ -100,4 +100,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         return Integer.parseInt(parts[1]);
     }
 
+    public CommunicationChannel getCommunicationChannel() {
+        return communicationChannel;
+    }
 }

@@ -1,9 +1,13 @@
 package no.ntnu.run;
 
+import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.FakeCommunicationChannel;
+import no.ntnu.controlpanel.RealCommunicationChannel;
+import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
+import no.ntnu.gui.greenhouse.GreenhouseApplication;
 import no.ntnu.tools.Logger;
 
 import java.io.*;
@@ -77,7 +81,10 @@ public class ControlPanelStarter implements CommunicationChannel {
 
 
     private void addNodeCommand() {
-        System.out.println("HELLO U ARE INSIDE");
+        System.out.println(GreenhouseSimulator.nodes.size());
+//        FakeCommunicationChannel fakeCommunicationChannel = new FakeCommunicationChannel(logic);
+//        logic.setCommunicationChannel(fakeCommunicationChannel);
+//        fakeCommunicationChannel.spawnNode("4;3_window", 2);
 //        spawnNode("5;3_window", 2); // Create a node with ID 5 and 3 window actuators after a 2-second delay
     }
 
@@ -105,6 +112,10 @@ public class ControlPanelStarter implements CommunicationChannel {
         return channel;
     }
 
+    private CommunicationChannel getCommunicationChannel() {
+        return logic.getCommunicationChannel();
+    }
+
     public void sendMessageToServer(String message) {
         try {
             if (writer != null && socket != null && socket.isConnected()) {
@@ -127,6 +138,13 @@ public class ControlPanelStarter implements CommunicationChannel {
 
 
     private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
+        RealCommunicationChannel spawner = null;
+        try {
+            spawner = new RealCommunicationChannel("localhost", 1234);
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        logic.setCommunicationChannel(spawner);
         try {
             socket = new Socket("localhost", 1234);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -137,7 +155,7 @@ public class ControlPanelStarter implements CommunicationChannel {
             e.printStackTrace();
             return null;
         }
-        return this;
+        return spawner;
     }
 
     private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {

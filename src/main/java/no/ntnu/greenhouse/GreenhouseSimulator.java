@@ -13,7 +13,7 @@ import no.ntnu.tools.Logger;
  */
 public class GreenhouseSimulator {
     private static final int PORT_NUMBER = 1234;
-    public final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
+    public static final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
 
     private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
     private final boolean fake;
