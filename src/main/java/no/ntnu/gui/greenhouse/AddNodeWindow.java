@@ -148,8 +148,8 @@ public class AddNodeWindow extends Stage {
         return createNodeButton;
     }
 
-    public Button createGetStateButton() {
-        return new Button("Get State");
+    public Button createButtonWithText(String text) {
+        return new Button(text);
     }
 
     public int getParsedNodeChoice() {
@@ -174,7 +174,7 @@ public class AddNodeWindow extends Stage {
     public void createGetActuatorStage() {
         VBox vBox = new VBox();
         actuatorId = createCustomTextField("Enter actuatorId", 3, 200);
-        Button getStateButton = createGetStateButton();
+        Button getStateButton = createButtonWithText("Get State");
 
         Label actuatorStateLabel = new Label("Actuator State: ");
         vBox.getChildren().addAll(createAmountOfNodesChoiceBox(), actuatorId, getStateButton, actuatorStateLabel);

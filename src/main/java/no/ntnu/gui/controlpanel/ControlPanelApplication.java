@@ -85,7 +85,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     private static Label createEmptyContent() {
         Label l = new Label("Waiting for node data...");
         l.setAlignment(Pos.CENTER);
-        GreenhouseSimulator simulator = new GreenhouseSimulator(true);
         return l;
     }
 
@@ -93,15 +92,12 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     @Override
     public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
         Platform.runLater(() -> addNodeTab(nodeInfo));
-        System.out.println("hello");
     }
 
     @Override
     public void onNodeRemoved(int nodeId) {
-        System.out.println("Inside on NodeRemoved ConrolApplication");
         Tab nodeTab = nodeTabs.get(nodeId);
         if (nodeTab != null) {
-            System.out.println("2Inside on NodeRemoved ConrolApplication");
             Platform.runLater(() -> {
                 removeNodeTab(nodeId, nodeTab);
                 forgetNodeInfo(nodeId);

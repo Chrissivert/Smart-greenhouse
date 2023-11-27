@@ -3,12 +3,9 @@ package no.ntnu.controlpanel;
 import static no.ntnu.tools.Parser.parseDoubleOrError;
 import static no.ntnu.tools.Parser.parseIntegerOrError;
 
-import java.util.LinkedList;
-import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.SensorReading;
+import java.util.*;
+
+import no.ntnu.greenhouse.*;
 import no.ntnu.tools.Logger;
 
 /**
@@ -79,11 +76,17 @@ public class FakeCommunicationChannel implements CommunicationChannel {
      */
     public void spawnNode(String specification, int delay) {
         SensorActuatorNodeInfo nodeInfo = createSensorNodeInfoFrom(specification);
+        GreenhouseSimulator simulator = new GreenhouseSimulator(true);
+        SensorActuatorNode createNode = DeviceFactory.createNode(1, 2, 1, 0, 0);
+        simulator.nodes.put(createNode.getId(), createNode);
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
             @Override
             public void run() {
                 logic.onNodeAdded(nodeInfo);
+//                System.out.println("node addewkdnawdawdawdd");
+//                logic.onActuatorStateChanged(4,2,true);
+//                System.out.println("d");
             }
         }, delay * 1000L);
     }

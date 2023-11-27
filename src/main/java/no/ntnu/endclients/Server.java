@@ -50,10 +50,8 @@ public class Server implements CommunicationChannel {
     }
 
     public void broadcastMessage(String message) {
-        for (ClientHandler client : clients) {
-//            System.out.println("Sending message to client on port " + client);
-//            sendActuatorChange(1, 1, true, "heater");
-            client.sendMessage(message);
+        for (ClientHandler clientHandler : clients) {
+            clientHandler.sendMessage(message);
         }
     }
 

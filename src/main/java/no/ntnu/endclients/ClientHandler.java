@@ -53,8 +53,8 @@ public class ClientHandler implements Runnable {
     }
 
     public void sendMessage(String message) {
-        System.out.println("Sending message: " + message); // Debug statement
+        System.out.println("Sending message: " + message);
         writer.println(message);
-        System.out.println("Message sent to client on port " + socket.getPort()); // Debug statement
+        System.out.println("Message sent to client on port " + socket.getPort());
     }
 }

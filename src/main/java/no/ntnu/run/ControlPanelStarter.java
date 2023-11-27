@@ -8,6 +8,7 @@ import no.ntnu.tools.Logger;
 
 import java.io.*;
 import java.net.Socket;
+import java.util.Scanner;
 
 import static no.ntnu.gui.controlpanel.ControlPanelApplication.logic;
 
@@ -43,12 +44,54 @@ public class ControlPanelStarter implements CommunicationChannel {
         }
         ControlPanelStarter starter = new ControlPanelStarter(fake);
         starter.start();
+        starter.listenForUserInput();
+    }
+
+    public void listenForUserInput() {
+        Scanner scanner = new Scanner(System.in);
+        while (true) {
+            System.out.println("Enter a command:");
+            String userInput = scanner.nextLine();
+            sendMessageToServer(userInput);
+
+            System.out.println("Command to execute: " + userInput);
+
+            if ("exit".equalsIgnoreCase(userInput.trim())) {
+                break;
+            }
+
+            switch (userInput) {
+                case "addNode":
+                    addNodeCommand();
+                    break;
+                case "advertiseSensor":
+                    advertiseSensorCommand();
+                    break;
+                default:
+                    System.out.println("Invalid command. Please enter a valid command.");
+                    break;
+            }
+        }
+        scanner.close();
+    }
+
+
+    private void addNodeCommand() {
+        System.out.println("HELLO U ARE INSIDE");
+//        spawnNode("5;3_window", 2); // Create a node with ID 5 and 3 window actuators after a 2-second delay
+    }
+
+    // Method to handle 'advertiseSensor' command
+    private void advertiseSensorCommand() {
+       // advertiseSensorData("5;temperature=25.5 °C,humidity=60 %", 3); // Advertise sensor data after a 3-second delay
     }
 
     private void start() {
         ControlPanelLogic logic = new ControlPanelLogic();
         CommunicationChannel channel = initiateCommunication(logic, fake);
-        ControlPanelApplication.startApp(logic, channel);
+        new Thread(() -> {
+            ControlPanelApplication.startApp(logic, channel);
+        }).start();
         startListening();
     }
 
@@ -63,12 +106,20 @@ public class ControlPanelStarter implements CommunicationChannel {
     }
 
     public void sendMessageToServer(String message) {
-        try (OutputStream out = socket.getOutputStream()) {
-            byte[] messageBytes = message.getBytes();
-            out.write(messageBytes);
-            out.flush();
-            System.out.println("Sent message to server: " + message);
-        } catch (IOException e) {
+        try {
+            if (writer != null && socket != null && socket.isConnected()) {
+                writer.println(message);
+                writer.flush();
+                System.out.println("Sent message to server: " + message);
+
+                if (message.equals("stop")) {
+                    stopCommunication();
+                }
+            } else {
+                System.out.println("Socket or PrintWriter is not available or connected.");
+            }
+        } catch (Exception e) {
+            System.err.println("Error sending message to server: " + e.getMessage());
             e.printStackTrace();
         }
     }
@@ -82,10 +133,11 @@ public class ControlPanelStarter implements CommunicationChannel {
             writer = new PrintWriter(socket.getOutputStream(), true);
             sendMessageToServer("Initial message");
         } catch (IOException e) {
+            System.err.println("Error establishing socket connection: " + e.getMessage());
             e.printStackTrace();
             return null;
         }
-        return this; // Return 'this' as the communication channel
+        return this;
     }
 
     private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
@@ -123,10 +175,15 @@ public class ControlPanelStarter implements CommunicationChannel {
     private void startListening() {
         new Thread(() -> {
             try {
-                String serverMessage;
-                while ((serverMessage = reader.readLine()) != null) {
-                    System.out.println("Received from server: " + serverMessage);
-                    // Process the message received from the server as needed
+                while (true) {
+                    if (socket != null && socket.isConnected()) {
+                        String receivedMessage = reader.readLine();
+                        if (receivedMessage != null) {
+                            System.out.println("Received from server: " + receivedMessage);
+                        }
+                    } else {
+                        break;
+                    }
                 }
             } catch (IOException e) {
                 e.printStackTrace();
