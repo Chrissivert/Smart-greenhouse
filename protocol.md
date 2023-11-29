@@ -15,6 +15,11 @@ distributed application.
   actuator nodes and sends control commands to them.
 * Graphical User Interface (GUI) - A graphical interface where users of the system can interact with
   it.
+* Server - a computer connected to the Internet which is used to relay messages between sensor and
+  actuator nodes
+* ControlPanelClient - a GUI which is used to interact with the system
+* GreenHouseClient - a node in the greenhouse containing sensors and actuators
+
 
 ## The underlying transport protocol
 
@@ -35,15 +40,24 @@ are usually available and not reserved for specific services. This also ensures 
 
 ## The architecture
 
-TODO - show the general architecture of your network. Which part is a server? Who are clients? 
-Do you have one or several servers? Perhaps include a picture here. 
+The architecture of the system is ControlPanelClient-Server-GreenHouseClient. The GreenHouseClient is responsible for 
+simulating the greenhouse and showing the data from the sensors and actuators. The ControlPanelClient(s) are the GUI(s) where
+the user(s) can interact with the system (AKA the greenhouse). The Server is the middleman between the ControlPanelClients and
+sends information from the ControlPanelClients to the GreenHouseClients and vice versa. There can be multiple ControlPanelClients
+and when a change is made in one of them, the Server sends the information to the GreenHouseClient and other ControlPanelClients.
+This means the system is synchronized between all clients. 
 
+![Alt text](images/NetworkArchitecture(1).png)
 
 ## The flow of information and events
 
 TODO - describe what each network node does and when. Some periodic events? Some reaction on 
 incoming packets? Perhaps split into several subsections, where each subsection describes one 
 node type (For example: one subsection for sensor/actuator nodes, one for control panel nodes).
+
+There are no periodic events. Once a change is made in either one of the ControlPanelClients (actuator state changed)
+or the GreenHouseClient (sensor value changed), the Server sends the information to the other clients.
+
 
 ## Connection and state
 
@@ -63,6 +77,9 @@ message type in your protocol.
 ### Error messages
 
 TODO - describe the possible error messages that nodes can send in your system.
+
+Error messages:
+* `ERROR: <error message>` - sent by the server to the client when an error occurs
 
 ## An example scenario
 
