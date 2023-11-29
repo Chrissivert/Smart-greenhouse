@@ -5,6 +5,7 @@ import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.controlpanel.RealCommunicationChannel;
+import no.ntnu.endclients.Server;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.gui.greenhouse.GreenhouseApplication;
@@ -67,6 +68,7 @@ public class ControlPanelStarter implements CommunicationChannel {
             switch (userInput) {
                 case "addNode":
                     addNodeCommand();
+                    logic.onActuatorStateChanged(1, 2, true);
                     break;
                 case "advertiseSensor":
                     advertiseSensorCommand();
@@ -82,13 +84,11 @@ public class ControlPanelStarter implements CommunicationChannel {
 
     private void addNodeCommand() {
         System.out.println(GreenhouseSimulator.nodes.size());
-//        FakeCommunicationChannel fakeCommunicationChannel = new FakeCommunicationChannel(logic);
-//        logic.setCommunicationChannel(fakeCommunicationChannel);
-//        fakeCommunicationChannel.spawnNode("4;3_window", 2);
-//        spawnNode("5;3_window", 2); // Create a node with ID 5 and 3 window actuators after a 2-second delay
+        FakeCommunicationChannel fakeCommunicationChannel = new FakeCommunicationChannel(logic);
+        logic.setCommunicationChannel(fakeCommunicationChannel);
+        fakeCommunicationChannel.spawnNode("4;3_window", 2);
     }
 
-    // Method to handle 'advertiseSensor' command
     private void advertiseSensorCommand() {
        // advertiseSensorData("5;temperature=25.5 °C,humidity=60 %", 3); // Advertise sensor data after a 3-second delay
     }
@@ -122,6 +122,7 @@ public class ControlPanelStarter implements CommunicationChannel {
                 writer.println(message);
                 writer.flush();
                 System.out.println("Sent message to server: " + message);
+                sendActuatorChange(1, 2, true, "window");
 
                 if (message.equals("stop")) {
                     stopCommunication();
@@ -145,6 +146,7 @@ public class ControlPanelStarter implements CommunicationChannel {
             throw new RuntimeException(e);
         }
         logic.setCommunicationChannel(spawner);
+        //maybe get server to know of logic here
         try {
             socket = new Socket("localhost", 1234);
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
@@ -187,7 +189,7 @@ public class ControlPanelStarter implements CommunicationChannel {
     public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
         String state = isOn ? "ON" : "off";
         String message = "actuator " + state + " " + type + " " + actuatorId + " " + nodeId;
-        sendMessageToServer(message);
+        System.out.println(message);
     }
 
     private void startListening() {

@@ -56,10 +56,6 @@ public class AddNodeWindow extends Stage {
         return Integer.parseInt(temperatureField.getText());
     }
 
-    public boolean isTemperatureValid() {
-        return temperatureField.getText().isEmpty();
-    }
-
     public int getHumidity() {
         return Integer.parseInt(humidityField.getText());
     }

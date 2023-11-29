@@ -12,7 +12,7 @@ import no.ntnu.tools.Logger;
  * Application entrypoint - a simulator for a greenhouse.
  */
 public class GreenhouseSimulator {
-    private static final int PORT_NUMBER = 1234;
+
     public static final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
 
     private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
@@ -51,7 +51,6 @@ public class GreenhouseSimulator {
     public void start() {
         initiateCommunication();
         for (SensorActuatorNode node : nodes.values()) {
-            System.out.println("communicaten has been initaited" + nodes.get(2).getId());
             node.start();
         }
         for (PeriodicSwitch periodicSwitch : periodicSwitches) {
@@ -64,25 +63,12 @@ public class GreenhouseSimulator {
     private void initiateCommunication() {
         if (fake) {
             initiateFakePeriodicSwitches();
-        } else {
-            initiateRealCommunication();
         }
     }
 
     public void addNode(SensorActuatorNode newNode) {
-        System.out.println("WHY not all nodes closed?");
         nodes.put(newNode.getId(), newNode);
     }
-
-    private ServerSocket initiateRealCommunication() {
-            ServerSocket listeningSocket = null;
-            try {
-                listeningSocket = new ServerSocket(PORT_NUMBER);
-            } catch (IOException e) {
-                System.err.println("Could not open server socket: " + e.getMessage());
-            }
-            return listeningSocket;
-        }
 
     private void initiateFakePeriodicSwitches() {
         periodicSwitches.add(new PeriodicSwitch("Window DJ", nodes.get(1), 2, 20000));
@@ -98,10 +84,6 @@ public class GreenhouseSimulator {
             System.out.println("STOPPING NODE " + node.getId());
             node.stop();
         }
-    }
-
-    public List<Integer> getAmountOfNodes() {
-        return new ArrayList<>(nodes.keySet());
     }
 
     private void stopCommunication() {

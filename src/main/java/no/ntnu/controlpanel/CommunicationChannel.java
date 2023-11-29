@@ -13,6 +13,7 @@ public interface CommunicationChannel {
      * @param actuatorId Node-wide unique ID of the actuator
      * @param isOn       When true, actuator must be turned on; off when false.
      */
+
     void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type);
 
     /**

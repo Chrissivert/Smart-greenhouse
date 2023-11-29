@@ -33,14 +33,26 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
+        if (logic == null) {
+            System.err.println("Logic instance is null in ClientHandler");
+            return;
+        }
         try {
             System.out.println("Client on port: " + socket.getPort() + " is connected");
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
                 System.out.println("Client on port " + socket.getPort() + " sent message: " + inputLine);
                 server.broadcastMessage("hello clients");
-                logic.setCommunicationChannel(logic.getCommunicationChannel());
                 writer.println(inputLine);
+                if (inputLine.equals("removeClient")) {
+                    server.removeClient(this);
+                    break;
+                }
+                if(inputLine.equals("changeNode")){
+                    logic.onActuatorStateChanged(4,1,true);
+                    logic.onActuatorStateChanged(4,2,true);
+                    logic.onActuatorStateChanged(4,3,true);
+                }
             }
         } catch (IOException e) {
             e.printStackTrace();

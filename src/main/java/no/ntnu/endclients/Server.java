@@ -2,6 +2,8 @@ package no.ntnu.endclients;
 
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
+import no.ntnu.gui.controlpanel.ControlPanelApplication;
+import no.ntnu.run.ControlPanelStarter;
 
 import java.io.*;
 import java.net.ServerSocket;
@@ -11,33 +13,29 @@ import java.util.List;
 
 public class Server implements CommunicationChannel {
 
-    private ControlPanelLogic logic;
-
     private List<ClientHandler> clients = new ArrayList<>();
 
+    private ControlPanelLogic logic;
+
     public Server() {
+
     }
 
-    public void setLogic(ControlPanelLogic logic) {
-        this.logic = logic;
-    }
-
-    public static void main(String[] args) throws IOException {
+    public void startServer() {
         int port = 1234;
-        Server server = new Server();
-
-        ControlPanelLogic logic = new ControlPanelLogic();
-        server.setLogic(logic);
+        ControlPanelApplication.logic = logic;
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is listening on port " + port);
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
-                ClientHandler clientHandler = new ClientHandler(socket, server, logic);
-                Thread thread = new Thread(clientHandler); // Start a new thread for this client
+                ClientHandler clientHandler = new ClientHandler(socket, this, logic);
+                Thread thread = new Thread(clientHandler);
                 thread.start();
             }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 

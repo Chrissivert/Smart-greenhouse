@@ -41,7 +41,6 @@ public class Client implements CommunicationChannel {
                         // Process the server message and update node information locally
                         System.out.println("Received update from server: " + serverMessage);
                         int nodeId = logic.extractNodeId(serverMessage);
-                        logic.onActuatorStateChanged(nodeId, 1, true);
                         // Update your nodes based on the received message
                         // Example: handleNodeUpdate(serverMessage);
                     }
