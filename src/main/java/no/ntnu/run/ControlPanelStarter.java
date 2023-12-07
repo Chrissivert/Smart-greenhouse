@@ -1,14 +1,10 @@
 package no.ntnu.run;
 
-import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.FakeCommunicationChannel;
 import no.ntnu.controlpanel.RealCommunicationChannel;
-import no.ntnu.endclients.Server;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
-import no.ntnu.gui.greenhouse.GreenhouseApplication;
 import no.ntnu.tools.Logger;
 
 import java.io.*;
@@ -41,7 +37,7 @@ public class ControlPanelStarter implements CommunicationChannel {
      *             emulate fake events, when it is either something else or not present,
      *             use real socket communication.
      */
-    public static void main(String[] args) {
+    public static void main(String[] args) throws IOException {
         boolean fake = false;
         if (args.length == 1 && "fake".equals(args[0])) {
             fake = true;
@@ -52,7 +48,7 @@ public class ControlPanelStarter implements CommunicationChannel {
         starter.listenForUserInput();
     }
 
-    public void listenForUserInput() {
+    public void listenForUserInput() throws IOException {
         Scanner scanner = new Scanner(System.in);
         while (true) {
             System.out.println("Enter a command:");
@@ -86,11 +82,11 @@ public class ControlPanelStarter implements CommunicationChannel {
     }
 
 
-    private void addNodeCommand() {
+    private void addNodeCommand() throws IOException {
         System.out.println(GreenhouseSimulator.nodes.size());
-        FakeCommunicationChannel fakeCommunicationChannel = new FakeCommunicationChannel(logic);
-        logic.setCommunicationChannel(fakeCommunicationChannel);
-        fakeCommunicationChannel.spawnNode("4;3_window", 2);
+        RealCommunicationChannel channel = new RealCommunicationChannel(logic, "localhost", 1234);
+        logic.setCommunicationChannel(channel);
+        channel.spawnNode("4;3_window", 2);
     }
 
     private void advertiseSensorCommand() {
@@ -108,10 +104,12 @@ public class ControlPanelStarter implements CommunicationChannel {
 
     private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
         CommunicationChannel channel;
-        if (fake) {
-            channel = initiateFakeSpawner(logic);
-        } else {
+        if (!fake) {
             channel = initiateSocketCommunication(logic);
+        } else {
+            channel = getCommunicationChannel();
+//            channel = initiateFakeSpawner(logic);
+            System.out.println("Fake communication not supported");
         }
         return channel;
     }
@@ -163,18 +161,18 @@ public class ControlPanelStarter implements CommunicationChannel {
         return spawner;
     }
 
-    private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
-        FakeCommunicationChannel spawner = new FakeCommunicationChannel(logic);
-        logic.setCommunicationChannel(spawner);
-        spawner.spawnNode("4;3_window", 2);
-        spawner.spawnNode("1", 3);
-        spawner.spawnNode("1", 4);
-        spawner.advertiseSensorData("4;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %", 4);
-        spawner.spawnNode("8;2_heater", 5);
-        spawner.advertiseActuatorState(4, 1, true, 5);
-        spawner.advertiseActuatorState(4,  1, false, 6);
-        return spawner;
-    }
+//    private CommunicationChannel initiateFakeSpawner(ControlPanelLogic logic) {
+//        FakeCommunicationChannel spawner = new FakeCommunicationChannel(logic);
+//        logic.setCommunicationChannel(spawner);
+//        spawner.spawnNode("4;3_window", 2);
+//        spawner.spawnNode("1", 3);
+//        spawner.spawnNode("1", 4);
+//        spawner.advertiseSensorData("4;temperature=27.4 °C,temperature=26.8 °C,humidity=80 %", 4);
+//        spawner.spawnNode("8;2_heater", 5);
+//        spawner.advertiseActuatorState(4, 1, true, 5);
+//        spawner.advertiseActuatorState(4,  1, false, 6);
+//        return spawner;
+//    }
 
     private void stopCommunication() {
         // Close the socket connection when done
