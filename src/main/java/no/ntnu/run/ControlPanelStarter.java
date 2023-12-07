@@ -70,6 +70,10 @@ public class ControlPanelStarter implements CommunicationChannel {
                     addNodeCommand();
                     logic.onActuatorStateChanged(1, 2, true);
                     break;
+                case "b":
+                    logic.onActuatorStateChanged(4, 2, true);
+                    break;
+
                 case "advertiseSensor":
                     advertiseSensorCommand();
                     break;
@@ -122,7 +126,6 @@ public class ControlPanelStarter implements CommunicationChannel {
                 writer.println(message);
                 writer.flush();
                 System.out.println("Sent message to server: " + message);
-                sendActuatorChange(1, 2, true, "window");
 
                 if (message.equals("stop")) {
                     stopCommunication();
@@ -186,9 +189,9 @@ public class ControlPanelStarter implements CommunicationChannel {
     }
 
     @Override
-    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
+    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn) {
         String state = isOn ? "ON" : "off";
-        String message = "actuator " + state + " " + type + " " + actuatorId + " " + nodeId;
+        String message = "actuator " + state + " " + actuatorId + " " + nodeId;
         System.out.println(message);
     }
 

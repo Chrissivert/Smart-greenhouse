@@ -1,4 +1,4 @@
-package no.ntnu.endclients;
+package no.ntnu.run;
 
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.endclients.Server;

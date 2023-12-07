@@ -182,7 +182,7 @@ public class FakeCommunicationChannel implements CommunicationChannel {
     }
 
     @Override
-    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String Type) {
+    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn) {
         String state = isOn ? "ON" : "off";
         Logger.info("Sending command to greenhouse: turn " + state + " actuator"
                 + "[" + actuatorId + "] on node " + nodeId);

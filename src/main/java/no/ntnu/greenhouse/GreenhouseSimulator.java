@@ -42,6 +42,7 @@ public class GreenhouseSimulator {
     public void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
         SensorActuatorNode node = DeviceFactory.createNode(
                 temperature, humidity, windows, fans, heaters);
+        System.out.println("Created node " + node.getId());
         nodes.put(node.getId(), node);
     }
 

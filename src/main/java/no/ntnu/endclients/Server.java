@@ -2,6 +2,7 @@ package no.ntnu.endclients;
 
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
+import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.run.ControlPanelStarter;
 
@@ -11,26 +12,19 @@ import java.net.Socket;
 import java.util.ArrayList;
 import java.util.List;
 
-public class Server implements CommunicationChannel {
+public class Server {
 
     private List<ClientHandler> clients = new ArrayList<>();
 
-    private ControlPanelLogic logic;
-
-    public Server() {
-
-    }
-
     public void startServer() {
         int port = 1234;
-        ControlPanelApplication.logic = logic;
 
         try (ServerSocket serverSocket = new ServerSocket(port)) {
             System.out.println("Server is listening on port " + port);
             while (true) {
                 Socket socket = serverSocket.accept();
                 System.out.println("New client connected");
-                ClientHandler clientHandler = new ClientHandler(socket, this, logic);
+                ClientHandler clientHandler = new ClientHandler(socket, this);
                 Thread thread = new Thread(clientHandler);
                 thread.start();
             }
@@ -51,17 +45,5 @@ public class Server implements CommunicationChannel {
         for (ClientHandler clientHandler : clients) {
             clientHandler.sendMessage(message);
         }
-    }
-
-    @Override
-    public void sendActuatorChange(int nodeId, int actuatorId, boolean isOn, String type) {
-        String state = isOn ? "ON" : "off";
-        String message = "actuator " + state + " " + type + " " + actuatorId + " " + nodeId;
-       // broadcastMessage(message);
-    }
-
-    @Override
-    public boolean open() {
-        return false;
     }
 }

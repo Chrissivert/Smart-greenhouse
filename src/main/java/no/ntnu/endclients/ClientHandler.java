@@ -11,16 +11,14 @@ import java.net.Socket;
 
 public class ClientHandler implements Runnable {
     private final Socket socket;
-    private ControlPanelLogic logic;
     private final Server server;
 
     private BufferedReader reader;
     private PrintWriter writer;
 
-    public ClientHandler(Socket socket, Server server, ControlPanelLogic logic) {
+    public ClientHandler(Socket socket, Server server) {
         this.socket = socket;
         this.server = server;
-        this.logic = logic;
         server.addClient(this);
 
         try {
@@ -33,10 +31,6 @@ public class ClientHandler implements Runnable {
 
     @Override
     public void run() {
-        if (logic == null) {
-            System.err.println("Logic instance is null in ClientHandler");
-            return;
-        }
         try {
             System.out.println("Client on port: " + socket.getPort() + " is connected");
             String inputLine;
@@ -47,11 +41,6 @@ public class ClientHandler implements Runnable {
                 if (inputLine.equals("removeClient")) {
                     server.removeClient(this);
                     break;
-                }
-                if(inputLine.equals("changeNode")){
-                    logic.onActuatorStateChanged(4,1,true);
-                    logic.onActuatorStateChanged(4,2,true);
-                    logic.onActuatorStateChanged(4,3,true);
                 }
             }
         } catch (IOException e) {
