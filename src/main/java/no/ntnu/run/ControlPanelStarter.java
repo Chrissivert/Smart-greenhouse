@@ -139,9 +139,9 @@ public class ControlPanelStarter implements CommunicationChannel {
 
 
     private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
-        RealCommunicationChannel spawner = null;
+        RealCommunicationChannel spawner;
         try {
-            spawner = new RealCommunicationChannel("localhost", 1234);
+            spawner = new RealCommunicationChannel(logic,"localhost", 1234);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
