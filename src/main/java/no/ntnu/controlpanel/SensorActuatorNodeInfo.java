@@ -10,7 +10,7 @@ import no.ntnu.greenhouse.ActuatorCollection;
 public class SensorActuatorNodeInfo {
 
     private final int nodeId;
-    private final ActuatorCollection actuators = new ActuatorCollection();
+    private ActuatorCollection actuators = new ActuatorCollection();
 
     public SensorActuatorNodeInfo(int nodeId) {
         this.nodeId = nodeId;
@@ -46,5 +46,9 @@ public class SensorActuatorNodeInfo {
      */
     public Actuator getActuator(int actuatorId) {
         return actuators.get(actuatorId);
+    }
+
+    public void setActuatorList(ActuatorCollection actuatorList) {
+        actuators = actuatorList;
     }
 }

@@ -21,7 +21,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
     private final int id;
 
     private final List<Sensor> sensors = new LinkedList<>();
-    private final ActuatorCollection actuators = new ActuatorCollection();
+    private ActuatorCollection actuators = new ActuatorCollection();
 
     private final List<SensorListener> sensorListeners = new LinkedList<>();
     private final List<ActuatorListener> actuatorListeners = new LinkedList<>();

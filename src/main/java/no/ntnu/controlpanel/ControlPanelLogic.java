@@ -4,11 +4,15 @@ import java.util.LinkedList;
 import java.util.List;
 
 import no.ntnu.greenhouse.Actuator;
+import no.ntnu.greenhouse.ActuatorCollection;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.tools.Logger;
+
+import static no.ntnu.tools.Parser.parseDoubleOrError;
+import static no.ntnu.tools.Parser.parseIntegerOrError;
 
 /**
  * The central logic of a control panel node. It uses a communication channel to send commands
@@ -105,5 +109,68 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
 
     public CommunicationChannel getCommunicationChannel() {
         return communicationChannel;
+    }
+
+    public SensorActuatorNodeInfo createSensorNodeInfoFrom(String specification) {
+        if (specification == null || specification.isEmpty()) {
+            throw new IllegalArgumentException("Node specification can't be empty");
+        }
+        String[] parts = specification.split(";");
+        if (parts.length > 2) {
+            throw new IllegalArgumentException("Incorrect specification format");
+        }
+        int nodeId = parseIntegerOrError(parts[0], "Invalid node ID:" + parts[0]);
+        SensorActuatorNodeInfo info = new SensorActuatorNodeInfo(nodeId);
+        if (parts.length == 2) {
+            ActuatorCollection actuatorList = parseActuators(parts[1], info.getId());
+            info.setActuatorList(actuatorList);
+        }
+        return info;
+    }
+
+    private ActuatorCollection parseActuators(String actuatorSpecification, int info) {
+        String[] parts = actuatorSpecification.split(" ");
+        ActuatorCollection actuatorList = new ActuatorCollection();
+        for (String part : parts) {
+            actuatorList.add(parseActuatorInfo(part, info));
+        }
+        return actuatorList;
+    }
+
+    private Actuator parseActuatorInfo(String s, int info) {
+        String[] actuatorInfo = s.split("_");
+        if (actuatorInfo.length != 2) {
+            throw new IllegalArgumentException("Invalid actuator info format: " + s);
+        }
+        int actuatorId = parseIntegerOrError(actuatorInfo[0],
+                "Invalid actuator count: " + actuatorInfo[0]);
+        String actuatorType = actuatorInfo[1];
+        Actuator actuator = new Actuator(actuatorId, actuatorType, info);
+        actuator.setListener(this);
+        return actuator;
+    }
+
+    private List<SensorReading> parseSensors(String sensorInfo) {
+        List<SensorReading> readings = new LinkedList<>();
+        String[] readingInfo = sensorInfo.split(",");
+        for (String reading : readingInfo) {
+            readings.add(parseReading(reading));
+        }
+        return readings;
+    }
+
+    private SensorReading parseReading(String reading) {
+        String[] assignmentParts = reading.split("=");
+        if (assignmentParts.length != 2) {
+            throw new IllegalArgumentException("Invalid sensor reading specified: " + reading);
+        }
+        String[] valueParts = assignmentParts[1].split(" ");
+        if (valueParts.length != 2) {
+            throw new IllegalArgumentException("Invalid sensor value/unit: " + reading);
+        }
+        String sensorType = assignmentParts[0];
+        double value = parseDoubleOrError(valueParts[0], "Invalid sensor value: " + valueParts[0]);
+        String unit = valueParts[1];
+        return new SensorReading(sensorType, value, unit);
     }
 }
