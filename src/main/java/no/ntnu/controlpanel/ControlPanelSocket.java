@@ -133,7 +133,7 @@ public class ControlPanelSocket implements CommunicationChannel {
             @Override
             public void run() {
                 updateSensorData();
-                logic.actuatorTurnOnAllActuators();
+                logic.actuatorTurnOnAllActuators(true);
             }
         }, 0, 5500);
     }

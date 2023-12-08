@@ -84,12 +84,11 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, isOn));
     }
 
-    public void actuatorTurnOnAllActuators() {
+    public void actuatorTurnOnAllActuators(boolean isOn) {
         for (SensorActuatorNodeInfo nodeInfo : nodeInfoList) {
             ActuatorCollection actuatorList = nodeInfo.getActuators();
             int nodeId = nodeInfo.getId();
             for (Actuator actuator : actuatorList) {
-                boolean isOn = true;
                 if (communicationChannel != null) {
                     communicationChannel.sendActuatorChange(nodeId, actuator.getId(), isOn);
                     System.out.println("Sending actuator change to server");
