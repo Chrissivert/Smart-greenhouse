@@ -1,10 +1,12 @@
 package no.ntnu.controlpanel;
 
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.List;
 
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
+import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
@@ -27,6 +29,8 @@ import static no.ntnu.tools.Parser.parseIntegerOrError;
 public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListener,
         CommunicationChannelListener {
     private final List<GreenhouseEventListener> listeners = new LinkedList<>();
+
+    private List<SensorActuatorNodeInfo> nodeInfoList = new ArrayList<>();
 
     private CommunicationChannel communicationChannel;
     private CommunicationChannelListener communicationChannelListener;
@@ -78,8 +82,23 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     @Override
     public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
         listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, isOn));
-        System.out.println(listeners.size());
-        System.out.println("on actuator state changed");
+    }
+
+    public void actuatorTurnOnAllActuators() {
+        for (SensorActuatorNodeInfo nodeInfo : nodeInfoList) {
+            ActuatorCollection actuatorList = nodeInfo.getActuators();
+            int nodeId = nodeInfo.getId();
+            for (Actuator actuator : actuatorList) {
+                boolean isOn = true;
+                if (communicationChannel != null) {
+                    communicationChannel.sendActuatorChange(nodeId, actuator.getId(), isOn);
+                    System.out.println("Sending actuator change to server");
+                }
+                listeners.forEach(listener ->
+                        listener.onActuatorStateChanged(nodeId, actuator.getId(), isOn)
+                );
+            }
+        }
     }
 
     @Override
@@ -102,11 +121,6 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     }
 
 
-    public int extractNodeId(String serverMessage) {
-        String[] parts = serverMessage.split(" ");
-        return Integer.parseInt(parts[1]);
-    }
-
     public CommunicationChannel getCommunicationChannel() {
         return communicationChannel;
     }
@@ -125,6 +139,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
             ActuatorCollection actuatorList = parseActuators(parts[1], info.getId());
             info.setActuatorList(actuatorList);
         }
+        nodeInfoList.add(info);
         return info;
     }
 

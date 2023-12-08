@@ -74,20 +74,6 @@ public class ControlPanelSocket implements CommunicationChannel {
         }
     }
 
-
-
-//    public void openCommandLine() {
-//        open();
-//        Scanner input = new Scanner(System.in);
-//        Thread commandThread = new Thread(() -> startCommandControl(input));
-//        commandThread.start();
-//    }
-
-//    private void startCommandControl(Scanner input) {
-//        CommandLineControlPanel controlPanel = new CommandLineControlPanel(this);
-//        controlPanel.startCommandControl(input);
-//    }
-
     /**
      * This method should close the connection to the server.
      */
@@ -136,7 +122,6 @@ public class ControlPanelSocket implements CommunicationChannel {
         } catch (IOException e) {
             Logger.info("Stopping sensor reading");
         }
-//        logic.sensorStringSplitter(sensors);
     }
 
     /**
@@ -148,8 +133,9 @@ public class ControlPanelSocket implements CommunicationChannel {
             @Override
             public void run() {
                 updateSensorData();
+                logic.actuatorTurnOnAllActuators();
             }
-        }, 0, 2000);
+        }, 0, 5500);
     }
 
 }

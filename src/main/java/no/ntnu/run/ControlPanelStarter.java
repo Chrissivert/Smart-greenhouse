@@ -3,13 +3,8 @@ package no.ntnu.run;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.ControlPanelSocket;
-import no.ntnu.controlpanel.RealCommunicationChannel;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
-
-import java.io.*;
-import java.net.Socket;
-import java.util.Scanner;
 
 import static no.ntnu.gui.controlpanel.ControlPanelApplication.logic;
 
@@ -59,7 +54,6 @@ public class ControlPanelStarter {
             channel = initiateSocketCommunication(logic);
         } else {
             channel = getCommunicationChannel();
-//            channel = initiateFakeSpawner(logic);
             System.out.println("Fake communication not supported");
         }
         return channel;

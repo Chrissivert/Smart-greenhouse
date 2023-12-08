@@ -20,15 +20,10 @@ import no.ntnu.greenhouse.GreenhouseSimulator;
 public class MainGreenhouseGuiWindow extends Scene {
     public static final int WIDTH = 300;
     public static final int HEIGHT = 300;
-    private GreenhouseSimulator simulator;
-    private ButtonActionHandler buttonActionHandler;
 
-        public MainGreenhouseGuiWindow(GreenhouseSimulator simulator) {
-            super(new VBox(), WIDTH, HEIGHT); // Initialize with an empty VBox, will be replaced
-            this.simulator = simulator;
-            buttonActionHandler = new ButtonActionHandler(simulator);
 
-            // Set the content of the scene
+        public MainGreenhouseGuiWindow() {
+            super(new VBox(), WIDTH, HEIGHT);
             VBox mainContent = createMainContent();
             setRoot(mainContent);
         }
@@ -36,11 +31,6 @@ public class MainGreenhouseGuiWindow extends Scene {
         private VBox createMainContent() {
             VBox container = new VBox();
             container.getChildren().addAll(
-                    createAddNodeButton(),
-                    createTurnOnAllActuatorsButton(),
-                    createTurnOffAllActuatorsButton(),
-                    createChangeSpecificActuatorStateStage(),
-                    createGetStateOfSpecificActuator(),
                     createInfoLabel(),
                     createMasterImage(),
                     createCopyrightNotice()
@@ -55,16 +45,8 @@ public class MainGreenhouseGuiWindow extends Scene {
             scrollPane.setMaxWidth(Double.MAX_VALUE);
             scrollPane.setMaxHeight(Double.MAX_VALUE);
 
-            return container; // Return the VBox, not the ScrollPane
+            return container;
         }
-
-        private Button createAddNodeButton() {
-            Button addNodeButton = new Button("Add node");
-            addNodeButton.setOnAction(e -> buttonActionHandler.handleAddNodeAction());
-            return addNodeButton;
-        }
-
-        // Implement other button creation methods similarly...
 
         private Label createInfoLabel() {
             Label infoLabel = new Label("Close this window to stop the whole simulation");
@@ -72,8 +54,6 @@ public class MainGreenhouseGuiWindow extends Scene {
             infoLabel.setPadding(new Insets(0, 0, 10, 0));
             return infoLabel;
         }
-
-        // Implement other UI creation methods similarly...
 
         private Node createMasterImage() {
             Node node;
@@ -95,28 +75,4 @@ public class MainGreenhouseGuiWindow extends Scene {
             noticeLabel.setFont(Font.font(10));
             return noticeLabel;
         }
-
-    private Button createChangeSpecificActuatorStateStage() {
-        Button changeSpecificActuatorButton = new Button("Change state of specific actuator");
-        changeSpecificActuatorButton.setOnAction(e -> buttonActionHandler.createSetActuatorStateStage());
-        return changeSpecificActuatorButton;
-    }
-
-    private Button createGetStateOfSpecificActuator() {
-        Button turnOnAllActuatorsButton = new Button("Get state of specific actuator");
-        turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.getStateOfActuatorStage());
-        return turnOnAllActuatorsButton;
-    }
-
-    private Button createTurnOnAllActuatorsButton() {
-        Button turnOnAllActuatorsButton = new Button("Turn on all actuators");
-        turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.handleTurnOnAllActuators());
-        return turnOnAllActuatorsButton;
-    }
-
-    private Button createTurnOffAllActuatorsButton() {
-        Button turnOffAllActuatorsButton = new Button("Turn off all actuators");
-        turnOffAllActuatorsButton.setOnAction(e -> buttonActionHandler.handleTurnOffAllActuators());
-        return turnOffAllActuatorsButton;
-    }
 }
