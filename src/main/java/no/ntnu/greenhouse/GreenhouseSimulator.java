@@ -2,21 +2,38 @@ package no.ntnu.greenhouse;
 
 import java.io.IOException;
 import java.net.ServerSocket;
+import java.net.Socket;
 import java.util.*;
+import java.util.stream.Collectors;
 
+import no.ntnu.endclients.ClientHandler;
 import no.ntnu.gui.greenhouse.ButtonActionHandler;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
 /**
  * Application entrypoint - a simulator for a greenhouse.
+ *
+ * Works essentialy as a server
  */
+
+
 public class GreenhouseSimulator {
+
+    public static final int PORT_NUMBER = 1238;
+    private ServerSocket serverSocket;
+
 
     public static final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
 
     private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
     private final boolean fake;
+
+    private final List<ClientHandler> connectedClients = new ArrayList<>();
+
+    private boolean isServerRunning;
+
+
 
     /**
      * Create a greenhouse simulator.
@@ -64,6 +81,9 @@ public class GreenhouseSimulator {
     private void initiateCommunication() {
         if (fake) {
             initiateFakePeriodicSwitches();
+        } else {
+            Thread serverThread = new Thread(this::initiateRealCommunication);
+            serverThread.start();
         }
     }
 
@@ -93,8 +113,125 @@ public class GreenhouseSimulator {
                 periodicSwitch.stop();
             }
         } else {
-            // TODO - here you stop the TCP/UDP communication
+            try {
+                serverSocket.close();
+                Logger.info("TCP connection successfully closed");
+            } catch (IOException e) {
+                Logger.error("An error occurred while stopping communication");
+            }
         }
+    }
+
+    private void initiateRealCommunication(){
+        try {
+            serverSocket = new ServerSocket(PORT_NUMBER);
+
+            Logger.info("Server is now listening on port " + PORT_NUMBER);
+        } catch (IOException e) {
+            Logger.error("TCP connection not established due to error : " + e.getMessage());
+            return;
+        }
+        isServerRunning = true;
+        while (isServerRunning && !serverSocket.isClosed()) {
+            ClientHandler clientHandler = acceptNextClientConnection(serverSocket);
+
+            if (clientHandler != null) {
+                addClientToConnectedClients(clientHandler);
+                clientHandler.start();
+            }
+        }
+    }
+
+
+    private ClientHandler acceptNextClientConnection(ServerSocket listeningSocket) {
+        try {
+            Socket clientSocket = listeningSocket.accept();
+            Logger.info("New client connected from " + clientSocket.getRemoteSocketAddress());
+            return new ClientHandler(clientSocket, this);
+        } catch (IOException e) {
+            Logger.error("Could not accept client connection: " + e.getMessage());
+            return null;
+        }
+    }
+
+    public void handleActuator(int actuatorId, int nodeId, boolean isOn){
+        if (!isOn){
+            nodes.get(nodeId).getActuators().get(actuatorId).turnOn();
+        } else {
+            nodes.get(nodeId).getActuators().get(actuatorId).turnOff();
+        }
+    }
+
+    public String getNodes() {
+        Map<Integer, List<Actuator>> actuatorsByNode = new HashMap<>();
+
+        for (SensorActuatorNode node : nodes.values()) {
+            for (Actuator actuator : node.getActuators()) {
+                actuatorsByNode.computeIfAbsent(actuator.getNodeId(), k -> new ArrayList<>()).add(actuator);
+            }
+        }
+
+        List<String> commands = new ArrayList<>();
+        for (Map.Entry<Integer, List<Actuator>> entry : actuatorsByNode.entrySet()) {
+            int nId = entry.getKey();
+            List<Actuator> actuators = entry.getValue();
+
+            String actuatorString = actuators.stream()
+                    .map(a -> a.getId() + "_" + a.getType())
+                    .collect(Collectors.joining(" "));
+
+            String commandString = nId + ";" + actuatorString;
+            commands.add(commandString);
+        }
+
+        return String.join("/", commands);
+    }
+
+    /**
+     * Updates all sensors and generates commands for each sensor node.
+     * Work in progress.
+     *
+     * @return A string containing commands for sensor nodes.
+     */
+    public String updateSensors() {
+        Map<Integer, List<Sensor>> sensorsByNode = new HashMap<>();
+
+        for (SensorActuatorNode node : nodes.values()) {
+            for (Sensor sensor : node.getSensors()) {
+                sensorsByNode.computeIfAbsent(node.getId(), k -> new ArrayList<>()).add(sensor);
+            }
+        }
+
+        List<String> commands = new ArrayList<>();
+
+        for (Map.Entry<Integer, List<Sensor>> entry : sensorsByNode.entrySet()) {
+            int nodeId = entry.getKey();
+            List<Sensor> sensors = entry.getValue();
+
+            String actuatorString = sensors.stream()
+                    .map(sensor -> String.valueOf(sensor.getReading()))
+                    .collect(Collectors.joining(" "));
+
+            String commandString = nodeId + ";" + actuatorString;
+            commands.add(commandString);
+        }
+
+        return formatSensorCommand(String.join("/", commands));
+    }
+
+    public String formatSensorCommand(String command){
+        return command.replace("{", "").replace("}", "")
+                .replace(",", "").replace("   ", ",")
+                .replace("type=","").replace(" value", "")
+                .replace("unit=", "").replace("; ", ";");
+    }
+
+    public void removeDisconnectedClient(ClientHandler clientHandler) {
+        connectedClients.remove(clientHandler);
+    }
+
+    private void addClientToConnectedClients(ClientHandler clientHandler) {
+        connectedClients.add(clientHandler);
     }
 
     /**
