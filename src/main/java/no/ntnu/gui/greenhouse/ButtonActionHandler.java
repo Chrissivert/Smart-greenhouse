@@ -2,6 +2,7 @@ package no.ntnu.gui.greenhouse;
 
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
+import no.ntnu.tools.Logger;
 
 public class ButtonActionHandler {
 
@@ -17,30 +18,30 @@ public class ButtonActionHandler {
     }
 
     public void handleTurnOnAllActuators() {
-        for (int i = 0; i <= simulator.nodes.size(); i++) {
-            if (!(simulator.nodes.get(i) == null)) {
-                simulator.nodes.get(i).setAllActuators(true);
+        for (SensorActuatorNode node : GreenhouseSimulator.nodes.values()) {
+            if (node != null) {
+                node.setAllActuators(true);
             }
         }
     }
     public void handleTurnOffAllActuators() {
-        for (int i = 0; i <= simulator.nodes.size(); i++) {
-            if (!(simulator.nodes.get(i) == null)) {
-                simulator.nodes.get(i).setAllActuators(false);
+        for (SensorActuatorNode node : GreenhouseSimulator.nodes.values()) {
+            if (node != null) {
+                node.setAllActuators(false);
             }
         }
     }
     public void setStateOfActuator(int node, int actuatorId, boolean state) {
-        SensorActuatorNode sensorActuatorNode = simulator.nodes.get(node);
+        SensorActuatorNode sensorActuatorNode = GreenhouseSimulator.nodes.get(node);
         if (sensorActuatorNode != null) {
             sensorActuatorNode.setActuator(actuatorId, state);
         }
     }
 
     public boolean getStateOfActuator(int node, int actuatorId) {
-        SensorActuatorNode sensorActuatorNode = simulator.nodes.get(node);
-        if (simulator.nodes.get(node).getActuators().get(actuatorId)==null){
-            System.out.println("Actuator does not exist");
+        SensorActuatorNode sensorActuatorNode = GreenhouseSimulator.nodes.get(node);
+        if (GreenhouseSimulator.nodes.get(node).getActuators().get(actuatorId)==null){
+            Logger.info("Actuator does not exist");
         }else{
             System.out.println(sensorActuatorNode.getActuators().get(actuatorId).isOn());
         }
