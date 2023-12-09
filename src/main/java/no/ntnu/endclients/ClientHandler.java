@@ -57,13 +57,12 @@ public class ClientHandler extends Thread {
             System.out.println("Client on port: " + socket.getPort() + " is connected");
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
-                System.out.println("Client on port " + socket.getPort() + " sent message: " + inputLine);
                 String a = decryptMessage(inputLine);
                 handleInput(a);
                 writer.println(a);
             }
         } catch (IOException e) {
-            Logger.error(" while reading from the socket: " + e.getMessage());
+            Logger.error("while reading from the socket: " + e.getMessage());
             e.printStackTrace();
         }
         String clientAddress = socket.getRemoteSocketAddress().toString();
@@ -72,24 +71,11 @@ public class ClientHandler extends Thread {
     }
 
     /**
-     * Sends a message to the connected client.
-     *
-     * @param message The message to be sent
-     */
-    public void sendMessage(String message) {
-        System.out.println("Sending message: " + message);
-        writer.println(message);
-        System.out.println("Message sent to client on port " + socket.getPort());
-    }
-
-
-    /**
      * Handles the processing of a raw command, taking appropriate actions based on the command's content.
      *
      * @param rawCommand The command as a string
      */
     private void handleInput(String rawCommand) {
-        System.out.println("Handling input: " + rawCommand);
         if (rawCommand.equals("getNodes")) {
             handleGetNodesCommand();
         } else if (rawCommand.equals("updateSensor")) {
@@ -98,8 +84,6 @@ public class ClientHandler extends Thread {
             processActuatorCommand(rawCommand);
         }
     }
-
-
 
     private void handleGetNodesCommand() {
        writer.println(simulator.getNodes());
@@ -112,7 +96,6 @@ public class ClientHandler extends Thread {
 
 
     private void processActuatorCommand(String rawCommand) {
-        System.out.println("tdawdaw");
         String[] parts = rawCommand.split(",");
         if (parts.length == 3) {
             int nodeId = Integer.parseInt(parts[0].trim());
@@ -148,7 +131,7 @@ public class ClientHandler extends Thread {
 
             decryptedMessage = new String(decryptedBytes);
 
-            Logger.info("Decrypted Message: " + decryptedMessage);
+            //Logger.info("Decrypted Message: " + decryptedMessage);
         } catch (Exception e) {
             e.printStackTrace();
         }

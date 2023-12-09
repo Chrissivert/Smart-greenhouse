@@ -15,17 +15,13 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
-import no.ntnu.controlpanel.MainWindowControlPanel;
 import no.ntnu.controlpanel.SensorActuatorNodeInfo;
 import no.ntnu.greenhouse.Actuator;
-import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.gui.common.ActuatorPane;
 import no.ntnu.gui.common.SensorPane;
-import no.ntnu.gui.greenhouse.MainGreenhouseGuiWindow;
 import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
-import no.ntnu.run.ControlPanelStarter;
 import no.ntnu.tools.Logger;
 
 
@@ -70,10 +66,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
       throw new IllegalStateException(
           "No communication channel. See the README on how to use fake event spawner!");
     }
-        Stage controlPanelStage = new Stage();
-        MainWindowControlPanel mainPanel = new MainWindowControlPanel();
-        controlPanelStage.setScene(mainPanel);
-        controlPanelStage.show();
         stage.setMinWidth(WIDTH);
         stage.setMinHeight(HEIGHT);
         stage.setTitle("Control panel");

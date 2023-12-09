@@ -60,9 +60,7 @@ public class ControlPanelSocket implements CommunicationChannel {
             String encryptedCommand = encryptCommand(command);
             if (encryptedCommand != null) {
                 socketWriter.println(encryptedCommand);
-                System.out.println("jdaw");
                 String response = socketReader.readLine();
-                System.out.println("daw");
                 Logger.info(response);
             } else {
                 Logger.error("Error encrypting the command.");
@@ -188,7 +186,7 @@ public class ControlPanelSocket implements CommunicationChannel {
 
             encryptedMessage = Base64.getEncoder().encodeToString(encryptedBytes);
 
-            Logger.info("Encrypted Message: " + encryptedMessage);
+            //Logger.info("Encrypted Message: " + encryptedMessage);
 
             return encryptedMessage;
         } catch (Exception e) {
