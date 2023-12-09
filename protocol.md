@@ -47,7 +47,7 @@ sends information from the ControlPanelClients to the GreenHouseClients and vice
 and when a change is made in one of them, the Server sends the information to the GreenHouseClient and other ControlPanelClients.
 This means the system is synchronized between all clients. 
 
-![Alt text](images/NetworkArchitecture(1).png)
+![img.png](images/NetworkArchitecture.png)
 
 ## The flow of information and events
 
@@ -61,13 +61,13 @@ or the GreenHouseClient (sensor value changed), the Server sends the information
 
 ## Connection and state
 
-TODO - is your communication protocol connection-oriented or connection-less? Is it stateful or 
-stateless? 
+Connection-Oriented: TCP ensures a connection is established before data transfer.
+
+Stateful: The system maintains state for synchronization across clients.
 
 ## Types, constants
 
-TODO - Do you have some specific value types you use in several messages? They you can describe 
-them here.
+Value Types: Integer values for sensor and actuator data.
 
 ## Message format
 
@@ -93,10 +93,9 @@ example scenario could be as follows:
 3. A control panel node is started.
 4. Another control panel node is started.
 5. A sensor node with ID=3 is started. It has a two temperature sensors and no actuators.
-6. After 5 seconds all three sensor/actuator nodes broadcast their sensor data.
-7. The user of the first-control panel presses on the button "ON" for the first fan of
+6. The user of the first-control panel presses on the button "ON" for the first fan of
    sensor/actuator node with ID=2.
-8. The user of the second control-panel node presses on the button "turn off all actuators".
+7. The user of the second control-panel node presses on the button "turn off all actuators".
 
 ## Reliability and security
 

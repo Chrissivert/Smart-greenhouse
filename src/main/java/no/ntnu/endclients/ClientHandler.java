@@ -26,6 +26,12 @@ public class ClientHandler extends Thread {
     private static KeyPair keyPair;
 
 
+    /**
+     * Creates a new instance of the ClientHandler class.
+     *
+     * @param socket    The socket representing the client connection
+     * @param simulator The greenhouse simulator associated with this client handler
+     */
     public ClientHandler(Socket socket, GreenhouseSimulator simulator) {
         this.socket = socket;
         this.simulator = simulator;
@@ -38,6 +44,10 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Runs the client handler thread, continuously reading messages from the client.
+     * Handles the incoming commands and responds accordingly.
+     */
     @Override
     public void run() {
         PublicKey clientPublicKey = getPublicKey();
@@ -61,6 +71,11 @@ public class ClientHandler extends Thread {
         simulator.removeDisconnectedClient(this);
     }
 
+    /**
+     * Sends a message to the connected client.
+     *
+     * @param message The message to be sent
+     */
     public void sendMessage(String message) {
         System.out.println("Sending message: " + message);
         writer.println(message);

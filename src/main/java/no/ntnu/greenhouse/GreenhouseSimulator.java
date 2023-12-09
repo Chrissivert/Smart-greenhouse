@@ -3,7 +3,11 @@ package no.ntnu.greenhouse;
 import java.io.IOException;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 
 import no.ntnu.endclients.ClientHandler;
@@ -13,17 +17,19 @@ import no.ntnu.tools.Logger;
 
 /**
  * Application entrypoint - a simulator for a greenhouse.
- *
  * Works essentialy as a server
  */
-
-
 public class GreenhouseSimulator {
 
+    /**
+     * The default port number for the server.
+     */
     public static final int PORT_NUMBER = 1238;
     private ServerSocket serverSocket;
 
-
+    /**
+     * A map of all the nodes in the greenhouse.
+     */
     public static final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
 
     private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
@@ -56,6 +62,15 @@ public class GreenhouseSimulator {
         Logger.info("Greenhouse initialized");
     }
 
+    /**
+     * Create a new sensor/actuator node with the specified configuration.
+     *
+     * @param temperature Initial temperature value
+     * @param humidity    Initial humidity value
+     * @param windows     Initial window count
+     * @param fans        Initial fan count
+     * @param heaters     Initial heater count
+     */
     public void createNode(int temperature, int humidity, int windows, int fans, int heaters) {
         SensorActuatorNode node = DeviceFactory.createNode(
                 temperature, humidity, windows, fans, heaters);
@@ -87,6 +102,11 @@ public class GreenhouseSimulator {
         }
     }
 
+    /**
+     * Add a new node to the greenhouse.
+     *
+     * @param newNode The node to add
+     */
     public void addNode(SensorActuatorNode newNode) {
         nodes.put(newNode.getId(), newNode);
     }
@@ -154,6 +174,13 @@ public class GreenhouseSimulator {
         }
     }
 
+    /**
+     * Handle actuator commands received from the client.
+     *
+     * @param actuatorId The ID of the actuator to handle
+     * @param nodeId     The ID of the node containing the actuator
+     * @param isOn       Whether to turn the actuator on or off
+     */
     public void handleActuator(int actuatorId, int nodeId, boolean isOn){
         if (!isOn){
             nodes.get(nodeId).getActuators().get(actuatorId).turnOn();
@@ -162,6 +189,11 @@ public class GreenhouseSimulator {
         }
     }
 
+    /**
+     * Retrieve a formatted string representing the state of actuators in the greenhouse.
+     *
+     * @return A formatted string containing actuator information
+     */
     public String getNodes() {
         Map<Integer, List<Actuator>> actuatorsByNode = new HashMap<>();
 
@@ -219,6 +251,12 @@ public class GreenhouseSimulator {
         return formatSensorCommand(String.join("/", commands));
     }
 
+    /**
+     * Format a command string for sensor nodes by removing unnecessary characters.
+     *
+     * @param command The original command string
+     * @return The formatted command string
+     */
     public String formatSensorCommand(String command){
         return command.replace("{", "").replace("}", "")
                 .replace(",", "").replace("   ", ",")
@@ -226,6 +264,11 @@ public class GreenhouseSimulator {
                 .replace("unit=", "").replace("; ", ";");
     }
 
+    /**
+     * Remove a disconnected client from the list of connected clients.
+     *
+     * @param clientHandler The client handler to remove
+     */
     public void removeDisconnectedClient(ClientHandler clientHandler) {
         connectedClients.remove(clientHandler);
     }
