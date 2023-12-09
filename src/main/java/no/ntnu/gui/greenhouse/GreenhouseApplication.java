@@ -1,6 +1,5 @@
 package no.ntnu.gui.greenhouse;
 
-import java.util.Collection;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -16,7 +15,7 @@ import no.ntnu.tools.Logger;
  * Run a greenhouse simulation with a graphical user interface (GUI), with JavaFX.
  */
 public class GreenhouseApplication extends Application implements NodeStateListener {
-    public static GreenhouseSimulator simulator;
+    private static GreenhouseSimulator simulator;
     private final Map<SensorActuatorNode, NodeGuiWindow> nodeWindows = new HashMap<>();
     private Stage mainStage;
 

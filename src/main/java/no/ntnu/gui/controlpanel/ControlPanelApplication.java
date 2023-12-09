@@ -30,11 +30,10 @@ import no.ntnu.tools.Logger;
  */
 public class ControlPanelApplication extends Application implements GreenhouseEventListener,
         CommunicationChannelListener {
-    public static ControlPanelLogic logic;
+    private static ControlPanelLogic logic;
     private static final int WIDTH = 500;
     private static final int HEIGHT = 400;
     private static CommunicationChannel channel;
-
     private TabPane nodeTabPane;
     private Scene mainScene;
     private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
@@ -62,10 +61,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     @Override
     public void start(Stage stage) {
-    if (channel == null) {
-      throw new IllegalStateException(
-          "No communication channel. See the README on how to use fake event spawner!");
-    }
+        if (channel == null) {
+            throw new IllegalStateException(
+                    "No communication channel. See the README on how to use fake event spawner!");
+        }
         stage.setMinWidth(WIDTH);
         stage.setMinHeight(HEIGHT);
         stage.setTitle("Control panel");
@@ -75,12 +74,12 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         logic.addListener(this);
         logic.setCommunicationChannelListener(this);
         setCommunicationChannel(channel);
-    if (!channel.open()) {
-      logic.onCommunicationChannelClosed();
-    }
+        if (!channel.open()) {
+        logic.onCommunicationChannelClosed();
+        }
     }
 
-    private static Label createEmptyContent() {
+    private Label createEmptyContent() {
         Label l = new Label("Waiting for node data...");
         l.setAlignment(Pos.CENTER);
         return l;
@@ -192,7 +191,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         return tab;
     }
 
-    private static SensorPane createEmptySensorPane() {
+    private SensorPane createEmptySensorPane() {
         return new SensorPane();
     }
 

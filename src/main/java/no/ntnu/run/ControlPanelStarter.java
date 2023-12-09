@@ -6,8 +6,6 @@ import no.ntnu.controlpanel.ControlPanelSocket;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
 
-import static no.ntnu.gui.controlpanel.ControlPanelApplication.logic;
-
 /**
  * Starter class for the control panel.
  * Note: we could launch the Application class directly, but then we would have issues with the
@@ -19,6 +17,8 @@ public class ControlPanelStarter {
 
     private final boolean fake;
     private ControlPanelSocket socket;
+
+    private ControlPanelLogic logic;
 
     public ControlPanelStarter(boolean fake) {
         this.fake = fake;
@@ -42,7 +42,7 @@ public class ControlPanelStarter {
     }
 
     private void start() {
-        ControlPanelLogic logic = new ControlPanelLogic();
+        this.logic = new ControlPanelLogic();
         CommunicationChannel channel = initiateCommunication(logic, fake);
         ControlPanelApplication.startApp(logic, channel);
         stopCommunication();
@@ -60,7 +60,7 @@ public class ControlPanelStarter {
     }
 
     private CommunicationChannel getCommunicationChannel() {
-        return logic.getCommunicationChannel();
+        return this.logic.getCommunicationChannel();
     }
 
 

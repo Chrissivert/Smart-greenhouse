@@ -5,8 +5,6 @@ import no.ntnu.tools.Logger;
 
 
 import javax.crypto.Cipher;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -19,11 +17,11 @@ import java.security.PublicKey;
 import java.util.Base64;
 
 public class ClientHandler extends Thread {
-    private final Socket socket;
+    protected Socket socket;
     private final GreenhouseSimulator simulator;
     private BufferedReader reader;
     private PrintWriter writer;
-    private static KeyPair keyPair;
+    private KeyPair keyPair;
 
 
     /**
@@ -76,6 +74,9 @@ public class ClientHandler extends Thread {
      * @param rawCommand The command as a string
      */
     private void handleInput(String rawCommand) {
+        if(rawCommand == null){
+            return;
+        }
         if (rawCommand.equals("getNodes")) {
             handleGetNodesCommand();
         } else if (rawCommand.equals("updateSensor")) {
@@ -139,8 +140,7 @@ public class ClientHandler extends Thread {
     }
 
 
-
-    public static PublicKey getPublicKey() {
+    public PublicKey getPublicKey() {
         return keyPair.getPublic();
     }
 }
