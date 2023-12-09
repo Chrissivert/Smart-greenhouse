@@ -127,11 +127,18 @@ public class ControlPanelSocket implements CommunicationChannel {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-        String[] nodeList = nodes.split("/");
-        for (String node : nodeList) {
-            logic.onNodeAdded(logic.createSensorNodeInfoFrom(node));
+
+        if (nodes.equals("null")) {
+            Logger.info("Nodes not loaded, since no nodes received");
+
+        } else {
+            String[] nodeList = nodes.split("/");
+
+            for (String node : nodeList) {
+                logic.onNodeAdded(logic.createSensorNodeInfoFrom(node));
+            }
+            Logger.info("Nodes loaded");
         }
-        Logger.info("Nodes loaded");
     }
 
     /**
