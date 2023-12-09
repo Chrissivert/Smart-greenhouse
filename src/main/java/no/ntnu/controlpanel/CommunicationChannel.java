@@ -6,6 +6,7 @@ package no.ntnu.controlpanel;
  * Your socket class on the control panel side should implement this.
  */
 public interface CommunicationChannel {
+
     /**
      * Request that state of an actuator is changed.
      *

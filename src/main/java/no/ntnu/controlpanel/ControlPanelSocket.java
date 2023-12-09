@@ -1,6 +1,12 @@
 package no.ntnu.controlpanel;
 
+import no.ntnu.endclients.ClientHandler;
 import no.ntnu.tools.Logger;
+
+import javax.crypto.Cipher;
+import javax.crypto.KeyGenerator;
+import javax.crypto.SecretKey;
+import javax.crypto.spec.SecretKeySpec;
 
 import static no.ntnu.greenhouse.GreenhouseSimulator.PORT_NUMBER;
 import static no.ntnu.run.ControlPanelStarter.SERVER_HOST;
@@ -10,7 +16,10 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Scanner;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -22,6 +31,9 @@ public class ControlPanelSocket implements CommunicationChannel {
     private BufferedReader socketReader;
     private PrintWriter socketWriter;
     private boolean isConnected = false;
+    private static KeyPair keyPair;
+
+    private PublicKey clientPublicKey;
 
     /**
      * Creates an instance of ControlPanelSocket.
@@ -30,6 +42,7 @@ public class ControlPanelSocket implements CommunicationChannel {
      */
     public ControlPanelSocket(ControlPanelLogic logic) {
         this.logic = logic;
+        generateKeyPair();
     }
 
     /**
@@ -39,21 +52,30 @@ public class ControlPanelSocket implements CommunicationChannel {
      * @param actuatorId Node-wide unique ID of the actuator
      * @param isOn       When true, actuator must be turned on; off when false.
      */
-    @Override
     public void sendActuatorChange(int actuatorId, int nodeId, boolean isOn) {
         Logger.info("Sending command to actuator " + nodeId + " on node " + actuatorId);
         String on = isOn ? "0" : "1";
         String command = actuatorId + ", " + nodeId + ", " + on;
-
         try {
-            socketWriter.println(command);
-            String response = socketReader.readLine();
-            Logger.info(response);
+            String encryptedCommand = encryptCommand(command);
+            if (encryptedCommand != null) {
+                socketWriter.println(encryptedCommand);
+                System.out.println("jdaw");
+                String response = socketReader.readLine();
+                System.out.println("daw");
+                Logger.info(response);
+            } else {
+                Logger.error("Error encrypting the command.");
+            }
         } catch (IOException e) {
             Logger.error("Error sending command to actuator " + actuatorId + " on node " + nodeId + ": " +
                     e.getMessage());
+        } catch (Exception e) {
+            Logger.error("An unexpected error occurred: " + e.getMessage());
         }
     }
+
+
 
     @Override
     public boolean open() {
@@ -62,15 +84,21 @@ public class ControlPanelSocket implements CommunicationChannel {
             socketWriter = new PrintWriter(socket.getOutputStream(), true);
             socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
+            String encodedPublicKey = socketReader.readLine();
+            byte[] publicKeyBytes = Base64.getDecoder().decode(encodedPublicKey);
+            this.clientPublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBytes));
+
             Logger.info("Successfully connected to: " + SERVER_HOST + ":" + PORT_NUMBER);
 
-            continuousSensorUpdate();
             getNodes();
+            continuousSensorUpdate();
             isConnected = true;
             return true;
         } catch (IOException e) {
             Logger.error("Could not connect to server: " + e.getMessage());
             return false;
+        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -96,11 +124,13 @@ public class ControlPanelSocket implements CommunicationChannel {
      * the controlPanel.
      */
     public void getNodes() {
-        socketWriter.println("getNodes");
+        String encryptedCommand = encryptCommand("getNodes");
+        socketWriter.println(encryptedCommand);
         Logger.info("Requesting nodes from server...");
         String nodes;
         try {
             nodes = socketReader.readLine();
+            System.out.println("Nodes" + nodes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
@@ -115,7 +145,8 @@ public class ControlPanelSocket implements CommunicationChannel {
      * This method should update the sensors continually.
      */
     public void updateSensorData() {
-        socketWriter.println("updateSensor");
+        String encryptedCommand = encryptCommand("updateSensor");
+        socketWriter.println(encryptedCommand);
         String sensors = "";
         try {
             sensors = socketReader.readLine();
@@ -133,9 +164,36 @@ public class ControlPanelSocket implements CommunicationChannel {
             @Override
             public void run() {
                 updateSensorData();
-                logic.actuatorTurnOnAllActuators(true);
             }
-        }, 0, 5500);
+        }, 0, 1000);
     }
 
+    private void generateKeyPair() {
+        try {
+            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
+            keyPairGenerator.initialize(2048);
+            keyPair = keyPairGenerator.generateKeyPair();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private String encryptCommand(String command) {
+        String encryptedMessage = null;
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, clientPublicKey);
+
+            byte[] encryptedBytes = cipher.doFinal(command.getBytes());
+
+            encryptedMessage = Base64.getEncoder().encodeToString(encryptedBytes);
+
+            Logger.info("Encrypted Message: " + encryptedMessage);
+
+            return encryptedMessage;
+        } catch (Exception e) {
+            Logger.error("Error encrypting the command: " + e.getMessage());
+            return encryptedMessage;
+        }
+    }
 }
