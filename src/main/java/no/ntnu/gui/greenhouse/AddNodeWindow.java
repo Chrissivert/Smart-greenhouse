@@ -20,6 +20,8 @@ public class AddNodeWindow extends Stage {
     private TextField fansField;
     private TextField heatersField;
 
+    private GreenhouseApplication greenhouseApplication = new GreenhouseApplication();
+
     private static TextField actuatorId;
 
     private static ChoiceBox<String> trueFalseChoiceBox;
@@ -35,11 +37,11 @@ public class AddNodeWindow extends Stage {
         buttonActionHandler = new ButtonActionHandler(simulator);
         VBox root = new VBox();
 
-        temperatureField = createCustomTextField("Amount of temperature sensors", 1, 200);
-        humidityField = createCustomTextField("Amount of humidity sensors", 1, 200);
-        windowsField = createCustomTextField("Amount of windows", 1, 200);
-        fansField = createCustomTextField("Amount of fans", 1, 200);
-        heatersField = createCustomTextField("Amount of heaters", 1, 200);
+        temperatureField = createCustomTextField("Amount of temperature sensors", 3, 200);
+        humidityField = createCustomTextField("Amount of humidity sensors", 3, 200);
+        windowsField = createCustomTextField("Amount of windows", 3, 200);
+        fansField = createCustomTextField("Amount of fans", 3, 200);
+        heatersField = createCustomTextField("Amount of heaters", 3, 200);
 
         root.getChildren().addAll(
                 temperatureField, humidityField, windowsField, fansField, heatersField, createNodeButtons());
@@ -89,9 +91,9 @@ public class AddNodeWindow extends Stage {
     private void createNewNode() {
         SensorActuatorNode newNode = DeviceFactory.createNode(getTemperature(), getHumidity(), getMyWindows(), getFans(), getHeaters());
         simulator.addNode(newNode);
+        greenhouseApplication.onNodeReady(newNode);
         newNode.start();
-        NodeGuiWindow nodeGuiWindow = new NodeGuiWindow(newNode);
-        nodeGuiWindow.show();
+        newNode.addStateListener(greenhouseApplication);
         close();
     }
 
