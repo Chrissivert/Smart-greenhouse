@@ -17,14 +17,14 @@ public class ButtonActionHandler {
     }
 
     public void handleTurnOnAllActuators() {
-        for (int i = 0; i < simulator.nodes.size(); i++) {
+        for (int i = 0; i <= simulator.nodes.size(); i++) {
             if (!(simulator.nodes.get(i) == null)) {
                 simulator.nodes.get(i).setAllActuators(true);
             }
         }
     }
     public void handleTurnOffAllActuators() {
-        for (int i = 0; i < simulator.nodes.size(); i++) {
+        for (int i = 0; i <= simulator.nodes.size(); i++) {
             if (!(simulator.nodes.get(i) == null)) {
                 simulator.nodes.get(i).setAllActuators(false);
             }

@@ -77,7 +77,8 @@ public class AddNodeWindow extends Stage {
 
     private void checkIfFieldsAreValid() {
 
-        if (temperatureField.getText().isEmpty() || humidityField.getText().isEmpty() || windowsField.getText().isEmpty() || fansField.getText().isEmpty() || heatersField.getText().isEmpty()) {
+        if (temperatureField.getText().isEmpty() || humidityField.getText().isEmpty()
+                || windowsField.getText().isEmpty() || fansField.getText().isEmpty() || heatersField.getText().isEmpty()) {
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Warning");
             alert.setHeaderText("Empty Fields");
@@ -101,7 +102,7 @@ public class AddNodeWindow extends Stage {
         List<String> nodeNames = new ArrayList<>();
         for (SensorActuatorNode node : simulator.nodes.values()) {
             System.out.println("value added" + node.getId());
-            nodeNames.add(String.valueOf(node.getId())); // Assuming a method getName() returns the node name
+            nodeNames.add(String.valueOf(node.getId()));
         }
         return nodeNames;
     }
