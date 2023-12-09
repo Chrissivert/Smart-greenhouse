@@ -16,14 +16,8 @@ import static no.ntnu.tools.Parser.parseDoubleOrError;
 import static no.ntnu.tools.Parser.parseIntegerOrError;
 
 /**
- * The central logic of a control panel node. It uses a communication channel to send commands
- * and receive events. It supports listeners who will be notified on changes (for example, a new
- * node is added to the network, or a new sensor reading is received).
- * Note: this class may look like unnecessary forwarding of events to the GUI. In real projects
- * (read: "big projects") this logic class may do some "real processing" - such as storing events
- * in a database, doing some checks, sending emails, notifications, etc. Such things should never
- * be placed inside a GUI class (JavaFX classes). Therefore, we use proper structure here, even
- * though you may have no real control-panel logic in your projects.
+ * The logic of a controlPanel. It uses a communication channel to send commands
+ * and receive events.
  */
 public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListener,
         CommunicationChannelListener {
@@ -137,7 +131,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     public void actuatorUpdated(int nodeId, Actuator actuator) {
         if (communicationChannel != null) {
             communicationChannel.sendActuatorChange(nodeId, actuator.getId(), actuator.isOn());
-            System.out.println("Sending actuator change to server");
+            System.out.println("Sending actuator change to greenhouse");
         }
         listeners.forEach(listener ->
                 listener.onActuatorStateChanged(nodeId, actuator.getId(), actuator.isOn())

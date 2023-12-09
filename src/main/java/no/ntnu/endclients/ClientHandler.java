@@ -10,10 +10,9 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class ClientHandler extends Thread {
@@ -22,6 +21,8 @@ public class ClientHandler extends Thread {
     private BufferedReader reader;
     private PrintWriter writer;
     private KeyPair keyPair;
+    private PublicKey socketPublicKey;
+
 
 
     /**
@@ -48,9 +49,12 @@ public class ClientHandler extends Thread {
      */
     @Override
     public void run() {
-        PublicKey clientPublicKey = getPublicKey();
-        String encodedPublicKey = Base64.getEncoder().encodeToString(clientPublicKey.getEncoded());
-        writer.println(encodedPublicKey);
+        sendPublicKey();
+        try {
+            readPublicKey();
+        } catch (IOException | InvalidKeySpecException | NoSuchAlgorithmException e) {
+            throw new RuntimeException(e);
+        }
         try {
             System.out.println("Client on port: " + socket.getPort() + " is connected");
             String inputLine;
@@ -66,6 +70,18 @@ public class ClientHandler extends Thread {
         String clientAddress = socket.getRemoteSocketAddress().toString();
         Logger.info("Client at " + clientAddress + " has disconnected.");
         simulator.removeDisconnectedClient(this);
+    }
+
+    private void readPublicKey() throws IOException, NoSuchAlgorithmException, InvalidKeySpecException {
+        String encodedPublicKey = reader.readLine();
+        byte[] publicKeyBytes = Base64.getDecoder().decode(encodedPublicKey);
+        this.socketPublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBytes));
+    }
+
+    private void sendPublicKey() {
+        PublicKey clientPublicKey = getPublicKey();
+        String encodedPublicKey = Base64.getEncoder().encodeToString(clientPublicKey.getEncoded());
+        writer.println(encodedPublicKey);
     }
 
     /**
@@ -87,12 +103,12 @@ public class ClientHandler extends Thread {
     }
 
     private void handleGetNodesCommand() {
-       writer.println(simulator.getNodes());
+       writer.println(encryptCommand(simulator.getNodes()));
     }
 
 
     private void handleUpdateSensorCommand() {
-        writer.println(simulator.updateSensors());
+        writer.println(encryptCommand(simulator.updateSensors()));
     }
 
 
@@ -107,8 +123,9 @@ public class ClientHandler extends Thread {
             simulator.handleActuator(actuatorId, nodeId, isOn);
 
             String state = isOn ? "OFF" : "ON";
-            writer.println("  >>> Server response: Actuator[" + actuatorId +
-                    "] on node " + nodeId + " is set to " + state);
+
+            writer.println(encryptCommand("  >>> Server response: Actuator[" + actuatorId +
+                    "] on node " + nodeId + " is set to " + state));
         } else {
             Logger.error("Incorrect command format: " + rawCommand);
         }
@@ -134,11 +151,29 @@ public class ClientHandler extends Thread {
 
             //Logger.info("Decrypted Message: " + decryptedMessage);
         } catch (Exception e) {
-            e.printStackTrace();
+            Logger.error("Error decrypting the command: " + e.getMessage());
         }
         return decryptedMessage;
     }
 
+    private String encryptCommand(String command) {
+        String encryptedMessage = null;
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.ENCRYPT_MODE, socketPublicKey);
+
+            byte[] encryptedBytes = cipher.doFinal(command.getBytes());
+
+            encryptedMessage = Base64.getEncoder().encodeToString(encryptedBytes);
+
+            //Logger.info("Encrypted Message: " + encryptedMessage);
+
+            return encryptedMessage;
+        } catch (Exception e) {
+            Logger.error("Error encrypting the command: " + e.getMessage());
+            return encryptedMessage;
+        }
+    }
 
     public PublicKey getPublicKey() {
         return keyPair.getPublic();

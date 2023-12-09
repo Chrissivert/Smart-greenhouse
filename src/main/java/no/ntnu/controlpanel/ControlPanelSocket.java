@@ -14,6 +14,7 @@ import java.net.Socket;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.sql.SQLOutput;
 import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
@@ -77,9 +78,8 @@ public class ControlPanelSocket implements CommunicationChannel {
             socketWriter = new PrintWriter(socket.getOutputStream(), true);
             socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            String encodedPublicKey = socketReader.readLine();
-            byte[] publicKeyBytes = Base64.getDecoder().decode(encodedPublicKey);
-            this.clientPublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBytes));
+           readPublicKey();
+           sendPublicKey();
 
             Logger.info("Successfully connected to: " + SERVER_HOST + ":" + PORT_NUMBER);
 
@@ -93,6 +93,18 @@ public class ControlPanelSocket implements CommunicationChannel {
         } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private void readPublicKey() throws NoSuchAlgorithmException, InvalidKeySpecException, IOException {
+        String encodedPublicKey = socketReader.readLine();
+        byte[] publicKeyBytes = Base64.getDecoder().decode(encodedPublicKey);
+        this.clientPublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBytes));
+    }
+
+    private void sendPublicKey() {
+        PublicKey clientPublicKey = getPublicKey();
+        String encodedPublicKey = Base64.getEncoder().encodeToString(clientPublicKey.getEncoded());
+        socketWriter.println(encodedPublicKey);
     }
 
     /**
@@ -122,24 +134,18 @@ public class ControlPanelSocket implements CommunicationChannel {
         Logger.info("Requesting nodes from server...");
         String nodes;
         try {
-            nodes = socketReader.readLine();
-            System.out.println("Nodes" + nodes);
+            nodes = decryptMessage(socketReader.readLine());
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
-
-        if (nodes.equals("null")) {
-            Logger.info("Nodes not loaded, since no nodes received");
-
-        } else {
             String[] nodeList = nodes.split("/");
 
             for (String node : nodeList) {
+                System.out.println(node);
                 logic.onNodeAdded(logic.createSensorNodeInfoFrom(node));
             }
             Logger.info("Nodes loaded");
         }
-    }
 
     /**
      * This method should update the sensors continually.
@@ -149,7 +155,7 @@ public class ControlPanelSocket implements CommunicationChannel {
         socketWriter.println(encryptedCommand);
         String sensors = "";
         try {
-            sensors = socketReader.readLine();
+            sensors = decryptMessage(socketReader.readLine());
         } catch (IOException e) {
             Logger.info("Stopping sensor reading");
         }
@@ -183,17 +189,36 @@ public class ControlPanelSocket implements CommunicationChannel {
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, clientPublicKey);
-
             byte[] encryptedBytes = cipher.doFinal(command.getBytes());
 
             encryptedMessage = Base64.getEncoder().encodeToString(encryptedBytes);
 
             //Logger.info("Encrypted Message: " + encryptedMessage);
-
             return encryptedMessage;
         } catch (Exception e) {
             Logger.error("Error encrypting the command: " + e.getMessage());
             return encryptedMessage;
         }
     }
+
+    private String decryptMessage(String commandToDecrypt) {
+        String decryptedMessage = null;
+        try {
+            Cipher cipher = Cipher.getInstance("RSA");
+            cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(commandToDecrypt));
+
+            decryptedMessage = new String(decryptedBytes);
+
+            //Logger.info("Decrypted Message: " + decryptedMessage);
+        } catch (Exception e) {
+            Logger.error("Error decrypting the command: " + e.getMessage());
+        }
+        return decryptedMessage;
+    }
+
+    public PublicKey getPublicKey() {
+        return keyPair.getPublic();
+    }
+
 }
