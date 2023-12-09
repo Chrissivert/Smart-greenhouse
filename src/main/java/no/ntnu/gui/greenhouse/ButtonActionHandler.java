@@ -32,16 +32,6 @@ public class ButtonActionHandler {
         }
     }
 
-    public void controlActuatorsByType(String type, boolean isOn) {
-        for (SensorActuatorNode node : GreenhouseSimulator.nodes.values()) {
-            for (int i = 0; i < node.getActuators().size(); i++) {
-                if (node.getActuators().get(i).getType().equals(type)) {
-                    node.setActuator(i, isOn);
-                }
-            }
-        }
-    }
-
 
     public void setStateOfActuator(int node, int actuatorId, boolean state) {
         SensorActuatorNode sensorActuatorNode = GreenhouseSimulator.nodes.get(node);

@@ -1,9 +1,14 @@
 package no.ntnu.gui.greenhouse;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.LineChart;
+import javafx.scene.chart.NumberAxis;
+import javafx.scene.chart.XYChart;
 import javafx.scene.layout.VBox;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.text.Text;
@@ -50,6 +55,44 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         setMinHeight(WINDOW_WIDTH);
     }
 
+    private void createGraphWithData(VBox contentVBox) {
+        final NumberAxis xAxis = new NumberAxis();
+        final NumberAxis yAxis = new NumberAxis();
+        xAxis.setLabel("Time");
+        yAxis.setLabel("Sensor Value");
+
+        final LineChart<Number, Number> lineChart = new LineChart<>(xAxis, yAxis);
+        lineChart.setTitle("Sensor Data");
+
+        // Generate fake sensor data for the graph
+        List<Double> sensorData = generateFakeSensorData(10); // Generating 10 fake data points
+
+        XYChart.Series<Number, Number> series = new XYChart.Series<>();
+        series.setName("Sensor Values");
+
+        // Add fake sensor data to the graph
+        int time = 1;
+        for (Double value : sensorData) {
+            series.getData().add(new XYChart.Data<>(time++, value));
+        }
+
+        lineChart.getData().add(series);
+
+        contentVBox.getChildren().add(lineChart); // Add the chart to the VBox
+    }
+    private List<Double> generateFakeSensorData(int dataSize) {
+        List<Double> sensorData = new ArrayList<>();
+        Random random = new Random();
+
+        // Generating random sensor data values
+        for (int i = 0; i < dataSize; i++) {
+            double value = 18 + random.nextDouble() * 10; // Random value between 18 and 28
+            sensorData.add(value);
+        }
+
+        return sensorData;
+    }
+
 
     private void initializeListeners(SensorActuatorNode node) {
         setOnCloseRequest(windowEvent -> shutDownNode());
@@ -61,6 +104,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         node.stop();
     }
 
+
     private Parent createContent() {
         actuatorPane = new ActuatorPane(node.getActuators(), false);
         sensorPane = new SensorPane(node.getSensors());
@@ -68,13 +112,15 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         VBox contentVBox = new VBox(sensorPane, actuatorPane);
         contentVBox.setSpacing(10);
 
+        // Add the graph to the content VBox
+        createGraphWithData(contentVBox);
+
         for (Actuator actuator : node.getActuators()) {
             Integer actuatorId = actuator.getId();
             String actuatorType = actuator.getType();
-                String displayText = "ActuatorId " + actuatorId + " Type: " + actuatorType;
-                Text actuatorIdText = new Text(displayText);
-                contentVBox.getChildren().add(actuatorIdText);
-
+            String displayText = "ActuatorId " + actuatorId + " Type: " + actuatorType;
+            Text actuatorIdText = new Text(displayText);
+            contentVBox.getChildren().add(actuatorIdText);
         }
 
         ScrollPane scrollPane = new ScrollPane(contentVBox);

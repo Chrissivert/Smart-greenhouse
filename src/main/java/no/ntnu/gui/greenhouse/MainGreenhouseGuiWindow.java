@@ -20,7 +20,7 @@ import no.ntnu.listeners.greenhouse.NodeStateListener;
 
 public class MainGreenhouseGuiWindow extends Scene {
     public static final int WIDTH = 300;
-    public static final int HEIGHT = 300;
+    public static final int HEIGHT = 400;
     private GreenhouseSimulator simulator;
     private ButtonActionHandler buttonActionHandler;
 

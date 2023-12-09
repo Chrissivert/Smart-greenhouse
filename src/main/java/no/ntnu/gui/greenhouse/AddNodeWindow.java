@@ -209,9 +209,11 @@ public class AddNodeWindow extends Stage {
 
     public void createTurnOnOffAllByType() {
         VBox vBox = new VBox();
+        ChoiceBox<String> actuatorType = new ChoiceBox<>();
+        actuatorType.getItems().addAll("Window", "Fan", "Heater");
         Button applyActionButton = new Button("Apply Action");
         applyActionButton.setOnAction(e -> {
-            String selectedActuatorType = createChoiceBoxWithTypes().getValue();
+            String selectedActuatorType = actuatorType.getValue();
             boolean isTurnOn = getTrueOrFalse();
 
             if (selectedActuatorType != null) {
@@ -243,20 +245,13 @@ public class AddNodeWindow extends Stage {
             }
         });
 
-        vBox.getChildren().addAll(createChoiceBoxWithTypes(), createTurnOnOffChoiceBox(), applyActionButton);
+        vBox.getChildren().addAll(actuatorType, createTurnOnOffChoiceBox(), applyActionButton);
 
         Scene scene = new Scene(vBox, 300, 200);
         Stage newStage = new Stage();
         newStage.setScene(scene);
         newStage.show();
     }
-
-    private ChoiceBox<String> createChoiceBoxWithTypes(){
-        ChoiceBox<String> actuatorType = new ChoiceBox<>();
-        actuatorType.getItems().addAll("Window", "Fan", "Heater");
-        return actuatorType;
-    }
-
 
 }
 
