@@ -1,5 +1,6 @@
 package no.ntnu.controlpanel;
 
+import no.ntnu.tools.EncrypterDecrypter;
 import no.ntnu.tools.Logger;
 
 import javax.crypto.Cipher;
@@ -26,9 +27,6 @@ public class ControlPanelSocket implements CommunicationChannel {
     private BufferedReader socketReader;
     private PrintWriter socketWriter;
     private boolean isConnected = false;
-    private static KeyPair keyPair;
-
-    private PublicKey clientPublicKey;
 
     /**
      * Creates an instance of ControlPanelSocket.
@@ -37,7 +35,6 @@ public class ControlPanelSocket implements CommunicationChannel {
      */
     public ControlPanelSocket(ControlPanelLogic logic) {
         this.logic = logic;
-        generateKeyPair();
     }
 
     /**
@@ -52,7 +49,7 @@ public class ControlPanelSocket implements CommunicationChannel {
         String on = isOn ? "0" : "1";
         String command = actuatorId + ", " + nodeId + ", " + on;
         try {
-            String encryptedCommand = encryptCommand(command);
+            String encryptedCommand = EncrypterDecrypter.encryptCommand(command);
             if (encryptedCommand != null) {
                 socketWriter.println(encryptedCommand);
                 String response = socketReader.readLine();
@@ -77,10 +74,6 @@ public class ControlPanelSocket implements CommunicationChannel {
             socketWriter = new PrintWriter(socket.getOutputStream(), true);
             socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            String encodedPublicKey = socketReader.readLine();
-            byte[] publicKeyBytes = Base64.getDecoder().decode(encodedPublicKey);
-            this.clientPublicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(publicKeyBytes));
-
             Logger.info("Successfully connected to: " + SERVER_HOST + ":" + PORT_NUMBER);
 
             getNodes();
@@ -90,8 +83,6 @@ public class ControlPanelSocket implements CommunicationChannel {
         } catch (IOException e) {
             Logger.error("Could not connect to server: " + e.getMessage());
             return false;
-        } catch (InvalidKeySpecException | NoSuchAlgorithmException e) {
-            throw new RuntimeException(e);
         }
     }
 
@@ -117,7 +108,7 @@ public class ControlPanelSocket implements CommunicationChannel {
      * the controlPanel.
      */
     public void getNodes() {
-        String encryptedCommand = encryptCommand("getNodes");
+        String encryptedCommand = EncrypterDecrypter.encryptCommand("getNodes");
         socketWriter.println(encryptedCommand);
         Logger.info("Requesting nodes from server...");
         String nodes;
@@ -145,8 +136,7 @@ public class ControlPanelSocket implements CommunicationChannel {
      * This method should update the sensors continually.
      */
     public void updateSensorData() {
-        String encryptedCommand = encryptCommand("updateSensor");
-        socketWriter.println(encryptedCommand);
+        String encryptedCommand = EncrypterDecrypter.encryptCommand("updateSensor");
         String sensors = "";
         try {
             sensors = socketReader.readLine();
@@ -168,32 +158,4 @@ public class ControlPanelSocket implements CommunicationChannel {
         }, 0, 1000);
     }
 
-    private void generateKeyPair() {
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            keyPair = keyPairGenerator.generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String encryptCommand(String command) {
-        String encryptedMessage = null;
-        try {
-            Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.ENCRYPT_MODE, clientPublicKey);
-
-            byte[] encryptedBytes = cipher.doFinal(command.getBytes());
-
-            encryptedMessage = Base64.getEncoder().encodeToString(encryptedBytes);
-
-            //Logger.info("Encrypted Message: " + encryptedMessage);
-
-            return encryptedMessage;
-        } catch (Exception e) {
-            Logger.error("Error encrypting the command: " + e.getMessage());
-            return encryptedMessage;
-        }
-    }
 }

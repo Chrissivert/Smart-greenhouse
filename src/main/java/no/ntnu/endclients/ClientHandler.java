@@ -1,27 +1,20 @@
 package no.ntnu.endclients;
 
 import no.ntnu.greenhouse.GreenhouseSimulator;
+import no.ntnu.tools.EncrypterDecrypter;
 import no.ntnu.tools.Logger;
 
-
-import javax.crypto.Cipher;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.security.KeyPair;
-import java.security.KeyPairGenerator;
-import java.security.NoSuchAlgorithmException;
-import java.security.PublicKey;
-import java.util.Base64;
 
 public class ClientHandler extends Thread {
     protected Socket socket;
     private final GreenhouseSimulator simulator;
     private BufferedReader reader;
     private PrintWriter writer;
-    private KeyPair keyPair;
 
 
     /**
@@ -33,7 +26,6 @@ public class ClientHandler extends Thread {
     public ClientHandler(Socket socket, GreenhouseSimulator simulator) {
         this.socket = socket;
         this.simulator = simulator;
-        generateKeyPair();
         try {
             reader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
             writer = new PrintWriter(socket.getOutputStream(), true);
@@ -48,14 +40,11 @@ public class ClientHandler extends Thread {
      */
     @Override
     public void run() {
-        PublicKey clientPublicKey = getPublicKey();
-        String encodedPublicKey = Base64.getEncoder().encodeToString(clientPublicKey.getEncoded());
-        writer.println(encodedPublicKey);
         try {
             System.out.println("Client on port: " + socket.getPort() + " is connected");
             String inputLine;
             while ((inputLine = reader.readLine()) != null) {
-                String a = decryptMessage(inputLine);
+                String a = EncrypterDecrypter.decryptMessage(inputLine);
                 handleInput(a);
                 writer.println(a);
             }
@@ -112,35 +101,5 @@ public class ClientHandler extends Thread {
         } else {
             Logger.error("Incorrect command format: " + rawCommand);
         }
-    }
-    private void generateKeyPair() {
-        try {
-            KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");
-            keyPairGenerator.initialize(2048);
-            keyPair = keyPairGenerator.generateKeyPair();
-        } catch (NoSuchAlgorithmException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private String decryptMessage(String commandToDecrypt) {
-        String decryptedMessage = null;
-        try {
-            Cipher cipher = Cipher.getInstance("RSA");
-            cipher.init(Cipher.DECRYPT_MODE, keyPair.getPrivate());
-            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(commandToDecrypt));
-
-            decryptedMessage = new String(decryptedBytes);
-
-            //Logger.info("Decrypted Message: " + decryptedMessage);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-        return decryptedMessage;
-    }
-
-
-    public PublicKey getPublicKey() {
-        return keyPair.getPublic();
     }
 }
