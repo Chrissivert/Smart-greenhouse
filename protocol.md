@@ -47,7 +47,7 @@ sends information from the ControlPanelClients to the GreenHouseClients and vice
 and when a change is made in one of them, the Server sends the information to the GreenHouseClient and other ControlPanelClients.
 This means the system is synchronized between all clients. 
 
-![Alt text](images/NetworkArchitecture(1).png)
+![img.png](images/NetworkArchitecture.png)
 
 ## The flow of information and events
 
