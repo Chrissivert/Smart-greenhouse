@@ -121,11 +121,13 @@ public class GreenhouseSimulator {
      */
     public void stop() {
         stopCommunication();
-        for (SensorActuatorNode node : nodes.values()) {
-            System.out.println("STOPPING NODE " + node.getId());
-            node.stop();
+        System.out.println(nodes.size() + " nodes");
+        System.out.println(nodes.values().size() + " nodes");
+//        try{
+            nodes.values().forEach(SensorActuatorNode::stop);
+//        }catch (Exception e){
         }
-    }
+//    }
 
     private void stopCommunication() {
         if (fake) {
@@ -288,7 +290,7 @@ public class GreenhouseSimulator {
         }
     }
 
-    public void setCheckboxesEnabled(boolean enabled) {
-//        checkboxesEnabled = enabled;
+    public Map<Integer, SensorActuatorNode> getMap(){
+        return this.nodes;
     }
 }

@@ -7,6 +7,7 @@ import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
+import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
@@ -66,6 +67,7 @@ public class GreenhouseApplication extends Application implements NodeStateListe
 
     @Override
     public void onNodeStopped(SensorActuatorNode node) {
+        simulator.getMap().keySet().remove(node.getId());
         NodeGuiWindow window = nodeWindows.remove(node);
         if (window != null) {
             Platform.runLater(window::close);

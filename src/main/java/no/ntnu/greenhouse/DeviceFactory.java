@@ -146,4 +146,7 @@ public class DeviceFactory {
         return nextNodeId++;
     }
 
+    public static void removeNode(SensorActuatorNode node) {
+       node.stop();
+    }
 }
