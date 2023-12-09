@@ -40,6 +40,7 @@ public class MainGreenhouseGuiWindow extends Scene {
                 createTurnOffAllActuatorsButton(),
                 createChangeSpecificActuatorStateStage(),
                 createGetStateOfSpecificActuator(),
+                createTurnOnOffAllActuatorsByType(),
                 createInfoLabel(),
                 createMasterImage(),
                 createCopyrightNotice()
@@ -114,5 +115,12 @@ public class MainGreenhouseGuiWindow extends Scene {
         Button turnOffAllActuatorsButton = new Button("Turn off all actuators");
         turnOffAllActuatorsButton.setOnAction(e -> buttonActionHandler.handleTurnOffAllActuators());
         return turnOffAllActuatorsButton;
+    }
+
+    private Button createTurnOnOffAllActuatorsByType(){
+        Button turnOnAllActuatorsButton = new Button("Turn on/off all actuators by type");
+//        turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.controlActuatorsByType("heater", true));
+        turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.createSetActuatorByTypeStateStage());
+        return turnOnAllActuatorsButton;
     }
 }

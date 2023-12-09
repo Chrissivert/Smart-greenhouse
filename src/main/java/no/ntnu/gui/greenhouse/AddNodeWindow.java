@@ -5,6 +5,7 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import no.ntnu.greenhouse.Actuator;
 import no.ntnu.gui.factory.TextFieldFactory;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
@@ -205,5 +206,57 @@ public class AddNodeWindow extends Stage {
         newStage.setScene(scene);
         newStage.show();
     }
+
+    public void createTurnOnOffAllByType() {
+        VBox vBox = new VBox();
+        Button applyActionButton = new Button("Apply Action");
+        applyActionButton.setOnAction(e -> {
+            String selectedActuatorType = createChoiceBoxWithTypes().getValue();
+            boolean isTurnOn = getTrueOrFalse();
+
+            if (selectedActuatorType != null) {
+                for (SensorActuatorNode node : simulator.nodes.values()) {
+                    for (Actuator actuator : node.getActuators()) {
+                        if (selectedActuatorType.equalsIgnoreCase("Window") && actuator.getType().equalsIgnoreCase("Window")) {
+                            if (isTurnOn) {
+                                actuator.turnOn();
+                            } else {
+                                actuator.turnOff();
+                            }
+                        } else if (selectedActuatorType.equalsIgnoreCase("Fan") && actuator.getType().equalsIgnoreCase("Fan")) {
+                            if (isTurnOn) {
+                                actuator.turnOn();
+                            } else {
+                                actuator.turnOff();
+                            }
+                        } else if (selectedActuatorType.equalsIgnoreCase("Heater") && actuator.getType().equalsIgnoreCase("Heater")) {
+                            if (isTurnOn) {
+                                actuator.turnOn();
+                            } else {
+                                actuator.turnOff();
+                            }
+                        }
+                    }
+                }
+            } else {
+                System.out.println("Please select an actuator type.");
+            }
+        });
+
+        vBox.getChildren().addAll(createChoiceBoxWithTypes(), createTurnOnOffChoiceBox(), applyActionButton);
+
+        Scene scene = new Scene(vBox, 300, 200);
+        Stage newStage = new Stage();
+        newStage.setScene(scene);
+        newStage.show();
+    }
+
+    private ChoiceBox<String> createChoiceBoxWithTypes(){
+        ChoiceBox<String> actuatorType = new ChoiceBox<>();
+        actuatorType.getItems().addAll("Window", "Fan", "Heater");
+        return actuatorType;
+    }
+
+
 }
 

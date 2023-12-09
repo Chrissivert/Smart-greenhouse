@@ -31,6 +31,18 @@ public class ButtonActionHandler {
             }
         }
     }
+
+    public void controlActuatorsByType(String type, boolean isOn) {
+        for (SensorActuatorNode node : GreenhouseSimulator.nodes.values()) {
+            for (int i = 0; i < node.getActuators().size(); i++) {
+                if (node.getActuators().get(i).getType().equals(type)) {
+                    node.setActuator(i, isOn);
+                }
+            }
+        }
+    }
+
+
     public void setStateOfActuator(int node, int actuatorId, boolean state) {
         SensorActuatorNode sensorActuatorNode = GreenhouseSimulator.nodes.get(node);
         if (sensorActuatorNode != null) {
@@ -53,6 +65,12 @@ public class ButtonActionHandler {
         AddNodeWindow inputWindow = new AddNodeWindow(simulator);
         inputWindow.createSetActuatorStage();
      }
+
+    public void createSetActuatorByTypeStateStage() {
+        AddNodeWindow inputWindow = new AddNodeWindow(simulator);
+        inputWindow.createTurnOnOffAllByType();
+    }
+
 
     public void getStateOfActuatorStage() {
         AddNodeWindow inputWindow = new AddNodeWindow(simulator);
