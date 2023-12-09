@@ -6,7 +6,6 @@ import java.util.List;
 
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
-import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.greenhouse.SensorReading;
 import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.common.CommunicationChannelListener;
@@ -64,26 +63,54 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         }
     }
 
+    /**
+     * Event handler for when a sensor/actuator node is added to the network.
+     *
+     * @param nodeInfo Information about the added node
+     */
     @Override
     public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
         listeners.forEach(listener -> listener.onNodeAdded(nodeInfo));
     }
 
+    /**
+     * Event handler for when a sensor/actuator node is removed from the network.
+     *
+     * @param nodeId The ID of the removed node
+     */
     @Override
     public void onNodeRemoved(int nodeId) {
         listeners.forEach(listener -> listener.onNodeRemoved(nodeId));
     }
 
+    /**
+     * Event handler for when sensor data is received from a node.
+     *
+     * @param nodeId  The ID of the node sending sensor data
+     * @param sensors List of sensor readings
+     */
     @Override
     public void onSensorData(int nodeId, List<SensorReading> sensors) {
         listeners.forEach(listener -> listener.onSensorData(nodeId, sensors));
     }
 
+    /**
+     * Event handler for when the state of an actuator changes.
+     *
+     * @param nodeId    The ID of the node where the actuator is located
+     * @param actuatorId The ID of the actuator whose state changed
+     * @param isOn      The new state of the actuator
+     */
     @Override
     public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
         listeners.forEach(listener -> listener.onActuatorStateChanged(nodeId, actuatorId, isOn));
     }
 
+    /**
+     * Turn on or off all actuators in all connected nodes.
+     *
+     * @param isOn True to turn on, false to turn off
+     */
     public void actuatorTurnOnAllActuators(boolean isOn) {
         for (SensorActuatorNodeInfo nodeInfo : nodeInfoList) {
             ActuatorCollection actuatorList = nodeInfo.getActuators();
@@ -100,6 +127,12 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         }
     }
 
+    /**
+     * Event handler for when an actuator is updated.
+     *
+     * @param nodeId   The ID of the node where the actuator is located
+     * @param actuator The updated actuator
+     */
     @Override
     public void actuatorUpdated(int nodeId, Actuator actuator) {
         if (communicationChannel != null) {
@@ -111,6 +144,9 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         );
     }
 
+    /**
+     * Event handler for when the communication channel is closed.
+     */
     @Override
     public void onCommunicationChannelClosed() {
         Logger.info("Communication closed, updating logic...");
@@ -120,10 +156,22 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     }
 
 
+    /**
+     * Get the communication channel.
+     *
+     * @return The communication channel
+     */
     public CommunicationChannel getCommunicationChannel() {
         return communicationChannel;
     }
 
+    /**
+     * Create a SensorActuatorNodeInfo object from a specification string.
+     *
+     * @param specification The specification string in the format "nodeId;actuatorId1_actuatorType1 actuatorId2_actuatorType2 ..."
+     * @return The created SensorActuatorNodeInfo
+     * @throws IllegalArgumentException If the specification is empty or incorrectly formatted
+     */
     public SensorActuatorNodeInfo createSensorNodeInfoFrom(String specification) {
         if (specification == null || specification.isEmpty()) {
             throw new IllegalArgumentException("Node specification can't be empty");
