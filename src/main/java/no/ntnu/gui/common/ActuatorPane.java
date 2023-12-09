@@ -15,6 +15,7 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.VBox;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.ActuatorCollection;
+import no.ntnu.greenhouse.GreenhouseSimulator;
 
 /**
  * A section of the GUI representing a list of actuators. Can be used both on the sensor/actuator
@@ -23,14 +24,16 @@ import no.ntnu.greenhouse.ActuatorCollection;
 public class ActuatorPane extends TitledPane {
     private final Map<Actuator, SimpleStringProperty> actuatorValue = new HashMap<>();
     private final Map<Actuator, SimpleBooleanProperty> actuatorActive = new HashMap<>();
+    private boolean isCheckable;
 
     /**
      * Create an actuator pane.
      *
      * @param actuators A list of actuators to display in the pane.
      */
-    public ActuatorPane(ActuatorCollection actuators) {
+    public ActuatorPane(ActuatorCollection actuators, boolean isCheckable) {
         super();
+        this.isCheckable = isCheckable;
         setText("Actuators");
         VBox vbox = new VBox();
         vbox.setSpacing(10);
@@ -50,11 +53,12 @@ public class ActuatorPane extends TitledPane {
         actuatorGui.setSpacing(5);
         return actuatorGui;
     }
-
     private CheckBox createActuatorCheckbox(Actuator actuator) {
         CheckBox checkbox = new CheckBox();
         SimpleBooleanProperty isSelected = new SimpleBooleanProperty(actuator.isOn());
         actuatorActive.put(actuator, isSelected);
+        checkbox.setDisable(!isCheckable);
+
         checkbox.selectedProperty().bindBidirectional(isSelected);
         checkbox.selectedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue != null && newValue) {

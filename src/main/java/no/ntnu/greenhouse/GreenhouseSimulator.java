@@ -287,4 +287,8 @@ public class GreenhouseSimulator {
             node.addStateListener(listener);
         }
     }
+
+    public void setCheckboxesEnabled(boolean enabled) {
+//        checkboxesEnabled = enabled;
+    }
 }

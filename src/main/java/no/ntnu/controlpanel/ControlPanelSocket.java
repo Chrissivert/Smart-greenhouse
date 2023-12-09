@@ -1,13 +1,8 @@
 package no.ntnu.controlpanel;
 
-import no.ntnu.endclients.ClientHandler;
 import no.ntnu.tools.Logger;
 
 import javax.crypto.Cipher;
-import javax.crypto.KeyGenerator;
-import javax.crypto.SecretKey;
-import javax.crypto.spec.SecretKeySpec;
-
 import static no.ntnu.greenhouse.GreenhouseSimulator.PORT_NUMBER;
 import static no.ntnu.run.ControlPanelStarter.SERVER_HOST;
 
