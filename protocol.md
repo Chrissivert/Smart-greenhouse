@@ -24,8 +24,8 @@ distributed application.
 ## The underlying transport protocol
 
 The group choose to use TCP instead of UDP. TCP is a connection-oriented protocol which means that
-a connection is established before any useful data is transferred.
-TCP provides features such as error-checking, acknowledgment of received data and retransmission of lost packets.
+a connection is established before any useful data is transferred. TCP provides features such as 
+error-checking, acknowledgment of received data and retransmission of lost packets.
 This ensures that each packet is delivered in the correct order and none is lost or duplicated.
 In our greenhouse we need to be sure that each packet is delivered. For instance if one node turns on or off
 an actuator, we need to be sure that the other nodes receive this information. TCP also has flow control 
@@ -40,30 +40,37 @@ are usually available and not reserved for specific services. This also ensures 
 
 ## The architecture
 
-The architecture of the system is ControlPanelClient-Server-GreenHouseClient. The GreenHouseClient is responsible for 
-simulating the greenhouse and showing the data from the sensors and actuators. The ControlPanelClient(s) are the GUI(s) where
-the user(s) can interact with the system (AKA the greenhouse). The Server is the middleman between the ControlPanelClients and
-sends information from the ControlPanelClients to the GreenHouseClients and vice versa. There can be multiple ControlPanelClients
-and when a change is made in one of them, the Server sends the information to the GreenHouseClient and other ControlPanelClients.
-This means the system is synchronized between all clients. 
+The architecture of the system is ControlPanelClient-GreenhouseSimulator-GreenHouseApplication. The ControlPanelClient
+is the GUI where the user can interact with the system. The GreenhouseSimulator acts as the server and is connected
+to the ClientHandler to handle requests from the ControlPanelClients. The GreenHouseApplication is the greenhouse
+itself and keeps track of the currently active nodes.
 
-![img.png](images/NetworkArchitecture.png)
+IMPORTANT: The structure and architecture of the communication is highly inspired by group 15's solution and some places
+identical.
+
+![img.png](images/NetworkArchitecture4.png)
 
 ## The flow of information and events
+Establishing a connection:
+1. The GreenhouseSimulator starts and waits for a connection from a ControlPanelClient.
+2. The ControlPanelClient starts and connects to the GreenhouseSimulator.
+3. The GreenhouseSimulator accepts the connection and creates a new ClientHandler thread.
+4. The ClientHandler thread starts and waits for a message from the ControlPanelClient.
+5. The ControlPanelClient sends a message to the GreenhouseSimulator.
+6. The ClientHandler receives the message and sends it to the GreenHouseApplication.
+7. The GreenHouseApplication receives the message and updates accordingly.
 
-TODO - describe what each network node does and when. Some periodic events? Some reaction on 
-incoming packets? Perhaps split into several subsections, where each subsection describes one 
-node type (For example: one subsection for sensor/actuator nodes, one for control panel nodes).
-
-There are no periodic events. Once a change is made in either one of the ControlPanelClients (actuator state changed)
-or the GreenHouseClient (sensor value changed), the Server sends the information to the other clients.
-
+Each sensor inside the greenhouse updates every 5 seconds. This can be changed in the SensorActuatorNode
+SENSING_DELAY constant. Once a sensor is updated the temperatureSensor chart within the node is updated.
+When a ControlPanelClient sends a command such as turning on or off an actuator, then the ClientHandler
+handles the command and sends it tt so the GreenHouseApplication.
 
 ## Connection and state
+Our communication protocol is connection-oriented because they establish a connection before any useful data is transferred.
+Our protocol is both stateful and stateless.
+The GreenhouseSimulator is stateful because it keeps track of the connected nodes and the GreenHouseApplication is stateful
+The GreenhouseApplication is stateful because it keeps 
 
-Connection-Oriented: TCP ensures a connection is established before data transfer.
-
-Stateful: The system maintains state for synchronization across clients.
 
 ## Types, constants
 
@@ -71,14 +78,35 @@ Value Types: Integer values for sensor and actuator data.
 
 ## Message format
 
+Message format for creating a node:
+1;2_window 4_heater
+
+
 TODO - describe the general format of all messages. Then describe specific format for each 
 message type in your protocol.
+
+Format for Client sending Actuator updates: "actuator[" + actuatorId + "] on node " + nodeId + " is " + state
 
 ### Error messages
 
 TODO - describe the possible error messages that nodes can send in your system.
 
 Error messages:
+"actuator not found"
+"No actuator section for node " + nodeId
+"Incorrect command format: " + rawCommand
+"Error encrypting the command."
+"Error sending command to actuator " + actuatorId + " on node " + nodeId + ": " + e.getMessage()  e = IOException
+"Could not connect to server: " + e.getMessage() e = IOException
+"Could not close connection: " + e.getMessage() e = IOException
+"while reading from the socket: " + e.getMessage() e = IOException
+"Incorrect command format: " + rawCommand
+"An error occurred while stopping communication"
+"TCP connection not established due to error : " + e.getMessage() e = IOException
+"Could not accept client connection: " + e.getMessage() e = IOException
+"Failed to toggle an actuator: " + e.getMessage() e = Exception
+"Can't remove node " + nodeId + ", there is no Tab for it"
+"No sensor section for node " + nodeId
 * `ERROR: <error message>` - sent by the server to the client when an error occurs
 
 ## An example scenario
@@ -86,6 +114,10 @@ Error messages:
 TODO - describe a typical scenario. How would it look like from communication perspective? When 
 are connections established? Which packets are sent? How do nodes react on the packets? An 
 example scenario could be as follows:
+
+
+
+
 1. A sensor node with ID=1 is started. It has a temperature sensor, two humidity sensors. It can
    also open a window.
 2. A sensor node with ID=2 is started. It has a single temperature sensor and can control two fans

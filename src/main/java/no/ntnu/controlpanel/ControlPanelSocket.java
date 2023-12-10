@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 
 /**
+ * IMPORANT! Much of this code is the same as the
  * The socket of a controlPanel. It uses a communication channel to send commands
  * and receive events.
  */
@@ -175,7 +176,8 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         //Unlock.
         this.readLineIsLocked = false;
 
-        if (nodes.equals("null")) {
+        //Does not contain a ";" if there are no nodes. base64 also does not have the symbol, so this catches decryption errors
+        if(!nodes.contains(";")) {
             Logger.info("Nodes not loaded, since no nodes received");
 
         } else {

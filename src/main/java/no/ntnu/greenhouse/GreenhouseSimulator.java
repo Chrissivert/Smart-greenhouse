@@ -24,7 +24,7 @@ public class GreenhouseSimulator {
     /**
      * The default port number for the server.
      */
-    public static final int PORT_NUMBER = 1238;
+    public static final int PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
 
     /**
@@ -54,9 +54,9 @@ public class GreenhouseSimulator {
      * Initialise the greenhouse but don't start the simulation just yet.
      */
     public void initialize() {
-        createNode(1, 2, 1, 0, 0);
-        createNode(1, 0, 0, 2, 1);
-        createNode(2, 0, 0, 0, 0);
+        createNode(1, 2, 1, 0, 1);
+//        createNode(1, 0, 0, 2, 1);
+//        createNode(2, 0, 0, 0, 0);
         Logger.info("Greenhouse initialized");
     }
 
@@ -114,8 +114,6 @@ public class GreenhouseSimulator {
      */
     public void stop() {
         stopCommunication();
-        System.out.println(nodes.size() + " nodes");
-        System.out.println(nodes.values().size() + " nodes");
             nodes.values().forEach(SensorActuatorNode::stop);
         }
 
@@ -196,7 +194,6 @@ public class GreenhouseSimulator {
      */
     public String getNodes() {
         Map<Integer, List<Actuator>> actuatorsByNode = new HashMap<>();
-
         for (SensorActuatorNode node : nodes.values()) {
             for (Actuator actuator : node.getActuators()) {
                 actuatorsByNode.computeIfAbsent(actuator.getNodeId(), k -> new ArrayList<>()).add(actuator);
