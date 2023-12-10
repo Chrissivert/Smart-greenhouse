@@ -48,7 +48,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
     public synchronized void run1() {
         try {
             String inputLine;
-            if(socketReader.ready() && !readLineIsLocked) {
+            if (socketReader.ready() && !readLineIsLocked) {
                 inputLine = socketReader.readLine();
                 String input = EncrypterDecrypter.decryptMessage(inputLine);
                 handleInput(input);
@@ -66,7 +66,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
      * @param rawCommand The command as a string
      */
     private void handleInput(String rawCommand) {
-        if(rawCommand == null){
+        if (rawCommand == null) {
             return;
         }
         if (rawCommand.equals("updateNodes")) {
@@ -178,7 +178,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         }
 
         //Does not contain a ";" if there are no nodes. base64 also does not have the symbol, so this catches decryption errors
-        if(!nodes.contains(";")) {
+        if (!nodes.contains(";")) {
             Logger.info("Nodes not loaded, since no nodes received");
 
         } else if (nodes.contains("=")) {

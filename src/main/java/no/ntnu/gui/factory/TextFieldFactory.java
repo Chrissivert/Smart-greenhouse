@@ -6,8 +6,8 @@ import no.ntnu.gui.builder.TextFieldBuilder;
 /**
  * Factory class for creating text fields.
  *
- * @version 2023.05.02
  * @author Chris Sivert Sylte
+ * @version 2023.05.02
  */
 public class TextFieldFactory {
     /**

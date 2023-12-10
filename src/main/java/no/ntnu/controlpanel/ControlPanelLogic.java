@@ -91,9 +91,9 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     /**
      * Event handler for when the state of an actuator changes.
      *
-     * @param nodeId    The ID of the node where the actuator is located
+     * @param nodeId     The ID of the node where the actuator is located
      * @param actuatorId The ID of the actuator whose state changed
-     * @param isOn      The new state of the actuator
+     * @param isOn       The new state of the actuator
      */
     @Override
     public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
@@ -188,7 +188,7 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
      * Parse a list of actuators from a string.
      *
      * @param actuatorSpecification The specification string in the format "actuatorId1_actuatorType1 actuatorId2_actuatorType2 ..."
-     * @param info                   The info object which will be passed to the actuators
+     * @param info                  The info object which will be passed to the actuators
      * @return The created ActuatorCollection
      * @throws IllegalArgumentException If the specification is empty or incorrectly formatted
      */

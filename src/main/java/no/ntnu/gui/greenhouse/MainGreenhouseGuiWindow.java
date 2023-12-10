@@ -117,7 +117,7 @@ public class MainGreenhouseGuiWindow extends Scene {
         return turnOffAllActuatorsButton;
     }
 
-    private Button createTurnOnOffAllActuatorsByType(){
+    private Button createTurnOnOffAllActuatorsByType() {
         Button turnOnAllActuatorsButton = new Button("Turn on/off all actuators by type");
 //        turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.controlActuatorsByType("heater", true));
         turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.createSetActuatorByTypeStateStage());

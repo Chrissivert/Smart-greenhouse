@@ -50,6 +50,7 @@ public class ControlPanelStarter {
 
     /**
      * Initiates the communication between the controlPanel and the server.
+     *
      * @param logic The logic of the controlPanel.
      * @return The communicationChannel.
      */
@@ -73,7 +74,7 @@ public class ControlPanelStarter {
      * Starts the communication listening loop.
      */
 
-    private void initiateRealCommunication(){
+    private void initiateRealCommunication() {
         while (socket.isOpen()) {
             if (socket != null) {
                 Timer timer = new Timer();
@@ -90,6 +91,7 @@ public class ControlPanelStarter {
 
     /**
      * Gets the communicationChannel.
+     *
      * @return The communicationChannel.
      */
 
@@ -106,6 +108,7 @@ public class ControlPanelStarter {
 
     /**
      * Initiates the socket communication of a connected controlPanel.
+     *
      * @param logic The logic of the controlPanel.
      * @return The communicationChannel.
      */
@@ -118,7 +121,7 @@ public class ControlPanelStarter {
     /**
      * Stops the communication of a connected controlPanel.
      */
-    private void stopCommunication(){
+    private void stopCommunication() {
         socket.close();
     }
 }

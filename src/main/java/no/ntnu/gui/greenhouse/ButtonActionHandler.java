@@ -63,16 +63,16 @@ public class ButtonActionHandler {
     /**
      * Get the state of a specific actuator.
      *
-     * @param node The node which the actuator belongs to
+     * @param node       The node which the actuator belongs to
      * @param actuatorId The id of the actuator
      * @return The state of the actuator
      */
 
     public boolean getStateOfActuator(int node, int actuatorId) {
         SensorActuatorNode sensorActuatorNode = GreenhouseSimulator.nodes.get(node);
-        if (GreenhouseSimulator.nodes.get(node).getActuators().get(actuatorId)==null){
+        if (GreenhouseSimulator.nodes.get(node).getActuators().get(actuatorId) == null) {
             Logger.info("Actuator does not exist");
-        }else{
+        } else {
             System.out.println(sensorActuatorNode.getActuators().get(actuatorId).isOn());
         }
         return sensorActuatorNode.getActuators().get(actuatorId).isOn();
@@ -86,7 +86,7 @@ public class ButtonActionHandler {
     public void createSetActuatorStateStage() {
         AddNodeWindow inputWindow = new AddNodeWindow(simulator);
         inputWindow.createSetActuatorStage();
-     }
+    }
 
     /**
      * Handle the action of creating set state of actuator by type stage

@@ -37,6 +37,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Create a window for adding a new node
+     *
      * @param simulator simulator to add the node to
      */
     public AddNodeWindow(GreenhouseSimulator simulator) {
@@ -57,12 +58,13 @@ public class AddNodeWindow extends Stage {
         scrollPane.setFitToWidth(true);
         scrollPane.setFitToHeight(true);
 
-        Scene scene = new Scene(scrollPane,300, 200);
+        Scene scene = new Scene(scrollPane, 300, 200);
         setScene(scene);
     }
 
     /**
      * Get temperature from textfield
+     *
      * @return temperature
      */
 
@@ -72,6 +74,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get humidity from textfield
+     *
      * @return humidity
      */
     public int getHumidity() {
@@ -80,6 +83,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get amount of windows from textfield
+     *
      * @return amount of windows
      */
     public int getMyWindows() {
@@ -88,6 +92,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get amount of fans from textfield
+     *
      * @return amount of fans
      */
     public int getFans() {
@@ -96,6 +101,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get amount of heaters from textfield
+     *
      * @return amount of heaters
      */
     public int getHeaters() {
@@ -135,6 +141,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get all current nodes
+     *
      * @return list of all current nodes
      */
 
@@ -149,6 +156,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Create node buttons
+     *
      * @return Hbox with buttons
      */
 
@@ -166,8 +174,9 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Create custom textfield
-     * @param promptText text to be displayed when textfield is empty
-     * @param maxLength max length of textfield
+     *
+     * @param promptText    text to be displayed when textfield is empty
+     * @param maxLength     max length of textfield
      * @param preferredSize preferred size of textfield
      * @return custom textfield
      */
@@ -183,10 +192,11 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Create choicebox with true or false
+     *
      * @return choicebox with true or false
      */
 
-    public ChoiceBox<String> createTurnOnOffChoiceBox(){
+    public ChoiceBox<String> createTurnOnOffChoiceBox() {
         trueFalseChoiceBox = new ChoiceBox<>();
         trueFalseChoiceBox.getItems().addAll("Turn on", "Turn off");
         return trueFalseChoiceBox;
@@ -194,10 +204,11 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Create choicebox with all current nodes
+     *
      * @return choicebox with all current nodes
      */
 
-    public  ChoiceBox<String> createAmountOfNodesChoiceBox(){
+    public ChoiceBox<String> createAmountOfNodesChoiceBox() {
         currentNodeChoiceBox = new ChoiceBox<>();
         currentNodeChoiceBox.getItems().addAll(getNodeNames());
         return currentNodeChoiceBox;
@@ -205,17 +216,19 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Create and handle the action of changing the state of a specific actuator.
+     *
      * @return button
      */
 
     public Button handleActuatorChange() {
         Button createNodeButton = new Button("Confirm");
-        createNodeButton.setOnAction(e -> buttonActionHandler.setStateOfActuator(getParsedNodeChoice(),getActuatorId(),getTrueOrFalse()));
+        createNodeButton.setOnAction(e -> buttonActionHandler.setStateOfActuator(getParsedNodeChoice(), getActuatorId(), getTrueOrFalse()));
         return createNodeButton;
     }
 
     /**
      * Create button with text
+     *
      * @param text text to be displayed on button
      * @return button with text
      */
@@ -226,6 +239,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get currently selected node from choicebox
+     *
      * @return currently selected node
      */
     public int getParsedNodeChoice() {
@@ -240,6 +254,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get actuator id from textfield
+     *
      * @return
      */
     public static int getActuatorId() {
@@ -249,6 +264,7 @@ public class AddNodeWindow extends Stage {
 
     /**
      * Get true or false from choicebox
+     *
      * @return true or false
      */
     public static boolean getTrueOrFalse() {

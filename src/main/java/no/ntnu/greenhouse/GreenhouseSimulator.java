@@ -39,7 +39,6 @@ public class GreenhouseSimulator {
     private boolean isServerRunning;
 
 
-
     /**
      * Create a greenhouse simulator.
      *
@@ -114,27 +113,27 @@ public class GreenhouseSimulator {
      */
     public void stop() {
         stopCommunication();
-            nodes.values().forEach(SensorActuatorNode::stop);
-        }
+        nodes.values().forEach(SensorActuatorNode::stop);
+    }
 
-        /**
-         * Stop the communication between the server and the client.
-         */
+    /**
+     * Stop the communication between the server and the client.
+     */
 
     private void stopCommunication() {
-            try {
-                serverSocket.close();
-                Logger.info("TCP connection successfully closed");
-            } catch (IOException e) {
-                Logger.error("An error occurred while stopping communication");
-            }
+        try {
+            serverSocket.close();
+            Logger.info("TCP connection successfully closed");
+        } catch (IOException e) {
+            Logger.error("An error occurred while stopping communication");
         }
+    }
 
     /**
      * Initiates the real communication between the server and the client.
      */
 
-    private void initiateRealCommunication(){
+    private void initiateRealCommunication() {
         try {
             serverSocket = new ServerSocket(SERVER_PORT_NUMBER);
 
@@ -179,8 +178,8 @@ public class GreenhouseSimulator {
      * @param nodeId     The ID of the node containing the actuator
      * @param isOn       Whether to turn the actuator on or off
      */
-    public void handleActuator(int actuatorId, int nodeId, boolean isOn){
-        if (!isOn){
+    public void handleActuator(int actuatorId, int nodeId, boolean isOn) {
+        if (!isOn) {
             nodes.get(nodeId).getActuators().get(actuatorId).turnOn();
         } else {
             nodes.get(nodeId).getActuators().get(actuatorId).turnOff();
@@ -254,10 +253,10 @@ public class GreenhouseSimulator {
      * @param command The original command string
      * @return The formatted command string
      */
-    public String formatSensorCommand(String command){
+    public String formatSensorCommand(String command) {
         return command.replace("{", "").replace("}", "")
                 .replace(",", "").replace("   ", ",")
-                .replace("type=","").replace(" value", "")
+                .replace("type=", "").replace(" value", "")
                 .replace("unit=", "").replace("; ", ";");
     }
 
@@ -297,7 +296,7 @@ public class GreenhouseSimulator {
      * @return A map of all the nodes in the greenhouse.
      */
 
-    public Map<Integer, SensorActuatorNode> getMap(){
-        return this.nodes;
+    public Map<Integer, SensorActuatorNode> getMap() {
+        return nodes;
     }
 }

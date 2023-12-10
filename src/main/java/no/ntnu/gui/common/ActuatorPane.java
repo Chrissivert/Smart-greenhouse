@@ -46,7 +46,7 @@ public class ActuatorPane extends TitledPane {
      * Add the actuators to the GUI.
      *
      * @param actuators The actuators to add
-     * @param parent The parent pane to add the actuators to
+     * @param parent    The parent pane to add the actuators to
      */
 
 
@@ -71,6 +71,7 @@ public class ActuatorPane extends TitledPane {
 
     /**
      * Create a checkbox for an actuator.
+     *
      * @param actuator The actuator to create a checkbox for
      * @return The checkbox
      */
@@ -94,6 +95,7 @@ public class ActuatorPane extends TitledPane {
 
     /**
      * Create a label for an actuator.
+     *
      * @param actuator The actuator to create a label for
      * @return The label
      */
@@ -108,6 +110,7 @@ public class ActuatorPane extends TitledPane {
 
     /**
      * Generate a string representing an actuator.
+     *
      * @param actuator The actuator to generate a string for
      * @return The string
      */

@@ -76,7 +76,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         setCommunicationChannel(channel);
         channel.open();
         if (!channel.isOpen()) {
-        logic.onCommunicationChannelClosed();
+            logic.onCommunicationChannelClosed();
         }
     }
 
@@ -91,7 +91,6 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         l.setAlignment(Pos.CENTER);
         return l;
     }
-
 
 
     @Override
@@ -161,7 +160,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     /**
      * Get the stored actuator.
      *
-     * @param nodeId    The ID of the node
+     * @param nodeId     The ID of the node
      * @param actuatorId The ID of the actuator
      * @return The actuator, or null if it is not found
      */
@@ -177,6 +176,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     /**
      * Forget the node info.
+     *
      * @param nodeId The ID of the node
      */
 
@@ -188,7 +188,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     /**
      * Remove the node tab.
-     * @param nodeId The ID of the node
+     *
+     * @param nodeId  The ID of the node
      * @param nodeTab The node tab
      */
 
@@ -199,6 +200,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     /**
      * Add a node tab.
+     *
      * @param nodeInfo The node info
      */
 
@@ -218,6 +220,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     /**
      * Create a node tab.
+     *
      * @param nodeInfo The node info
      * @return The node tab
      */
@@ -235,6 +238,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     /**
      * Create an empty sensor pane.
+     *
      * @return The sensor pane
      */
 
@@ -250,6 +254,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
 
     /**
      * Set the communication channel.
+     *
      * @param channel The communication channel
      */
 

@@ -94,6 +94,7 @@ public class SensorPane extends TitledPane {
 
     /**
      * Generate a string representing a sensor.
+     *
      * @param sensor The sensor to generate a string for
      * @return The string
      */
@@ -104,8 +105,9 @@ public class SensorPane extends TitledPane {
 
     /**
      * A sensor has been updated, update the corresponding GUI parts.
+     *
      * @param sensor The sensor which has been updated
-     * @param index The index of the sensor in the list of sensors
+     * @param index  The index of the sensor in the list of sensors
      */
 
     private void updateSensorLabel(SensorReading sensor, int index) {

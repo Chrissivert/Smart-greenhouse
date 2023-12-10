@@ -67,7 +67,7 @@ public class ClientHandler extends Thread {
      * @param rawCommand The command as a string
      */
     private void handleInput(String rawCommand) {
-        if(rawCommand == null){
+        if (rawCommand == null) {
             return;
         }
         if (rawCommand.equals("getNodes")) {
@@ -84,7 +84,7 @@ public class ClientHandler extends Thread {
      * Sends the list of nodes in the greenhouse to the client in an encrypted format.
      */
     private void handleGetNodesCommand() {
-       writer.println(EncrypterDecrypter.encryptMessage(simulator.getNodes()));
+        writer.println(EncrypterDecrypter.encryptMessage(simulator.getNodes()));
     }
 
 

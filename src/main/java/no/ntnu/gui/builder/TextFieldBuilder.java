@@ -7,12 +7,12 @@ import java.util.function.Consumer;
 /**
  * Class for building text fields
  *
- * @version 2023.05.18
  * @author Brage Solem and Chris Sivert Sylte
+ * @version 2023.05.18
  */
 public class TextFieldBuilder {
 
-    private TextField textField;
+    private final TextField textField;
 
     /**
      * Instantiates a new Text field builder.
@@ -70,7 +70,7 @@ public class TextFieldBuilder {
      * @param maxSize the max size
      * @return the text field builder
      */
-    public TextFieldBuilder setPreferedSize (int maxSize){
+    public TextFieldBuilder setPreferedSize(int maxSize) {
         textField.setMaxWidth(maxSize);
         return this;
     }
@@ -80,7 +80,7 @@ public class TextFieldBuilder {
      *
      * @return the text field
      */
-    public TextField build(){
+    public TextField build() {
         return textField;
     }
 }

@@ -56,9 +56,9 @@ public class DeviceFactory {
     /**
      * Add actuator(s) device with specific actuators.
      *
-     * @param node         The node to add the actuator to
-     * @param template     The template of the actuator to add (heater, fan, window)
-     * @param n            Number of actuators to add
+     * @param node     The node to add the actuator to
+     * @param template The template of the actuator to add (heater, fan, window)
+     * @param n        Number of actuators to add
      */
 
     static void addActuators(SensorActuatorNode node, Actuator template, int n) {

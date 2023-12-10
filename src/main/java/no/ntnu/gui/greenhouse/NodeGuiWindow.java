@@ -41,7 +41,6 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
     private XYChart.Series<Number, Number> series;
 
 
-
     /**
      * Create a GUI window for a specific node.
      *
