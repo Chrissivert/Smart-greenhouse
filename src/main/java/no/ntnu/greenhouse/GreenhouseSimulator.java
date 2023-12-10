@@ -96,9 +96,9 @@ public class GreenhouseSimulator {
      * Initiates the communication between the server and the client.
      */
     private void initiateCommunication() {
-            Thread serverThread = new Thread(this::initiateRealCommunication);
-            serverThread.start();
-        }
+        Thread serverThread = new Thread(this::initiateRealCommunication);
+        serverThread.start();
+    }
 
     /**
      * Add a new node to the greenhouse.

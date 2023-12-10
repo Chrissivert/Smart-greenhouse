@@ -20,13 +20,14 @@ import java.util.TimerTask;
  * and receive events.
  */
 
-public class ControlPanelSocket implements CommunicationChannel {
+public class ControlPanelSocket extends Thread implements CommunicationChannel {
 
     private final ControlPanelLogic logic;
     private Socket socket;
     private BufferedReader socketReader;
     private PrintWriter socketWriter;
     private boolean isConnected = false;
+    private volatile boolean readLineIsLocked;
 
     /**
      * Creates an instance of ControlPanelSocket.
@@ -35,6 +36,47 @@ public class ControlPanelSocket implements CommunicationChannel {
      */
     public ControlPanelSocket(ControlPanelLogic logic) {
         this.logic = logic;
+        this.readLineIsLocked = false;
+    }
+
+    /**
+     * Runs the client handler thread, continuously reading messages from the client.
+     * Handles the incoming commands and responds accordingly.
+     */
+//    @Override
+    public synchronized void run1() {
+        try {
+            String inputLine;
+            if(socketReader.ready() && !readLineIsLocked) {
+                inputLine = socketReader.readLine();
+                String input = EncrypterDecrypter.decryptMessage(inputLine);
+                handleInput(input);
+//              writer.println(EncrypterDecrypter.encryptMessage(a));
+            }
+        } catch (IOException e) {
+            Logger.error("while reading from the socket: " + e.getMessage());
+            e.printStackTrace();
+        }
+    }
+
+    /**
+     * Handles the processing of a raw command, taking appropriate actions based on the command's content.
+     *
+     * @param rawCommand The command as a string
+     */
+    private void handleInput(String rawCommand) {
+        if(rawCommand == null){
+            return;
+        }
+        if (rawCommand.equals("updateNodes")) {
+            updateNodes();
+        } else {
+            System.out.println(rawCommand);
+        }
+    }
+
+    private void updateNodes() {
+        System.out.println("test");
     }
 
     /**
@@ -51,8 +93,12 @@ public class ControlPanelSocket implements CommunicationChannel {
         try {
             String encryptedCommand = EncrypterDecrypter.encryptMessage(command);
             if (encryptedCommand != null) {
+                //"Lock" the readLine function, so the other thread cannot read the line until this method is done running.
+                this.readLineIsLocked = true;
                 socketWriter.println(encryptedCommand);
                 String response = socketReader.readLine();
+                //Unlock.
+                this.readLineIsLocked = false;
                 Logger.info(response);
             } else {
                 Logger.error("Error encrypting the command.");
@@ -64,8 +110,6 @@ public class ControlPanelSocket implements CommunicationChannel {
             Logger.error("An unexpected error occurred: " + e.getMessage());
         }
     }
-
-
 
 
     /**
@@ -116,15 +160,20 @@ public class ControlPanelSocket implements CommunicationChannel {
      */
     public void getNodes() {
         String encryptedCommand = EncrypterDecrypter.encryptMessage("getNodes");
+        //"Lock" the readLine function, so the other thread cannot read the line until this method is done running.
+        this.readLineIsLocked = true;
         socketWriter.println(encryptedCommand);
         Logger.info("Requesting nodes from server...");
         String nodes;
         try {
             nodes = EncrypterDecrypter.decryptMessage(socketReader.readLine());
+            System.out.println(nodes);
             System.out.println("Nodes" + nodes);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+        //Unlock.
+        this.readLineIsLocked = false;
 
         if (nodes.equals("null")) {
             Logger.info("Nodes not loaded, since no nodes received");
@@ -144,13 +193,18 @@ public class ControlPanelSocket implements CommunicationChannel {
      */
     public void updateSensorData() {
         String encryptedCommand = EncrypterDecrypter.encryptMessage("updateSensor");
+        //"Lock" the readLine function, so the other thread cannot read the line until this method is done running.
+        this.readLineIsLocked = true;
         socketWriter.println(encryptedCommand);
         String sensors = "";
         try {
             sensors = EncrypterDecrypter.decryptMessage(socketReader.readLine());
+            System.out.println(sensors);
         } catch (IOException e) {
             Logger.info("Stopping sensor reading");
         }
+        //Unlock.
+        this.readLineIsLocked = false;
     }
 
     /**

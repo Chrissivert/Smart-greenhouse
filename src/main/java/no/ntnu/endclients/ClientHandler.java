@@ -51,7 +51,7 @@ public class ClientHandler extends Thread {
             while ((inputLine = reader.readLine()) != null) {
                 String a = EncrypterDecrypter.decryptMessage(inputLine);
                 handleInput(a);
-//                writer.println(EncrypterDecrypter.encryptMessage(a));
+//              writer.println(EncrypterDecrypter.encryptMessage(a));
             }
         } catch (IOException e) {
             Logger.error("while reading from the socket: " + e.getMessage());

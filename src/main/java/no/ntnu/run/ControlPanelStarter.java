@@ -3,8 +3,12 @@ package no.ntnu.run;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.ControlPanelSocket;
+import no.ntnu.endclients.ClientHandler;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
 import no.ntnu.tools.Logger;
+
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Starter class for the control panel.
@@ -67,7 +71,37 @@ public class ControlPanelStarter {
             channel = getCommunicationChannel();
             System.out.println("Fake communication not supported");
         }
+
+        initiateCommunicationThread();
+
         return channel;
+    }
+
+    /**
+     * Initiates the listening loop for the server communications.
+     */
+    private void initiateCommunicationThread() {
+        Thread serverThread = new Thread(this::initiateRealCommunication);
+        serverThread.start();
+    }
+
+    /**
+     * Starts the communication listening loop.
+     */
+
+    private void initiateRealCommunication(){
+        while (socket.open()) {
+            if (socket != null) {
+                Timer timer = new Timer();
+                timer.scheduleAtFixedRate(new TimerTask() {
+                    @Override
+                    public void run() {
+                        socket.run1();
+                    }
+                }, 0, 100);
+
+            }
+        }
     }
 
     /**
