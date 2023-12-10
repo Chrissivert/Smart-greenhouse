@@ -122,4 +122,8 @@ public class ClientHandler extends Thread {
             Logger.error("Incorrect command format: " + rawCommand);
         }
     }
+
+    public void updateNodes() {
+        writer.println(EncrypterDecrypter.encryptMessage("updateNodes"));
+    }
 }

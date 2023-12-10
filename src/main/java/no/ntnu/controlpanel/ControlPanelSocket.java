@@ -75,7 +75,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
     }
 
     private void updateNodes() {
-        System.out.println("test");
+        getNodes();
     }
 
     /**

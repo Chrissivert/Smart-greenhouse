@@ -10,6 +10,8 @@ import no.ntnu.tools.Logger;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Starter class for the control panel.
  * Note: we could launch the Application class directly, but then we would have issues with the
@@ -75,18 +77,23 @@ public class ControlPanelStarter {
      */
 
     private void initiateRealCommunication() {
-        while (socket.isOpen()) {
-            if (socket != null) {
-                Timer timer = new Timer();
-                timer.scheduleAtFixedRate(new TimerTask() {
-                    @Override
-                    public void run() {
-                        socket.run1();
-                    }
-                }, 0, 100);
 
+        while (socket == null || !socket.isOpen()) {
+            try {
+                sleep(300);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
             }
         }
+
+        Timer timer = new Timer();
+        timer.scheduleAtFixedRate(new TimerTask() {
+            @Override
+            public void run() {
+                socket.run1();
+            }
+        }, 0, 100);
+        
     }
 
     /**

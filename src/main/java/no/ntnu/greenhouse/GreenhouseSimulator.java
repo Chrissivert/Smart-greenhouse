@@ -106,6 +106,11 @@ public class GreenhouseSimulator {
      */
     public void addNode(SensorActuatorNode newNode) {
         nodes.put(newNode.getId(), newNode);
+//        this.connectedClients.forEach(ClientHandler::updateNodes);
+        for (ClientHandler client : this.connectedClients) {
+//            System.out.println(". . .");
+            client.updateNodes();
+        }
     }
 
     /**
