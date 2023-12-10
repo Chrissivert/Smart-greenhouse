@@ -83,7 +83,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         xAxis.setUpperBound(30);
 
         yAxis.setAutoRanging(false);
-        yAxis.setLowerBound(18);
+        yAxis.setLowerBound(15);
         yAxis.setUpperBound(40);
 
         lineChart = new LineChart<>(xAxis, yAxis);

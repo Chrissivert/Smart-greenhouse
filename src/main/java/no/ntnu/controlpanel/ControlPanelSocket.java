@@ -3,7 +3,7 @@ package no.ntnu.controlpanel;
 import no.ntnu.tools.EncrypterDecrypter;
 import no.ntnu.tools.Logger;
 
-import static no.ntnu.greenhouse.GreenhouseSimulator.PORT_NUMBER;
+import static no.ntnu.greenhouse.GreenhouseSimulator.SERVER_PORT_NUMBER;
 import static no.ntnu.run.ControlPanelStarter.SERVER_HOST;
 
 import java.io.BufferedReader;
@@ -123,11 +123,11 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
     @Override
     public boolean open() {
         try {
-            socket = new Socket(SERVER_HOST, PORT_NUMBER);
+            socket = new Socket(SERVER_HOST, SERVER_PORT_NUMBER);
             socketWriter = new PrintWriter(socket.getOutputStream(), true);
             socketReader = new BufferedReader(new InputStreamReader(socket.getInputStream()));
 
-            Logger.info("Successfully connected to: " + SERVER_HOST + ":" + PORT_NUMBER);
+            Logger.info("Successfully connected to: " + SERVER_HOST + ":" + SERVER_PORT_NUMBER);
 
             getNodes();
             continuousSensorUpdate();
@@ -149,7 +149,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
                 socketWriter.close();
                 socketReader.close();
                 Logger.info(
-                        "Connection with client: " + SERVER_HOST + ":" + PORT_NUMBER + " has been closed");
+                        "Connection with client: " + SERVER_HOST + ":" + SERVER_PORT_NUMBER + " has been closed");
             }
         } catch (IOException e) {
             Logger.error("Could not close connection: " + e.getMessage());
