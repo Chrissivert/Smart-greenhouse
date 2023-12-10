@@ -126,7 +126,8 @@ public class ControlPanelSocket implements CommunicationChannel {
             throw new RuntimeException(e);
         }
 
-        if (nodes.equals("null")) {
+        //Does not contain a ";" if there are no nodes. base64 also does not have the symbol, so this catches decryption errors
+        if(!nodes.contains(";")) {
             Logger.info("Nodes not loaded, since no nodes received");
 
         } else {
