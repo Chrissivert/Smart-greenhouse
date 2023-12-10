@@ -17,7 +17,7 @@ import no.ntnu.tools.Logger;
 
 /**
  * Application entrypoint - a simulator for a greenhouse.
- * Works essentialy as a server
+ * Works essentially as a server.
  */
 public class GreenhouseSimulator {
 
@@ -33,7 +33,6 @@ public class GreenhouseSimulator {
     public static final Map<Integer, SensorActuatorNode> nodes = new HashMap<>();
 
     private final List<PeriodicSwitch> periodicSwitches = new LinkedList<>();
-    private final boolean fake;
 
     private final List<ClientHandler> connectedClients = new ArrayList<>();
 
@@ -48,7 +47,6 @@ public class GreenhouseSimulator {
      *             socket communication
      */
     public GreenhouseSimulator(boolean fake) {
-        this.fake = fake;
         new ButtonActionHandler(this);
     }
 
@@ -93,14 +91,14 @@ public class GreenhouseSimulator {
         Logger.info("Simulator started");
     }
 
+
+    /**
+     * Initiates the communication between the server and the client.
+     */
     private void initiateCommunication() {
-        if (fake) {
-            initiateFakePeriodicSwitches();
-        } else {
             Thread serverThread = new Thread(this::initiateRealCommunication);
             serverThread.start();
         }
-    }
 
     /**
      * Add a new node to the greenhouse.
@@ -111,11 +109,6 @@ public class GreenhouseSimulator {
         nodes.put(newNode.getId(), newNode);
     }
 
-    private void initiateFakePeriodicSwitches() {
-        periodicSwitches.add(new PeriodicSwitch("Window DJ", nodes.get(1), 2, 20000));
-        periodicSwitches.add(new PeriodicSwitch("Heater DJ", nodes.get(2), 7, 8000));
-    }
-
     /**
      * Stop the simulation of the greenhouse - all the nodes in it.
      */
@@ -123,18 +116,14 @@ public class GreenhouseSimulator {
         stopCommunication();
         System.out.println(nodes.size() + " nodes");
         System.out.println(nodes.values().size() + " nodes");
-//        try{
             nodes.values().forEach(SensorActuatorNode::stop);
-//        }catch (Exception e){
         }
-//    }
+
+        /**
+         * Stop the communication between the server and the client.
+         */
 
     private void stopCommunication() {
-        if (fake) {
-            for (PeriodicSwitch periodicSwitch : periodicSwitches) {
-                periodicSwitch.stop();
-            }
-        } else {
             try {
                 serverSocket.close();
                 Logger.info("TCP connection successfully closed");
@@ -142,7 +131,10 @@ public class GreenhouseSimulator {
                 Logger.error("An error occurred while stopping communication");
             }
         }
-    }
+
+    /**
+     * Initiates the real communication between the server and the client.
+     */
 
     private void initiateRealCommunication(){
         try {
@@ -164,6 +156,12 @@ public class GreenhouseSimulator {
         }
     }
 
+    /**
+     * Accepts a new client connection.
+     *
+     * @param listeningSocket The socket to listen for new connections on
+     * @return A client handler for the new client
+     */
 
     private ClientHandler acceptNextClientConnection(ServerSocket listeningSocket) {
         try {
@@ -275,6 +273,12 @@ public class GreenhouseSimulator {
         connectedClients.remove(clientHandler);
     }
 
+    /**
+     * Add a client to the list of connected clients.
+     *
+     * @param clientHandler The client handler to add
+     */
+
     private void addClientToConnectedClients(ClientHandler clientHandler) {
         connectedClients.add(clientHandler);
     }
@@ -289,6 +293,12 @@ public class GreenhouseSimulator {
             node.addStateListener(listener);
         }
     }
+
+    /**
+     * Returns a map of all the nodes in the greenhouse.
+     *
+     * @return A map of all the nodes in the greenhouse.
+     */
 
     public Map<Integer, SensorActuatorNode> getMap(){
         return this.nodes;

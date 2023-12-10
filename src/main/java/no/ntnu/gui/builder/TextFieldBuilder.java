@@ -65,7 +65,7 @@ public class TextFieldBuilder {
 
 
     /**
-     * Set prefered size text field builder.
+     * Set preferred size text field builder.
      *
      * @param maxSize the max size
      * @return the text field builder

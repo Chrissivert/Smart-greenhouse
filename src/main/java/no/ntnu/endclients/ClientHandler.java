@@ -10,6 +10,11 @@ import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
 
+
+/**
+ * Handles each connected Client in a separate thread.
+ */
+
 public class ClientHandler extends Thread {
     protected Socket socket;
     private final GreenhouseSimulator simulator;
@@ -75,15 +80,30 @@ public class ClientHandler extends Thread {
         }
     }
 
+
+    /**
+     * Sends the list of nodes in the greenhouse to the client in an encrypted format.
+     */
     private void handleGetNodesCommand() {
        writer.println(EncrypterDecrypter.encryptMessage(simulator.getNodes()));
     }
 
 
+    /**
+     * Sends updated sensor-values to the client in an encrypted format.
+     */
+
     private void handleUpdateSensorCommand() {
         writer.println(EncrypterDecrypter.encryptMessage(simulator.updateSensors()));
     }
 
+
+    /**
+     * Processes an actuator command, and sends a response to the client in
+     * an encrypted format.
+     *
+     * @param rawCommand The command as a string
+     */
 
     private void processActuatorCommand(String rawCommand) {
         String[] parts = rawCommand.split(",");

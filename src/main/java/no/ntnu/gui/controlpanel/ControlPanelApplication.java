@@ -79,11 +79,18 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         }
     }
 
+    /**
+     * Create empty content for the GUI.
+     *
+     * @return A label with the text "Waiting for node data..."
+     */
+
     private Label createEmptyContent() {
         Label l = new Label("Waiting for node data...");
         l.setAlignment(Pos.CENTER);
         return l;
     }
+
 
 
     @Override
@@ -107,6 +114,10 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
             Logger.error("Can't remove node " + nodeId + ", there is no Tab for it");
         }
     }
+
+    /**
+     * Remove the node tab pane from the main scene.
+     */
 
     private void removeNodeTabPane() {
         mainScene.setRoot(createEmptyContent());
@@ -146,6 +157,14 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         }
     }
 
+    /**
+     * Get the stored actuator.
+     *
+     * @param nodeId    The ID of the node
+     * @param actuatorId The ID of the actuator
+     * @return The actuator, or null if it is not found
+     */
+
     private Actuator getStoredActuator(int nodeId, int actuatorId) {
         Actuator actuator = null;
         SensorActuatorNodeInfo nodeInfo = nodeInfos.get(nodeId);
@@ -155,16 +174,32 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         return actuator;
     }
 
+    /**
+     * Forget the node info.
+     * @param nodeId The ID of the node
+     */
+
     private void forgetNodeInfo(int nodeId) {
         sensorPanes.remove(nodeId);
         actuatorPanes.remove(nodeId);
         nodeInfos.remove(nodeId);
     }
 
+    /**
+     * Remove the node tab.
+     * @param nodeId The ID of the node
+     * @param nodeTab The node tab
+     */
+
     private void removeNodeTab(int nodeId, Tab nodeTab) {
         nodeTab.getTabPane().getTabs().remove(nodeTab);
         nodeTabs.remove(nodeId);
     }
+
+    /**
+     * Add a node tab.
+     * @param nodeInfo The node info
+     */
 
     private void addNodeTab(SensorActuatorNodeInfo nodeInfo) {
         if (nodeTabPane == null) {
@@ -180,6 +215,12 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         }
     }
 
+    /**
+     * Create a node tab.
+     * @param nodeInfo The node info
+     * @return The node tab
+     */
+
     private Tab createNodeTab(SensorActuatorNodeInfo nodeInfo) {
         Tab tab = new Tab("Node " + nodeInfo.getId());
         SensorPane sensorPane = createEmptySensorPane();
@@ -191,6 +232,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         return tab;
     }
 
+    /**
+     * Create an empty sensor pane.
+     * @return The sensor pane
+     */
+
     private SensorPane createEmptySensorPane() {
         return new SensorPane();
     }
@@ -200,6 +246,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         Logger.info("Communication closed, closing the GUI");
         Platform.runLater(Platform::exit);
     }
+
+    /**
+     * Set the communication channel.
+     * @param channel The communication channel
+     */
 
     public void setCommunicationChannel(CommunicationChannel channel) {
         this.channel = channel;

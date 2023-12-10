@@ -25,7 +25,7 @@ import no.ntnu.listeners.common.ActuatorListener;
 import no.ntnu.listeners.greenhouse.SensorListener;
 
 /**
- * Window with GUI for overview and control of one specific sensor/actuator node.
+ * Window with GUI for overview and control of one specific sensor/actuator node and temperature graph.
  */
 public class NodeGuiWindow extends Stage implements SensorListener, ActuatorListener {
     private static final double VERTICAL_OFFSET = 50;
@@ -56,6 +56,10 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         setPositionAndSize();
     }
 
+    /**
+     * Set the position of the newly created GUIWindows.
+     */
+
     private void setPositionAndSize() {
         setX((node.getId() - 1) * HORIZONTAL_OFFSET);
         setY(node.getId() * VERTICAL_OFFSET);
@@ -63,6 +67,11 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         setMinHeight(WINDOW_WIDTH);
     }
 
+    /**
+     * Create a graph within the GUI window displaying the temperature data.
+     *
+     * @param contentVBox The vBox holding the actuator- and sensorpanes.
+     */
     private void createGraphWithData(VBox contentVBox) {
         final NumberAxis xAxis = new NumberAxis();
         final NumberAxis yAxis = new NumberAxis();
@@ -88,16 +97,32 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         contentVBox.getChildren().add(lineChart);
     }
 
+    /**
+     * Initialize listeners for the node.
+     *
+     * @param node The node which will be handled in this window
+     */
+
     private void initializeListeners(SensorActuatorNode node) {
         setOnCloseRequest(windowEvent -> shutDownNode());
         node.addSensorListener(this);
         node.addActuatorListener(this);
     }
 
+
+    /**
+     * Shut down the SensorActuatorNode.
+     */
     private void shutDownNode() {
         node.stop();
     }
 
+
+    /**
+     * Create the content of the actuator- and sensorpanes.
+     *
+     * @return The content of the GUI window.
+     */
 
     private Parent createContent() {
         actuatorPane = new ActuatorPane(node.getActuators(), false);
@@ -146,7 +171,6 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
 
         splitPane.getItems().add(scrollPane);
 
-        // Actuator and Sensor panes sharing the other half evenly
         VBox actuatorSensorVBox = new VBox(sensorScrollPane, actuatorScrollPane);
         actuatorSensorVBox.setSpacing(10);
         splitPane.getItems().add(actuatorSensorVBox);
@@ -154,6 +178,12 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         return splitPane;
     }
 
+
+    /**
+     * Update the sensorpane with the new actuator.
+     *
+     * @param sensors The sensors which has been updated
+     */
 
     @Override
     public void sensorsUpdated(List<Sensor> sensors) {
@@ -172,6 +202,13 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
     }
 
 
+    /**
+     * Update the actuatorpane with a specific actuator.
+     *
+     * @param nodeId   The id of the node which has been updated
+     * @param actuator The actuator which has been updated
+     */
+
     @Override
     public void actuatorUpdated(int nodeId, Actuator actuator) {
         if (actuatorPane != null) {
@@ -179,12 +216,24 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         }
     }
 
+    /**
+     * Update the graph with the new sensor data.
+     *
+     * @param value The value of the sensor (temperature reading)
+     */
+
     private void updateGraphWithSensorData(double value) {
         int time = series.getData().size() + 1;
         Platform.runLater(() -> {
             series.getData().add(new XYChart.Data<>(time, value));
         });
     }
+
+    /**
+     * Generate a random color.
+     *
+     * @return A random color.
+     */
 
     private String getRandomColor() {
         Random rand = new Random();

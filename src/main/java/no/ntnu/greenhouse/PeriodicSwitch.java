@@ -55,12 +55,4 @@ public class PeriodicSwitch {
             }
         }, delay, delay);
     }
-
-    /**
-     * Stop the periodic actuator toggling.
-     */
-    public void stop() {
-        Logger.info("-- Stopping " + this.name);
-        timer.cancel();
-    }
 }

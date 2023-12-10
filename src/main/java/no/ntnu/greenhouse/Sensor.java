@@ -55,6 +55,12 @@ public class Sensor {
         ensureValueBoundsAndPrecision(newValue);
     }
 
+    /**
+     * Ensure that the value is within the allowed bounds and has the correct precision.
+     *
+     * @param newValue The new value to set
+     */
+
     private void ensureValueBoundsAndPrecision(double newValue) {
         newValue = roundToTwoDecimals(newValue);
         if (newValue < min) {
@@ -65,9 +71,22 @@ public class Sensor {
         reading.setValue(newValue);
     }
 
+    /**
+     * Round a double value to two decimals.
+     *
+     * @param value The value to round
+     * @return The rounded value
+     */
+
     private double roundToTwoDecimals(double value) {
         return Math.round(value * 100.0) / 100.0;
     }
+
+    /**
+     * Generate a random noise value in the range [-1% and +1%].
+     *
+     * @return A random noise value
+     */
 
     private double generateRealisticNoise() {
         final double wholeRange = max - min;
@@ -85,6 +104,12 @@ public class Sensor {
         double newValue = this.reading.getValue() + impact;
         ensureValueBoundsAndPrecision(newValue);
     }
+
+    /**
+     * Get a string representation of the sensor.
+     *
+     * @return A string representation of the sensor
+     */
 
     @Override
     public String toString() {

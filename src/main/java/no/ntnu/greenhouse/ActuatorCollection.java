@@ -41,17 +41,15 @@ public class ActuatorCollection implements Iterable<Actuator> {
         return actuators.get(id);
     }
 
+
+    /**
+     * Retrieves a collection view of the values contained in the actuators
+     *
+     * @return The actuator or null if none found
+     */
+
     @Override
     public Iterator<Actuator> iterator() {
         return actuators.values().iterator();
-    }
-
-    /**
-     * Get the number of actuators stored in the collection.
-     *
-     * @return The number of actuators in this collection
-     */
-    public int size() {
-        return actuators.size();
     }
 }

@@ -47,6 +47,12 @@ public class Actuator {
         this.id = id;
     }
 
+    /**
+     * Generate a unique ID for the actuator.
+     *
+     * @return A unique ID
+     */
+
     private static int generateUniqueId() {
         return nextId++;
     }
@@ -74,6 +80,13 @@ public class Actuator {
         impacts.put(sensorType, diffWhenActive);
     }
 
+
+    /**
+     * Get the type of the actuator.
+     *
+     * @return The type of the actuator
+     */
+
     public String getType() {
         return type;
     }
@@ -98,6 +111,11 @@ public class Actuator {
         this.on = !this.on;
         notifyChanges();
     }
+
+
+    /**
+     * Notify the listener that the actuator has changed.
+     */
 
     private void notifyChanges() {
         if (listener != null) {
@@ -129,6 +147,13 @@ public class Actuator {
             node.applyActuatorImpact(sensorType, impact);
         }
     }
+
+
+    /**
+     * Returns a string of actuator of type being on or off.
+     *
+     * @return String of actuator of type being on or off.
+     */
 
     @Override
     public String toString() {
@@ -171,6 +196,7 @@ public class Actuator {
     public int getNodeId() {
         return nodeId;
     }
+
 
     /**
      * Set the actuator to the desired state.

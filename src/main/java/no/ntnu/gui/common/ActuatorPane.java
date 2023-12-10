@@ -42,17 +42,39 @@ public class ActuatorPane extends TitledPane {
         GuiTools.stretchVertically(this);
     }
 
+    /**
+     * Add the actuators to the GUI.
+     *
+     * @param actuators The actuators to add
+     * @param parent The parent pane to add the actuators to
+     */
+
+
     private void addActuatorControls(ActuatorCollection actuators, Pane parent) {
         actuators.forEach(actuator ->
                 parent.getChildren().add(createActuatorGui(actuator))
         );
     }
 
+    /**
+     * Create the GUI parts for an actuator.
+     *
+     * @param actuator The actuator to create GUI parts for
+     * @return The GUI parts
+     */
+
     private Node createActuatorGui(Actuator actuator) {
         HBox actuatorGui = new HBox(createActuatorLabel(actuator), createActuatorCheckbox(actuator));
         actuatorGui.setSpacing(5);
         return actuatorGui;
     }
+
+    /**
+     * Create a checkbox for an actuator.
+     * @param actuator The actuator to create a checkbox for
+     * @return The checkbox
+     */
+
     private CheckBox createActuatorCheckbox(Actuator actuator) {
         CheckBox checkbox = new CheckBox();
         SimpleBooleanProperty isSelected = new SimpleBooleanProperty(actuator.isOn());
@@ -70,6 +92,12 @@ public class ActuatorPane extends TitledPane {
         return checkbox;
     }
 
+    /**
+     * Create a label for an actuator.
+     * @param actuator The actuator to create a label for
+     * @return The label
+     */
+
     private Label createActuatorLabel(Actuator actuator) {
         SimpleStringProperty props = new SimpleStringProperty(generateActuatorText(actuator));
         actuatorValue.put(actuator, props);
@@ -77,6 +105,12 @@ public class ActuatorPane extends TitledPane {
         label.textProperty().bind(props);
         return label;
     }
+
+    /**
+     * Generate a string representing an actuator.
+     * @param actuator The actuator to generate a string for
+     * @return The string
+     */
 
     private String generateActuatorText(Actuator actuator) {
         String onOff = actuator.isOn() ? "ON" : "off";

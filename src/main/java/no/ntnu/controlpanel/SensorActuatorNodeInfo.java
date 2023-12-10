@@ -48,6 +48,12 @@ public class SensorActuatorNodeInfo {
         return actuators.get(actuatorId);
     }
 
+
+    /**
+     * Set the actuators of the sensor/actuator node.
+     *
+     * @param actuatorList The actuator collection
+     */
     public void setActuatorList(ActuatorCollection actuatorList) {
         actuators = actuatorList;
     }

@@ -14,6 +14,9 @@ import no.ntnu.greenhouse.SensorActuatorNode;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * Create a window for adding a new node
+ */
 public class AddNodeWindow extends Stage {
     private TextField temperatureField;
     private TextField humidityField;
@@ -32,7 +35,10 @@ public class AddNodeWindow extends Stage {
 
     static ButtonActionHandler buttonActionHandler;
 
-
+    /**
+     * Create a window for adding a new node
+     * @param simulator simulator to add the node to
+     */
     public AddNodeWindow(GreenhouseSimulator simulator) {
         this.simulator = simulator;
         buttonActionHandler = new ButtonActionHandler(simulator);
@@ -55,27 +61,51 @@ public class AddNodeWindow extends Stage {
         setScene(scene);
     }
 
+    /**
+     * Get temperature from textfield
+     * @return temperature
+     */
+
     public int getTemperature() {
         return Integer.parseInt(temperatureField.getText());
     }
 
+    /**
+     * Get humidity from textfield
+     * @return humidity
+     */
     public int getHumidity() {
         return Integer.parseInt(humidityField.getText());
     }
 
+    /**
+     * Get amount of windows from textfield
+     * @return amount of windows
+     */
     public int getMyWindows() {
         return Integer.parseInt(windowsField.getText());
     }
 
+    /**
+     * Get amount of fans from textfield
+     * @return amount of fans
+     */
     public int getFans() {
         return Integer.parseInt(fansField.getText());
     }
 
+    /**
+     * Get amount of heaters from textfield
+     * @return amount of heaters
+     */
     public int getHeaters() {
         return Integer.parseInt(heatersField.getText());
     }
 
 
+    /**
+     * Check if all fields are valid
+     */
     private void checkIfFieldsAreValid() {
 
         if (temperatureField.getText().isEmpty() || humidityField.getText().isEmpty()
@@ -90,6 +120,10 @@ public class AddNodeWindow extends Stage {
         }
     }
 
+    /**
+     * Add newNode to the simulator and start it
+     */
+
     private void createNewNode() {
         SensorActuatorNode newNode = DeviceFactory.createNode(getTemperature(), getHumidity(), getMyWindows(), getFans(), getHeaters());
         simulator.addNode(newNode);
@@ -98,6 +132,11 @@ public class AddNodeWindow extends Stage {
         newNode.addStateListener(greenhouseApplication);
         close();
     }
+
+    /**
+     * Get all current nodes
+     * @return list of all current nodes
+     */
 
     public List<String> getNodeNames() {
         List<String> nodeNames = new ArrayList<>();
@@ -108,6 +147,10 @@ public class AddNodeWindow extends Stage {
         return nodeNames;
     }
 
+    /**
+     * Create node buttons
+     * @return Hbox with buttons
+     */
 
     private HBox createNodeButtons() {
         HBox root = new HBox();
@@ -121,6 +164,14 @@ public class AddNodeWindow extends Stage {
         return root;
     }
 
+    /**
+     * Create custom textfield
+     * @param promptText text to be displayed when textfield is empty
+     * @param maxLength max length of textfield
+     * @param preferredSize preferred size of textfield
+     * @return custom textfield
+     */
+
     private static TextField createCustomTextField(String promptText, int maxLength, int preferredSize) {
         return TextFieldFactory.createTextFieldWithDefaults()
                 .withMaxLength(maxLength)
@@ -130,11 +181,21 @@ public class AddNodeWindow extends Stage {
                 .build();
     }
 
+    /**
+     * Create choicebox with true or false
+     * @return choicebox with true or false
+     */
+
     public ChoiceBox<String> createTurnOnOffChoiceBox(){
         trueFalseChoiceBox = new ChoiceBox<>();
         trueFalseChoiceBox.getItems().addAll("Turn on", "Turn off");
         return trueFalseChoiceBox;
     }
+
+    /**
+     * Create choicebox with all current nodes
+     * @return choicebox with all current nodes
+     */
 
     public  ChoiceBox<String> createAmountOfNodesChoiceBox(){
         currentNodeChoiceBox = new ChoiceBox<>();
@@ -142,16 +203,31 @@ public class AddNodeWindow extends Stage {
         return currentNodeChoiceBox;
     }
 
+    /**
+     * Create and handle the action of changing the state of a specific actuator.
+     * @return button
+     */
+
     public Button handleActuatorChange() {
         Button createNodeButton = new Button("Confirm");
         createNodeButton.setOnAction(e -> buttonActionHandler.setStateOfActuator(getParsedNodeChoice(),getActuatorId(),getTrueOrFalse()));
         return createNodeButton;
     }
 
+    /**
+     * Create button with text
+     * @param text text to be displayed on button
+     * @return button with text
+     */
     public Button createButtonWithText(String text) {
         return new Button(text);
     }
 
+
+    /**
+     * Get currently selected node from choicebox
+     * @return currently selected node
+     */
     public int getParsedNodeChoice() {
         String selectedValue = currentNodeChoiceBox.getValue();
         if (selectedValue != null) {
@@ -162,14 +238,28 @@ public class AddNodeWindow extends Stage {
         }
     }
 
+    /**
+     * Get actuator id from textfield
+     * @return
+     */
     public static int getActuatorId() {
         return Integer.parseInt(actuatorId.getText());
     }
 
+
+    /**
+     * Get true or false from choicebox
+     * @return true or false
+     */
     public static boolean getTrueOrFalse() {
         String selectedValue = trueFalseChoiceBox.getValue();
         return selectedValue != null && selectedValue.equals("Turn on");
     }
+
+
+    /**
+     * Create and show get state of actuator stage
+     */
 
     public void createGetActuatorStage() {
         VBox vBox = new VBox();
@@ -194,6 +284,9 @@ public class AddNodeWindow extends Stage {
         });
     }
 
+    /**
+     * Create and show set state of actuator stage
+     */
 
     public void createSetActuatorStage() {
         VBox vBox = new VBox();
@@ -207,7 +300,11 @@ public class AddNodeWindow extends Stage {
         newStage.show();
     }
 
-    public void createTurnOnOffAllByType() {
+
+    /**
+     * Create and show set state of actuator by type stage
+     */
+    public void createTurnOnOffAllByTypeStage() {
         VBox vBox = new VBox();
         ChoiceBox<String> actuatorType = new ChoiceBox<>();
         actuatorType.getItems().addAll("Window", "Fan", "Heater");

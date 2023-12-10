@@ -77,6 +77,13 @@ public class SensorPane extends TitledPane {
         update(sensors.stream().map(Sensor::getReading).toList());
     }
 
+    /**
+     * Create a label for a sensor and remember it.
+     *
+     * @param sensor The sensor to create a label for
+     * @return The label
+     */
+
     private Label createAndRememberSensorLabel(SensorReading sensor) {
         SimpleStringProperty props = new SimpleStringProperty(generateSensorText(sensor));
         sensorProps.add(props);
@@ -85,9 +92,21 @@ public class SensorPane extends TitledPane {
         return label;
     }
 
+    /**
+     * Generate a string representing a sensor.
+     * @param sensor The sensor to generate a string for
+     * @return The string
+     */
+
     private String generateSensorText(SensorReading sensor) {
         return sensor.getType() + ": " + sensor.getFormatted();
     }
+
+    /**
+     * A sensor has been updated, update the corresponding GUI parts.
+     * @param sensor The sensor which has been updated
+     * @param index The index of the sensor in the list of sensors
+     */
 
     private void updateSensorLabel(SensorReading sensor, int index) {
         if (sensorProps.size() > index) {

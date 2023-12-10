@@ -41,12 +41,23 @@ public class ControlPanelStarter {
         starter.start();
     }
 
+    /**
+     * Starts the controlPanelApplication.
+     */
+
     private void start() {
         this.logic = new ControlPanelLogic();
         CommunicationChannel channel = initiateCommunication(logic, fake);
         ControlPanelApplication.startApp(logic, channel);
         stopCommunication();
     }
+
+    /**
+     * Initiates the communication between the controlPanel and the server.
+     * @param logic The logic of the controlPanel.
+     * @param fake If the communication should be fake or not.
+     * @return The communicationChannel.
+     */
 
     private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
         CommunicationChannel channel;
@@ -59,18 +70,36 @@ public class ControlPanelStarter {
         return channel;
     }
 
+    /**
+     * Gets the communicationChannel.
+     * @return The communicationChannel.
+     */
+
     private CommunicationChannel getCommunicationChannel() {
         return this.logic.getCommunicationChannel();
     }
 
+    /**
+     * Initiates the socket communication of a connected controlPanel.
+     * @param logic The logic of the controlPanel.
+     * @return The communicationChannel.
+     */
 
+
+    /**
+     * Initiates the socket communication of a connected controlPanel.
+     * @param logic The logic of the controlPanel.
+     * @return The communicationChannel.
+     */
     private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
         socket = new ControlPanelSocket(logic);
         logic.setCommunicationChannel(socket);
         return socket;
     }
 
-
+    /**
+     * Stops the communication of a connected controlPanel.
+     */
     private void stopCommunication(){
         socket.close();
     }

@@ -184,6 +184,15 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         return info;
     }
 
+    /**
+     * Parse a list of actuators from a string.
+     *
+     * @param actuatorSpecification The specification string in the format "actuatorId1_actuatorType1 actuatorId2_actuatorType2 ..."
+     * @param info                   The info object which will be passed to the actuators
+     * @return The created ActuatorCollection
+     * @throws IllegalArgumentException If the specification is empty or incorrectly formatted
+     */
+
     private ActuatorCollection parseActuators(String actuatorSpecification, int info) {
         String[] parts = actuatorSpecification.split(" ");
         ActuatorCollection actuatorList = new ActuatorCollection();
@@ -192,6 +201,15 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         }
         return actuatorList;
     }
+
+    /**
+     * Parse an actuator from a string.
+     *
+     * @param s    The specification string in the format "actuatorId_actuatorType"
+     * @param info The info object which will be passed to the actuator
+     * @return The created Actuator
+     * @throws IllegalArgumentException If the specification is empty or incorrectly formatted
+     */
 
     private Actuator parseActuatorInfo(String s, int info) {
         String[] actuatorInfo = s.split("_");
@@ -204,29 +222,5 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
         Actuator actuator = new Actuator(actuatorId, actuatorType, info);
         actuator.setListener(this);
         return actuator;
-    }
-
-    private List<SensorReading> parseSensors(String sensorInfo) {
-        List<SensorReading> readings = new LinkedList<>();
-        String[] readingInfo = sensorInfo.split(",");
-        for (String reading : readingInfo) {
-            readings.add(parseReading(reading));
-        }
-        return readings;
-    }
-
-    private SensorReading parseReading(String reading) {
-        String[] assignmentParts = reading.split("=");
-        if (assignmentParts.length != 2) {
-            throw new IllegalArgumentException("Invalid sensor reading specified: " + reading);
-        }
-        String[] valueParts = assignmentParts[1].split(" ");
-        if (valueParts.length != 2) {
-            throw new IllegalArgumentException("Invalid sensor value/unit: " + reading);
-        }
-        String sensorType = assignmentParts[0];
-        double value = parseDoubleOrError(valueParts[0], "Invalid sensor value: " + valueParts[0]);
-        String unit = valueParts[1];
-        return new SensorReading(sensorType, value, unit);
     }
 }

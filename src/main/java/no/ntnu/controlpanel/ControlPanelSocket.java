@@ -15,6 +15,11 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 
+/**
+ * The socket of a controlPanel. It uses a communication channel to send commands
+ * and receive events.
+ */
+
 public class ControlPanelSocket implements CommunicationChannel {
 
     private final ControlPanelLogic logic;
@@ -61,6 +66,13 @@ public class ControlPanelSocket implements CommunicationChannel {
     }
 
 
+
+
+    /**
+     * This method should open the connection to the server.
+     *
+     * @return True if connection is successfully opened, false on error.
+     */
 
     @Override
     public boolean open() {

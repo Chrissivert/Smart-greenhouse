@@ -45,6 +45,10 @@ public class EncrypterDecrypter {
 
     }
 
+    /**
+     * Generates a new public and private keypair with RSA cryptography.
+     */
+
     private void generateKeyPair() {
         try {
             KeyPairGenerator keyPairGenerator = KeyPairGenerator.getInstance("RSA");

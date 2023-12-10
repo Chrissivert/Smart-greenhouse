@@ -16,7 +16,6 @@ import no.ntnu.tools.Logger;
  * Represents one node with sensors and actuators.
  */
 public class SensorActuatorNode implements ActuatorListener, CommunicationChannelListener {
-    // How often to generate new sensor values, in seconds.
     private static final long SENSING_DELAY = 5000;
     private final int id;
 
@@ -167,6 +166,10 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
         sensorReadingTimer.scheduleAtFixedRate(newSensorValueTask, randomStartDelay, SENSING_DELAY);
     }
 
+    /**
+     * Stop the periodic sensor reading.
+     */
+
     private void stopPeriodicSensorReading() {
         if (sensorReadingTimer != null) {
             sensorReadingTimer.cancel();
@@ -183,11 +186,19 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
         debugPrint();
     }
 
+    /**
+     * Add random noise to all sensors.
+     */
+
     private void addRandomNoiseToSensors() {
         for (Sensor sensor : sensors) {
             sensor.addRandomNoise();
         }
     }
+
+    /**
+     * Print a short info about all the sensors and actuators. Usable for debugging.
+     */
 
     private void debugPrint() {
         for (Sensor sensor : sensors) {
@@ -212,9 +223,20 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
         actuator.toggle();
     }
 
+    /**
+     * Get an actuator by its ID.
+     *
+     * @param actuatorId ID of the actuator to look up.
+     * @return The actuator or null if none found
+     */
+
     private Actuator getActuator(int actuatorId) {
         return actuators.get(actuatorId);
     }
+
+    /**
+     * Notify the listeners that the sensor values have changed.
+     */
 
     private void notifySensorChanges() {
         for (SensorListener listener : sensorListeners) {
@@ -223,11 +245,24 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
         }
     }
 
+    /**
+     * Apply the impact of a specific actuator
+     *
+     * @param nodeId   The ID of the node containing the actuator
+     * @param actuator The actuator to apply the impact to
+     */
+
     @Override
     public void actuatorUpdated(int nodeId, Actuator actuator) {
         actuator.applyImpact(this);
         notifyActuatorChange(actuator);
     }
+
+    /**
+     * Notify the listeners that the actuator state has changed.
+     *
+     * @param actuator The actuator which has changed
+     */
 
     private void notifyActuatorChange(Actuator actuator) {
         String onOff = actuator.isOn() ? "ON" : "off";
@@ -287,6 +322,10 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
         return actuators;
     }
 
+
+    /**
+     * The communication channel has been closed. Shut down the node.
+     */
     @Override
     public void onCommunicationChannelClosed() {
         Logger.info("Communication channel closed for node " + id);

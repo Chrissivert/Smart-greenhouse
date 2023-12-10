@@ -23,21 +23,51 @@ public class SensorReading {
         this.unit = unit;
     }
 
+    /**
+     * Get the type of the sensor.
+     *
+     * @return The type of the sensor
+     */
+
     public String getType() {
         return type;
     }
+
+    /**
+     * Get the current value of the sensor.
+     *
+     * @return The current value of the sensor
+     */
 
     public double getValue() {
         return value;
     }
 
+    /**
+     * Get the unit of the sensor.
+     *
+     * @return The unit of the sensor
+     */
+
     public String getUnit() {
         return unit;
     }
 
+    /**
+     * Set the value of the sensor.
+     *
+     * @param newValue The new value of the sensor
+     */
+
     public void setValue(double newValue) {
         this.value = newValue;
     }
+
+    /**
+     * Returns a string of actuator of type being on or off.
+     *
+     * @return String of actuator of type being on or off.
+     */
 
     @Override
     public String toString() {
@@ -53,6 +83,14 @@ public class SensorReading {
         return value + unit;
     }
 
+
+    /**
+     * Compare this sensor reading to another sensor reading.
+     *
+     * @param o The other sensor reading
+     * @return True if the two sensor readings are equal, false otherwise
+     */
+
     @Override
     public boolean equals(Object o) {
         if (this == o) {
@@ -67,6 +105,11 @@ public class SensorReading {
                 && Objects.equals(unit, that.unit);
     }
 
+    /**
+     * Generate a hash code for this sensor reading.
+     *
+     * @return The hash code
+     */
     @Override
     public int hashCode() {
         return Objects.hash(type, value, unit);
