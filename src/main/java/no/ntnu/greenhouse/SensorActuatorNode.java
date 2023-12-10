@@ -20,7 +20,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
     private static final long SENSING_DELAY = 5000;
     private final int id;
 
-    private final List<Sensor> sensors = new LinkedList<>();
+    public final List<Sensor> sensors = new LinkedList<>();
     private ActuatorCollection actuators = new ActuatorCollection();
 
     private final List<SensorListener> sensorListeners = new LinkedList<>();
@@ -218,6 +218,7 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
 
     private void notifySensorChanges() {
         for (SensorListener listener : sensorListeners) {
+            System.out.println("ada");
             listener.sensorsUpdated(sensors);
         }
     }
