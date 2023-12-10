@@ -71,8 +71,6 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         }
         if (rawCommand.equals("updateNodes")) {
             updateNodes();
-        } else {
-            System.out.println(rawCommand);
         }
     }
 

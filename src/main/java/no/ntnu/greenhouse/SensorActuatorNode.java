@@ -240,7 +240,6 @@ public class SensorActuatorNode implements ActuatorListener, CommunicationChanne
 
     private void notifySensorChanges() {
         for (SensorListener listener : sensorListeners) {
-            System.out.println("ada");
             listener.sensorsUpdated(sensors);
         }
     }
