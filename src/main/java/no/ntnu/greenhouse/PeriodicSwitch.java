@@ -40,7 +40,7 @@ public class PeriodicSwitch {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                Logger.info(" > " + name + ": toggle actuator " + actuatorId + " on node " + node.getId());
+                Logger.info(" > " + name + ": toggle actuator " + actuatorId + " on node " + node.getId() + " every " + delay + " ms");
                 if (node.isRunning()) {
                     try {
                         node.toggleActuator(actuatorId);

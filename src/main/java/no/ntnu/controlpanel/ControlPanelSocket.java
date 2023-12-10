@@ -16,6 +16,7 @@ import java.util.TimerTask;
 
 
 /**
+ * IMPORANT! Much of this code is the same as the
  * The socket of a controlPanel. It uses a communication channel to send commands
  * and receive events.
  */
