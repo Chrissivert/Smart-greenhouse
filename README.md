@@ -16,15 +16,17 @@ There are several runnable classes in the project.
 
 To run the greenhouse part (with sensor/actuator nodes):
 
+
 * Command line version: run the `main` method inside `CommandLineGreenhouse` class.
 * GUI version: run the `main` method inside `GreenhouseGuiStarter` class. Note - if you run the
   `GreenhouseApplication` class directly, JavaFX will complain that it can't find necessary modules.
 
 To run the control panel (only GUI-version is available): run the `main` method inside the
-`ControlPanelStarter` class
+`ControlPanelStarter` class, the same note about JavaFX applies. Control panel can not be run without
+the greenhouse part,can run but will close itself. Works with both the command line and GUI version of the greenhouse.
+Multiple control panels can be run at the same time.
 
 ## Simulating events
 
-If you want to simulate fake communication (just some periodic events happening), you can run
-both the greenhouse and control panel parts with a command line parameter `fake`. Check out
-classes in the [`no.ntnu.run` package](src/main/java/no/ntnu/run) for more details. 
+The greenhouse part can be run in simulation mode, where it will update the sensor values, 
+the updates are based upon witch actuators are turned on.
