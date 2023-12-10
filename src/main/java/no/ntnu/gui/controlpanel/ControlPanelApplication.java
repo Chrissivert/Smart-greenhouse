@@ -13,8 +13,8 @@ import javafx.scene.control.Tab;
 import javafx.scene.control.TabPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
-import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
+import no.ntnu.controlpanel.ControlPanelSocket;
 import no.ntnu.controlpanel.SensorActuatorNodeInfo;
 import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.SensorReading;
@@ -33,7 +33,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     private static ControlPanelLogic logic;
     private static final int WIDTH = 500;
     private static final int HEIGHT = 400;
-    private static CommunicationChannel channel;
+    private static ControlPanelSocket channel;
     private TabPane nodeTabPane;
     private Scene mainScene;
     private final Map<Integer, SensorPane> sensorPanes = new HashMap<>();
@@ -49,7 +49,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
      * @param logic   The logic of the control panel node
      * @param channel Communication channel for sending control commands and receiving events
      */
-    public static void startApp(ControlPanelLogic logic, CommunicationChannel channel) {
+    public static void startApp(ControlPanelLogic logic, ControlPanelSocket channel) {
         if (logic == null) {
             throw new IllegalArgumentException("Control panel logic can't be null");
         }
@@ -74,7 +74,8 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         logic.addListener(this);
         logic.setCommunicationChannelListener(this);
         setCommunicationChannel(channel);
-        if (!channel.open()) {
+        channel.open();
+        if (!channel.isOpen()) {
         logic.onCommunicationChannelClosed();
         }
     }
@@ -252,7 +253,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
      * @param channel The communication channel
      */
 
-    public void setCommunicationChannel(CommunicationChannel channel) {
-        this.channel = channel;
+    public static void setCommunicationChannel(ControlPanelSocket channel) {
+        ControlPanelApplication.channel = channel;
     }
 }

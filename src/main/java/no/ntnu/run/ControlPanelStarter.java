@@ -18,14 +18,11 @@ import java.util.TimerTask;
 public class ControlPanelStarter {
 
     public static final String SERVER_HOST = "localhost";
-
-    private final boolean fake;
     private ControlPanelSocket socket;
 
     private ControlPanelLogic logic;
 
-    public ControlPanelStarter(boolean fake) {
-        this.fake = fake;
+    public ControlPanelStarter() {
     }
 
     /**
@@ -36,12 +33,7 @@ public class ControlPanelStarter {
      *             use real socket communication.
      */
     public static void main(String[] args) {
-        boolean fake = false;
-        if (args.length == 1 && "fake".equals(args[0])) {
-            fake = true;
-            Logger.info("Using FAKE events");
-        }
-        ControlPanelStarter starter = new ControlPanelStarter(fake);
+        ControlPanelStarter starter = new ControlPanelStarter();
         starter.start();
     }
 
@@ -51,7 +43,7 @@ public class ControlPanelStarter {
 
     private void start() {
         this.logic = new ControlPanelLogic();
-        CommunicationChannel channel = initiateCommunication(logic, fake);
+        ControlPanelSocket channel = initiateCommunication(logic);
         ControlPanelApplication.startApp(logic, channel);
         stopCommunication();
     }
@@ -59,19 +51,11 @@ public class ControlPanelStarter {
     /**
      * Initiates the communication between the controlPanel and the server.
      * @param logic The logic of the controlPanel.
-     * @param fake If the communication should be fake or not.
      * @return The communicationChannel.
      */
 
-    private CommunicationChannel initiateCommunication(ControlPanelLogic logic, boolean fake) {
-        CommunicationChannel channel;
-        if (!fake) {
-            channel = initiateSocketCommunication(logic);
-        } else {
-            channel = getCommunicationChannel();
-            System.out.println("Fake communication not supported");
-        }
-
+    private ControlPanelSocket initiateCommunication(ControlPanelLogic logic) {
+        ControlPanelSocket channel = initiateSocketCommunication(logic);
         initiateCommunicationThread();
 
         return channel;
@@ -125,7 +109,7 @@ public class ControlPanelStarter {
      * @param logic The logic of the controlPanel.
      * @return The communicationChannel.
      */
-    private CommunicationChannel initiateSocketCommunication(ControlPanelLogic logic) {
+    private ControlPanelSocket initiateSocketCommunication(ControlPanelLogic logic) {
         socket = new ControlPanelSocket(logic);
         logic.setCommunicationChannel(socket);
         return socket;

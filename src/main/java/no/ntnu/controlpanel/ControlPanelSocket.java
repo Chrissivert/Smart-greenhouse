@@ -121,7 +121,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
      */
 
     @Override
-    public boolean open() {
+    public void open() {
         try {
             socket = new Socket(SERVER_HOST, PORT_NUMBER);
             socketWriter = new PrintWriter(socket.getOutputStream(), true);
@@ -132,10 +132,8 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
             getNodes();
             continuousSensorUpdate();
             isConnected = true;
-            return true;
         } catch (IOException e) {
             Logger.error("Could not connect to server: " + e.getMessage());
-            return false;
         }
     }
 
