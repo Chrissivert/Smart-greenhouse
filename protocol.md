@@ -85,11 +85,28 @@ Message format for creating a node:
 TODO - describe the general format of all messages. Then describe specific format for each 
 message type in your protocol.
 
+Format for Client sending Actuator updates: "actuator[" + actuatorId + "] on node " + nodeId + " is " + state
+
 ### Error messages
 
 TODO - describe the possible error messages that nodes can send in your system.
 
 Error messages:
+"actuator not found"
+"No actuator section for node " + nodeId
+"Incorrect command format: " + rawCommand
+"Error encrypting the command."
+"Error sending command to actuator " + actuatorId + " on node " + nodeId + ": " + e.getMessage()  e = IOException
+"Could not connect to server: " + e.getMessage() e = IOException
+"Could not close connection: " + e.getMessage() e = IOException
+"while reading from the socket: " + e.getMessage() e = IOException
+"Incorrect command format: " + rawCommand
+"An error occurred while stopping communication"
+"TCP connection not established due to error : " + e.getMessage() e = IOException
+"Could not accept client connection: " + e.getMessage() e = IOException
+"Failed to toggle an actuator: " + e.getMessage() e = Exception
+"Can't remove node " + nodeId + ", there is no Tab for it"
+"No sensor section for node " + nodeId
 * `ERROR: <error message>` - sent by the server to the client when an error occurs
 
 ## An example scenario
