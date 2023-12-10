@@ -98,8 +98,9 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
                 this.readLineIsLocked = true;
                 socketWriter.println(encryptedCommand);
                 String response = socketReader.readLine();
-                //Unlock.
                 this.readLineIsLocked = false;
+
+                response = EncrypterDecrypter.decryptMessage(response);
                 Logger.info(response);
             } else {
                 Logger.error("Error encrypting the command.");
@@ -110,6 +111,8 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         } catch (Exception e) {
             Logger.error("An unexpected error occurred: " + e.getMessage());
         }
+        //In case of an exception, make sure it is unlocked
+        this.readLineIsLocked = false;
     }
 
 
@@ -161,20 +164,24 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
      */
     public void getNodes() {
         String encryptedCommand = EncrypterDecrypter.encryptMessage("getNodes");
+
+        Logger.info("Requesting nodes from server...");
+        String nodes;
+
         //"Lock" the readLine function, so the other thread cannot read the line until this method is done running.
         this.readLineIsLocked = true;
         socketWriter.println(encryptedCommand);
-        Logger.info("Requesting nodes from server...");
-        String nodes;
         try {
-            nodes = EncrypterDecrypter.decryptMessage(socketReader.readLine());
+            nodes = socketReader.readLine();
+            this.readLineIsLocked = false;
+
+            nodes = EncrypterDecrypter.decryptMessage(nodes);
             System.out.println(nodes);
             System.out.println("Nodes" + nodes);
         } catch (IOException e) {
+            this.readLineIsLocked = false;
             throw new RuntimeException(e);
         }
-        //Unlock.
-        this.readLineIsLocked = false;
 
         //Does not contain a ";" if there are no nodes. base64 also does not have the symbol, so this catches decryption errors
         if(!nodes.contains(";")) {
@@ -195,18 +202,23 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
      */
     public void updateSensorData() {
         String encryptedCommand = EncrypterDecrypter.encryptMessage("updateSensor");
+        String sensors = "";
+
         //"Lock" the readLine function, so the other thread cannot read the line until this method is done running.
         this.readLineIsLocked = true;
+
         socketWriter.println(encryptedCommand);
-        String sensors = "";
         try {
-            sensors = EncrypterDecrypter.decryptMessage(socketReader.readLine());
+            sensors = socketReader.readLine();
+            this.readLineIsLocked = false;
+
+            sensors = EncrypterDecrypter.decryptMessage(sensors);
             System.out.println(sensors);
         } catch (IOException e) {
+            this.readLineIsLocked = false;
             Logger.info("Stopping sensor reading");
         }
-        //Unlock.
-        this.readLineIsLocked = false;
+
     }
 
     /**
