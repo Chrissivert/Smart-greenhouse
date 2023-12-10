@@ -24,7 +24,7 @@ public class GreenhouseSimulator {
     /**
      * The default port number for the server.
      */
-    public static final int PORT_NUMBER = 1234;
+    public static final int SERVER_PORT_NUMBER = 1234;
     private ServerSocket serverSocket;
 
     /**
@@ -136,9 +136,9 @@ public class GreenhouseSimulator {
 
     private void initiateRealCommunication(){
         try {
-            serverSocket = new ServerSocket(PORT_NUMBER);
+            serverSocket = new ServerSocket(SERVER_PORT_NUMBER);
 
-            Logger.info("Server is now listening on port " + PORT_NUMBER);
+            Logger.info("Server is now listening on port " + SERVER_PORT_NUMBER);
         } catch (IOException e) {
             Logger.error("TCP connection not established due to error : " + e.getMessage());
             return;

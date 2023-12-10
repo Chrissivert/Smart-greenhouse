@@ -16,10 +16,6 @@ public class SensorActuatorNodeInfo {
         this.nodeId = nodeId;
     }
 
-    public void addActuator(Actuator actuator) {
-        actuators.add(actuator);
-    }
-
     /**
      * Get ID of the node.
      *

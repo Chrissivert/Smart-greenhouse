@@ -51,6 +51,7 @@ identical.
 ![img.png](images/NetworkArchitecture4.png)
 
 ## The flow of information and events
+
 Establishing a connection:
 1. The GreenhouseSimulator starts and waits for a connection from a ControlPanelClient.
 2. The ControlPanelClient starts and connects to the GreenhouseSimulator.
@@ -63,33 +64,40 @@ Establishing a connection:
 Each sensor inside the greenhouse updates every 5 seconds. This can be changed in the SensorActuatorNode
 SENSING_DELAY constant. Once a sensor is updated the temperatureSensor chart within the node is updated.
 When a ControlPanelClient sends a command such as turning on or off an actuator, then the ClientHandler
-handles the command and sends it tt so the GreenHouseApplication.
+handles the command and sends it to the GreenHouseApplication.
+
 
 ## Connection and state
 Our communication protocol is connection-oriented because they establish a connection before any useful data is transferred.
 Our protocol is both stateful and stateless.
-The GreenhouseSimulator is stateful because it keeps track of the connected nodes and the GreenHouseApplication is stateful
-The GreenhouseApplication is stateful because it keeps 
-
+The protocol is stateless since the greenhouse doesn't update connected clients on the changes that happen.
 
 ## Types, constants
 
 Value Types: Integer values for sensor and actuator data.
+Current sensor types: Temperature, Humidity
+Current actuator types: Window, Heater, Fan
+
+Most important constants: 
+* SENSING_DELAY - the delay between each sensor update
+* SERVER_PORT - the port number used for communication
+* SERVER_HOST - the host name used for communication
+* MIN_TEMPERATURE - the minimum temperature of the greenhouse
+* MAX_TEMPERATURE - the maximum temperature of the greenhouse
 
 ## Message format
 
-Message format for creating a node:
-1;2_window 4_heater
+All messages are sent as strings and parsed. The messages below tell the application what to send
 
+"getNodes" - returns a list of all current nodes to control panel
+"updateSensor - returns updated sensor data to control panel
 
-TODO - describe the general format of all messages. Then describe specific format for each 
-message type in your protocol.
-
+Examples for how the messages are sent:
 Format for Client sending Actuator updates: "actuator[" + actuatorId + "] on node " + nodeId + " is " + state
+Format for Client sending Sensor updates: "sensor[" + sensorId + "] on node " + nodeId + " is " + value
+Format for Client sending a command: "command[" + command + "] on node " + nodeId + " is " + value
 
 ### Error messages
-
-TODO - describe the possible error messages that nodes can send in your system.
 
 Error messages:
 "actuator not found"
@@ -107,28 +115,23 @@ Error messages:
 "Failed to toggle an actuator: " + e.getMessage() e = Exception
 "Can't remove node " + nodeId + ", there is no Tab for it"
 "No sensor section for node " + nodeId
-* `ERROR: <error message>` - sent by the server to the client when an error occurs
 
 ## An example scenario
 
-TODO - describe a typical scenario. How would it look like from communication perspective? When 
-are connections established? Which packets are sent? How do nodes react on the packets? An 
-example scenario could be as follows:
-
-
-
-
-1. A sensor node with ID=1 is started. It has a temperature sensor, two humidity sensors. It can
-   also open a window.
-2. A sensor node with ID=2 is started. It has a single temperature sensor and can control two fans
-   and a heater.
-3. A control panel node is started.
-4. Another control panel node is started.
-5. A sensor node with ID=3 is started. It has a two temperature sensors and no actuators.
-6. The user of the first-control panel presses on the button "ON" for the first fan of
+1. The GreenhouseSimulator starts and creates initial nodes.
+2. A sensor node with ID=1 is started. It has a temperature sensor and two humidity sensors. It
+   also has a window.
+3. A sensor node with ID=2 is started. It has a single temperature sensor and two fans.
+4. A control panel node is started.
+5. The user of the control-panel node presses on the button "ON" for the first fan of
    sensor/actuator node with ID=2.
-7. The user of the second control-panel node presses on the button "turn off all actuators".
+6. The control-panel node sends a message to the client handler.
+7. The client handler receives the message and sends it to the GreenHouseApplication
+   (this is done by using listeners).
+8. The GreenHouseApplication receives the message and updates accordingly.
 
-## Reliability and security
+## Security
 
-TODO - describe the reliability and security mechanisms your solution supports.
+Messages sent between the nodes are encrypted using RSA encryption. The current implementation uses a hardcoded
+public key and private key, although the option to generate a random key pair is available. Each message sent
+between the nodes is encrypted and decrypted using the public and private keys.
