@@ -187,15 +187,13 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
 
     @Override
     public void sensorsUpdated(List<Sensor> sensors) {
-        System.out.println("Sensors updated");
+        System.out.println(" Sensors updated");
         if (sensorPane != null) {
             sensorPane.update(sensors);
         }
 
         for (Sensor sensor : sensors) {
             if (sensor.getType().equals("temperature")) {
-                System.out.println("Sensor type: " + sensor.getType());
-                System.out.println("Updating graph " + sensor.getReading().getValue());
                 updateGraphWithSensorData(sensor.getReading().getValue());
             }
         }
