@@ -32,7 +32,6 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
     private static final double HORIZONTAL_OFFSET = 150;
     private static final double WINDOW_WIDTH = 300;
     private static final double WINDOW_HEIGHT = 300;
-    private static final int MAX_DATA_POINTS = 30;
     private final SensorActuatorNode node;
 
     private ActuatorPane actuatorPane;
@@ -71,24 +70,22 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         yAxis.setLabel("Temperature");
 
 
-        xAxis.setLowerBound(0); // Set lower bound for X-axis
-        xAxis.setUpperBound(32); // Set upper bound for X-axis
+        xAxis.setLowerBound(0);
+        xAxis.setUpperBound(30);
 
-        yAxis.setAutoRanging(false); // Disable auto-ranging on the Y-axis
-        yAxis.setLowerBound(19); // Set lower bound for Y-axis
-        yAxis.setUpperBound(35);
+        yAxis.setAutoRanging(false);
+        yAxis.setLowerBound(18);
+        yAxis.setUpperBound(40);
 
         lineChart = new LineChart<>(xAxis, yAxis);
         lineChart.setTitle("Temperature Data");
 
         series = new XYChart.Series<>();
         series.setName("Temperature Values");
-
-
-        lineChart.getData().add(series); // Add series to chart
+        lineChart.getData().add(series);
         series.getNode().setStyle("-fx-stroke: " + getRandomColor());
 
-        contentVBox.getChildren().add(lineChart); // Add the chart to the VBox
+        contentVBox.getChildren().add(lineChart);
     }
 
     private void initializeListeners(SensorActuatorNode node) {
@@ -106,8 +103,8 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         actuatorPane = new ActuatorPane(node.getActuators(), false);
         sensorPane = new SensorPane(node.getSensors());
 
-        HBox actuatorIdBox = new HBox(); // HBox to contain ActuatorId texts
-        actuatorIdBox.setSpacing(10); // Adjust spacing as needed
+        HBox actuatorIdBox = new HBox();
+        actuatorIdBox.setSpacing(10);
 
         for (Actuator actuator : node.getActuators()) {
             Integer actuatorId = actuator.getId();
@@ -123,7 +120,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         ScrollPane actuatorScrollPane = new ScrollPane(actuatorContentVBox);
         actuatorScrollPane.setFitToWidth(true);
         actuatorScrollPane.setFitToHeight(true);
-        actuatorScrollPane.setPrefSize(300, 200); // Set preferred size to prevent resizing
+        actuatorScrollPane.setPrefSize(300, 200);
 
         VBox sensorContentVBox = new VBox(sensorPane);
         sensorContentVBox.setSpacing(10);
@@ -131,7 +128,7 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         ScrollPane sensorScrollPane = new ScrollPane(sensorContentVBox);
         sensorScrollPane.setFitToWidth(true);
         sensorScrollPane.setFitToHeight(true);
-        sensorScrollPane.setPrefSize(300, 200); // Set preferred size to prevent resizing
+        sensorScrollPane.setPrefSize(300, 200);
 
         VBox contentVBox = new VBox(sensorScrollPane, actuatorScrollPane);
         contentVBox.setSpacing(10);
@@ -144,11 +141,9 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
         VBox.setVgrow(contentVBox, Priority.ALWAYS);
         HBox.setHgrow(contentVBox, Priority.ALWAYS);
 
-        // Divide the screen into two halves
         SplitPane splitPane = new SplitPane();
         splitPane.setOrientation(Orientation.VERTICAL);
 
-        // Graph taking up half of the screen
         splitPane.getItems().add(scrollPane);
 
         // Actuator and Sensor panes sharing the other half evenly
@@ -158,8 +153,6 @@ public class NodeGuiWindow extends Stage implements SensorListener, ActuatorList
 
         return splitPane;
     }
-
-
 
 
     @Override

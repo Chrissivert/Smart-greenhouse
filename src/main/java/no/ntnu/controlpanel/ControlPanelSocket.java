@@ -47,7 +47,7 @@ public class ControlPanelSocket implements CommunicationChannel {
             String encryptedCommand = EncrypterDecrypter.encryptMessage(command);
             if (encryptedCommand != null) {
                 socketWriter.println(encryptedCommand);
-                String response = socketReader.readLine();  //Don't remember if this should be decrypted or not
+                String response = socketReader.readLine();
                 Logger.info(response);
             } else {
                 Logger.error("Error encrypting the command.");
