@@ -90,7 +90,7 @@ public class ControlPanelStarter {
      */
 
     private void initiateRealCommunication(){
-        while (socket.open()) {
+        while (socket.isOpen()) {
             if (socket != null) {
                 Timer timer = new Timer();
                 timer.scheduleAtFixedRate(new TimerTask() {

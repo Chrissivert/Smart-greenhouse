@@ -176,8 +176,6 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
             this.readLineIsLocked = false;
 
             nodes = EncrypterDecrypter.decryptMessage(nodes);
-            System.out.println(nodes);
-            System.out.println("Nodes" + nodes);
         } catch (IOException e) {
             this.readLineIsLocked = false;
             throw new RuntimeException(e);
@@ -187,6 +185,8 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         if(!nodes.contains(";")) {
             Logger.info("Nodes not loaded, since no nodes received");
 
+        } else if (nodes.contains("=")) {
+            Logger.info("Where dose this come from?"); //DEBUG
         } else {
             String[] nodeList = nodes.split("/");
 
@@ -213,7 +213,6 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
             this.readLineIsLocked = false;
 
             sensors = EncrypterDecrypter.decryptMessage(sensors);
-            System.out.println(sensors);
         } catch (IOException e) {
             this.readLineIsLocked = false;
             Logger.info("Stopping sensor reading");
@@ -234,4 +233,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         }, 0, 1000);
     }
 
+    public boolean isOpen() {
+        return this.isConnected;
+    }
 }
