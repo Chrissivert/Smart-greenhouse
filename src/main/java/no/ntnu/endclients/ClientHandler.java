@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Base64;
 
 public class ClientHandler extends Thread {
     protected Socket socket;
@@ -47,7 +46,7 @@ public class ClientHandler extends Thread {
             while ((inputLine = reader.readLine()) != null) {
                 String a = EncrypterDecrypter.decryptMessage(inputLine);
                 handleInput(a);
-                writer.println(EncrypterDecrypter.encryptCommand(a));
+                writer.println(EncrypterDecrypter.encryptMessage(a));
             }
         } catch (IOException e) {
             Logger.error("while reading from the socket: " + e.getMessage());
@@ -77,12 +76,12 @@ public class ClientHandler extends Thread {
     }
 
     private void handleGetNodesCommand() {
-       writer.println(EncrypterDecrypter.encryptCommand(simulator.getNodes()));
+       writer.println(EncrypterDecrypter.encryptMessage(simulator.getNodes()));
     }
 
 
     private void handleUpdateSensorCommand() {
-        writer.println(EncrypterDecrypter.encryptCommand(simulator.updateSensors()));
+        writer.println(EncrypterDecrypter.encryptMessage(simulator.updateSensors()));
     }
 
 
@@ -98,7 +97,7 @@ public class ClientHandler extends Thread {
 
             String state = isOn ? "OFF" : "ON";
 
-            writer.println(EncrypterDecrypter.encryptCommand("  >>> Server response: Actuator[" + actuatorId +
+            writer.println(EncrypterDecrypter.encryptMessage("  >>> Server response: Actuator[" + actuatorId +
                     "] on node " + nodeId + " is set to " + state));
         } else {
             Logger.error("Incorrect command format: " + rawCommand);

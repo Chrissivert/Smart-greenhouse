@@ -10,11 +10,17 @@ import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
+/**
+ * Tools for encrypting and decrypting messages. Uses pre-defined keys for both encryption and decryption.
+ */
 public class EncrypterDecrypter {
 
     private static PublicKey publicKey;
     private static PrivateKey privateKey;
 
+    /**
+     * Initializes the static variables to be used by the static methods of this class.
+     */
     static {
 
         try {
@@ -36,14 +42,19 @@ public class EncrypterDecrypter {
 
     }
 
-
-    public static String encryptCommand(String command) {
+    /**
+     * Encrypts and returns the input message.
+     *
+     * @param message the message to be encrypted
+     * @return the encrypted message
+     */
+    public static String encryptMessage(String message) {
         String encryptedMessage = null;
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.ENCRYPT_MODE, publicKey);
 
-            byte[] encryptedBytes = cipher.doFinal(command.getBytes());
+            byte[] encryptedBytes = cipher.doFinal(message.getBytes());
 
             encryptedMessage = Base64.getEncoder().encodeToString(encryptedBytes);
 
@@ -56,14 +67,19 @@ public class EncrypterDecrypter {
         }
     }
 
-
-    public static String decryptMessage(String commandToDecrypt) {
+    /**
+     * Decrypts and returns the input message.
+     *
+     * @param message the message to be decrypted
+     * @return the decrypted message
+     */
+    public static String decryptMessage(String message) {
         String decryptedMessage = null;
 
         try {
             Cipher cipher = Cipher.getInstance("RSA");
             cipher.init(Cipher.DECRYPT_MODE, privateKey);
-            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(commandToDecrypt));
+            byte[] decryptedBytes = cipher.doFinal(Base64.getDecoder().decode(message));
 
             decryptedMessage = new String(decryptedBytes);
 
@@ -74,10 +90,20 @@ public class EncrypterDecrypter {
         return decryptedMessage;
     }
 
+    /**
+     * Returns the private key.
+     *
+     * @return the private key
+     */
     public static PrivateKey getPrivateKey() {
         return privateKey;
     }
 
+    /**
+     * Returns the public key
+     *
+     * @return the public key
+     */
     public static PublicKey getPublicKey() {
         return publicKey;
     }

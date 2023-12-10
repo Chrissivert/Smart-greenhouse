@@ -11,7 +11,6 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.net.Socket;
-import java.util.Base64;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -45,7 +44,7 @@ public class ControlPanelSocket implements CommunicationChannel {
         String on = isOn ? "0" : "1";
         String command = actuatorId + ", " + nodeId + ", " + on;
         try {
-            String encryptedCommand = EncrypterDecrypter.encryptCommand(command);
+            String encryptedCommand = EncrypterDecrypter.encryptMessage(command);
             if (encryptedCommand != null) {
                 socketWriter.println(encryptedCommand);
                 String response = socketReader.readLine();  //Don't remember if this should be decrypted or not
@@ -104,7 +103,7 @@ public class ControlPanelSocket implements CommunicationChannel {
      * the controlPanel.
      */
     public void getNodes() {
-        String encryptedCommand = EncrypterDecrypter.encryptCommand("getNodes");
+        String encryptedCommand = EncrypterDecrypter.encryptMessage("getNodes");
         socketWriter.println(encryptedCommand);
         Logger.info("Requesting nodes from server...");
         String nodes;
@@ -132,7 +131,7 @@ public class ControlPanelSocket implements CommunicationChannel {
      * This method should update the sensors continually.
      */
     public void updateSensorData() {
-        String encryptedCommand = EncrypterDecrypter.encryptCommand("updateSensor");
+        String encryptedCommand = EncrypterDecrypter.encryptMessage("updateSensor");
         socketWriter.println(encryptedCommand);
         String sensors = "";
         try {
