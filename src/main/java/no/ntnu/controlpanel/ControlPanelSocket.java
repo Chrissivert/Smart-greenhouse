@@ -64,14 +64,13 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
      * @param rawCommand The command as a string
      */
     private void handleInput(String rawCommand) {
-        System.out.println("Received command: " + rawCommand);
         if (rawCommand == null) {
             return;
         }
         if (rawCommand.equals("updateNodes")) {
             getNodes();
         }
-        if (rawCommand.contains("Actuator[")&&rawCommand.contains("] on node ")&&rawCommand.contains(" is set to ")) {
+        if (rawCommand.contains("updateActuatorStates")) {
             this.updateActuatorStates(rawCommand);
         }
     }
@@ -188,24 +187,15 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
     }
 
     private void updateActuatorStates(String rawCommand){
-        if(rawCommand.contains(">>> Server response:")) { //"   >>> Server response: Actuator[" + actuatorId + "] on node " + nodeId + " is set to " + state
-            String nodeStateInfo = rawCommand.replace(">>> Server response: ", ""); //  Actuator[actuatorId] on node nodeId is set to state
-            nodeStateInfo = nodeStateInfo.replace("Actuator[", ""); // actuatorId] on node nodeId is set to state
-            nodeStateInfo = nodeStateInfo.replace("] on node", ""); // actuatorId nodeId is set to state
-            nodeStateInfo = nodeStateInfo.replace("is set to ", "");// actuatorId nodeId state
-            nodeStateInfo = nodeStateInfo.replace(" ", ",");// ,,actuatorId,nodeId,state
-            nodeStateInfo = nodeStateInfo.replace(",,", "");// actuatorId,nodeId,state
-
+        if(rawCommand.contains("updateActuatorStates")) {
+            String nodeStateInfo = rawCommand.replace("updateActuatorStates:", "");
             String[] nodeStateInfoList = nodeStateInfo.split(",");
             int actuatorId = Integer.parseInt(nodeStateInfoList[0]);
             int nodeId = Integer.parseInt(nodeStateInfoList[1]);
             boolean state = nodeStateInfoList[2].equals("ON");
 
-            //update the actuator state in the GUI of other clients
-            logic.onActuatorStateChanged(nodeId, actuatorId, state); //TODO: this is not working
-
+            logic.onActuatorStateChanged(nodeId, actuatorId, state);
         }
-
     }
 
     /**
@@ -228,6 +218,11 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         }, 0, 1000);
     }
 
+    /**
+     * This method should return true if the socket is open, false otherwise.
+     *
+     * @return true if the socket is open, false otherwise.
+     */
     public boolean isOpen() {
         return this.isConnected;
     }

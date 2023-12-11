@@ -136,7 +136,6 @@ public class ClientHandler extends Thread {
     public void updateActuatorStates(int actuatorId,int nodeId,boolean isOn) {
         String state = isOn ? "OFF" : "ON";
 
-        writer.println(EncrypterDecrypter.encryptMessage("  >>> Server response: Actuator[" + actuatorId +
-                "] on node " + nodeId + " is set to " + state));
+        writer.println(EncrypterDecrypter.encryptMessage("updateActuatorStates:" + actuatorId + "," + nodeId + "," + state));
     }
 }
