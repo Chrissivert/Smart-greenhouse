@@ -147,8 +147,8 @@ Error messages:
 5. The user of the control-panel node presses on the button "ON" for the first fan of
    sensor/actuator node with ID=2.
 6. The control-panel node sends a message to the client handler.
-7. The client handler receives the message and sends it to the GreenHouseApplication
-   (this is done by using listeners).
+7. The client handler receives the message and sends it to the GreenHouseApplication, it also sends a confirmation message to the ControlPanelClient(s),
+if there is more than one connected to the server it sends the message to all of them witch will update the GUI for all connected clients.
 8. The GreenHouseApplication receives the message and updates accordingly.
 
 ## Security
