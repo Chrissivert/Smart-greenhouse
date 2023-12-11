@@ -46,5 +46,5 @@ public interface GreenhouseEventListener {
     void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn);
 
 
-    void onActuatorStateChangedButNotReally(int nodeId, int actuatorId, boolean isOn);
+    void onActuatorStateWithoutNofify(int nodeId, int actuatorId, boolean isOn);
 }

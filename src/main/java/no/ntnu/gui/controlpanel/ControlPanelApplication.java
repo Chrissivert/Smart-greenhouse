@@ -178,7 +178,7 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
      * Event handler for when an actuator is turned on or off
      */
     @Override
-    public void onActuatorStateChangedButNotReally(int nodeId, int actuatorId, boolean isOn) {
+    public void onActuatorStateWithoutNofify(int nodeId, int actuatorId, boolean isOn) {
         String state = isOn ? "ON" : "off";
         Logger.info("actuator[" + actuatorId + "] on node " + nodeId + " is " + state);
         ActuatorPane actuatorPane = actuatorPanes.get(nodeId);

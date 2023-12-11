@@ -12,7 +12,6 @@ import no.ntnu.listeners.common.CommunicationChannelListener;
 import no.ntnu.listeners.controlpanel.GreenhouseEventListener;
 import no.ntnu.tools.Logger;
 
-import static no.ntnu.tools.Parser.parseDoubleOrError;
 import static no.ntnu.tools.Parser.parseIntegerOrError;
 
 /**
@@ -108,8 +107,8 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
      * @param isOn       The new state of the actuator
      */
     @Override
-    public void onActuatorStateChangedButNotReally(int nodeId, int actuatorId, boolean isOn) {
-        listeners.forEach(listener -> listener.onActuatorStateChangedButNotReally(nodeId, actuatorId, isOn));
+    public void onActuatorStateWithoutNofify(int nodeId, int actuatorId, boolean isOn) {
+        listeners.forEach(listener -> listener.onActuatorStateWithoutNofify(nodeId, actuatorId, isOn));
     }
 
     /**
