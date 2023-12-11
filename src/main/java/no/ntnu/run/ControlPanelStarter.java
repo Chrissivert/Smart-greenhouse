@@ -3,9 +3,7 @@ package no.ntnu.run;
 import no.ntnu.controlpanel.CommunicationChannel;
 import no.ntnu.controlpanel.ControlPanelLogic;
 import no.ntnu.controlpanel.ControlPanelSocket;
-import no.ntnu.endclients.ClientHandler;
 import no.ntnu.gui.controlpanel.ControlPanelApplication;
-import no.ntnu.tools.Logger;
 
 import java.util.Timer;
 import java.util.TimerTask;
@@ -71,7 +69,7 @@ public class ControlPanelStarter {
     }
 
     /**
-     * Starts the communication listening loop. Waits x amount of milliseconds before running run1() again.
+     * Starts the communication listening loop. Waits x amount of milliseconds before running runThread() again.
      * Change the period of waiting if the scale of the application is larger or smaller.
      */
     private void initiateRealCommunication() {
@@ -88,7 +86,7 @@ public class ControlPanelStarter {
         timer.scheduleAtFixedRate(new TimerTask() {
             @Override
             public void run() {
-                socket.run1();
+                socket.runThread();
             }
         }, 0, 1);
         

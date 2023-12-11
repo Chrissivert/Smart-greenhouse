@@ -41,18 +41,16 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
     }
 
     /**
-     * Runs the client handler thread, continuously reading messages from the client.
+     * Runs the thread that handles messages sent from the server, continuously reading.
      * Handles the incoming commands and responds accordingly.
      */
-//    @Override
-    public synchronized void run1() {
+    public synchronized void runThread() {
         try {
             String inputLine;
             if (socketReader.ready() && !readLineIsLocked) {
                 inputLine = socketReader.readLine();
                 String input = EncrypterDecrypter.decryptMessage(inputLine);
                 handleInput(input);
-//              writer.println(EncrypterDecrypter.encryptMessage(a));
             }
         } catch (IOException e) {
             Logger.error("while reading from the socket: " + e.getMessage());
@@ -78,56 +76,11 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
         }
     }
 
-    private void updateNodes() {
-        getNodes();
-
-    }
-    private void updateActuatorStates(String rawCommand){
-        if(rawCommand.contains(">>> Server response:")) { //"   >>> Server response: Actuator[" + actuatorId + "] on node " + nodeId + " is set to " + state
-            String nodeStateInfo = rawCommand.replace(">>> Server response: ", ""); //  Actuator[actuatorId] on node nodeId is set to state
-            nodeStateInfo = nodeStateInfo.replace("Actuator[", ""); // actuatorId] on node nodeId is set to state
-            nodeStateInfo = nodeStateInfo.replace("] on node", ""); // actuatorId nodeId is set to state
-            nodeStateInfo = nodeStateInfo.replace("is set to ", "");// actuatorId nodeId state
-            nodeStateInfo = nodeStateInfo.replace(" ", ",");// ,,actuatorId,nodeId,state
-            nodeStateInfo = nodeStateInfo.replace(",,", "");// actuatorId,nodeId,state
-
-            String[] nodeStateInfoList = nodeStateInfo.split(",");
-            int actuatorId = Integer.parseInt(nodeStateInfoList[0]);
-            int nodeId = Integer.parseInt(nodeStateInfoList[1]);
-            boolean state = nodeStateInfoList[2].equals("ON");
-
-            //update the actuator state in the GUI of other clients
-            logic.onActuatorStateChanged(nodeId, actuatorId, state); //TODO: this is not working
-
-
-        }
-
-    }
-
-    /**
-     * This method should send a command to a specific actuator
-     *
-     * @param nodeId     ID of the node to which the actuator is attached
-     * @param actuatorId Node-wide unique ID of the actuator
-     * @param isOn       When true, actuator must be turned on; off when false.
-     */
-    public void sendActuatorChange(int actuatorId, int nodeId, boolean isOn) {
-        Logger.info("Sending command to actuator " + nodeId + " on node " + actuatorId);
-        String on = isOn ? "0" : "1";
-        String command = actuatorId + ", " + nodeId + ", " + on;
-
-        String response = performSocketCommunication(command);
-        Logger.info(response);
-
-    }
-
-
     /**
      * This method should open the connection to the server.
      *
      * @return True if connection is successfully opened, false on error.
      */
-
     @Override
     public void open() {
         try {
@@ -181,7 +134,6 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
                 this.readLineIsLocked = false;
 
                 receiveMessage = EncrypterDecrypter.decryptMessage(receiveMessage);
-                Logger.info(receiveMessage);
             } else {
                 Logger.error("Error encrypting the command.");
             }
@@ -216,6 +168,51 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
             }
             Logger.info("Nodes loaded");
         }
+    }
+
+    /**
+     * This method should send a command to a specific actuator
+     *
+     * @param nodeId     ID of the node to which the actuator is attached
+     * @param actuatorId Node-wide unique ID of the actuator
+     * @param isOn       When true, actuator must be turned on; off when false.
+     */
+    public void sendActuatorChange(int actuatorId, int nodeId, boolean isOn) {
+        Logger.info("Sending command to actuator " + nodeId + " on node " + actuatorId);
+        String on = isOn ? "0" : "1";
+        String command = actuatorId + ", " + nodeId + ", " + on;
+
+        String response = performSocketCommunication(command);
+        Logger.info(response);
+
+    }
+
+    private void updateActuatorStates(String rawCommand){
+        if(rawCommand.contains(">>> Server response:")) { //"   >>> Server response: Actuator[" + actuatorId + "] on node " + nodeId + " is set to " + state
+            String nodeStateInfo = rawCommand.replace(">>> Server response: ", ""); //  Actuator[actuatorId] on node nodeId is set to state
+            nodeStateInfo = nodeStateInfo.replace("Actuator[", ""); // actuatorId] on node nodeId is set to state
+            nodeStateInfo = nodeStateInfo.replace("] on node", ""); // actuatorId nodeId is set to state
+            nodeStateInfo = nodeStateInfo.replace("is set to ", "");// actuatorId nodeId state
+            nodeStateInfo = nodeStateInfo.replace(" ", ",");// ,,actuatorId,nodeId,state
+            nodeStateInfo = nodeStateInfo.replace(",,", "");// actuatorId,nodeId,state
+
+            String[] nodeStateInfoList = nodeStateInfo.split(",");
+            int actuatorId = Integer.parseInt(nodeStateInfoList[0]);
+            int nodeId = Integer.parseInt(nodeStateInfoList[1]);
+            boolean state = nodeStateInfoList[2].equals("ON");
+
+            //update the actuator state in the GUI of other clients
+            logic.onActuatorStateChanged(nodeId, actuatorId, state); //TODO: this is not working
+
+        }
+
+    }
+
+    /**
+     * This method should update/load the nodes.
+     */
+    private void updateNodes() {
+        getNodes();
     }
 
     /**
