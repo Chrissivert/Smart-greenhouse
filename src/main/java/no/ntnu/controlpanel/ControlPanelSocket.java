@@ -69,7 +69,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
             return;
         }
         if (rawCommand.equals("updateNodes")) {
-            updateNodes();
+            getNodes();
         }
         if (rawCommand.contains("Actuator[")&&rawCommand.contains("] on node ")&&rawCommand.contains(" is set to ")) {
             this.updateActuatorStates(rawCommand);
@@ -206,13 +206,6 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
 
         }
 
-    }
-
-    /**
-     * This method should update/load the nodes.
-     */
-    private void updateNodes() {
-        getNodes();
     }
 
     /**
