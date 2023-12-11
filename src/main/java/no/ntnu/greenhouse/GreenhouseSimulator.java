@@ -185,8 +185,19 @@ public class GreenhouseSimulator {
         } else {
             nodes.get(nodeId).getActuators().get(actuatorId).turnOff();
         }
+        brodcastActuatorStateChange(actuatorId, nodeId, isOn);
+    }
+
+    private void brodcastActuatorStateChange(int actuatorId, int nodeId, boolean isOn) {
         for (ClientHandler client : connectedClients) {
             client.updateActuatorStates(actuatorId, nodeId, isOn);
+        }
+    }
+
+    public void handleAllActuators(int nodeId, boolean isOn) {
+        for (Actuator actuator : nodes.get(nodeId).getActuators()) {
+            actuator.set(isOn);
+            brodcastActuatorStateChange(actuator.getId(), nodeId, !isOn); //boolean isOn is inverted, dont know why, but it works
         }
     }
 

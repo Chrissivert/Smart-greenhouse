@@ -1,5 +1,6 @@
 package no.ntnu.gui.greenhouse;
 
+import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.tools.Logger;
@@ -32,7 +33,7 @@ public class ButtonActionHandler {
     public void handleTurnOnAllActuators() {
         for (SensorActuatorNode node : GreenhouseSimulator.nodes.values()) {
             if (node != null) {
-                node.setAllActuators(true);
+                this.simulator.handleAllActuators(node.getId(), true);
             }
         }
     }
@@ -44,7 +45,7 @@ public class ButtonActionHandler {
     public void handleTurnOffAllActuators() {
         for (SensorActuatorNode node : GreenhouseSimulator.nodes.values()) {
             if (node != null) {
-                node.setAllActuators(false);
+                this.simulator.handleAllActuators(node.getId(), false);
             }
         }
     }
