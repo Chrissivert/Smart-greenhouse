@@ -114,10 +114,6 @@ public class ClientHandler extends Thread {
 
             simulator.handleActuator(actuatorId, nodeId, isOn);
 
-            String state = isOn ? "OFF" : "ON";
-
-            writer.println(EncrypterDecrypter.encryptMessage("  >>> Server response: Actuator[" + actuatorId +
-                    "] on node " + nodeId + " is set to " + state));
         } else {
             Logger.error("Incorrect command format: " + rawCommand);
         }
@@ -125,5 +121,12 @@ public class ClientHandler extends Thread {
 
     public void updateNodes() {
         writer.println(EncrypterDecrypter.encryptMessage("updateNodes"));
+    }
+
+    public void updateActuatorStates(int actuatorId,int nodeId,boolean isOn) {
+        String state = isOn ? "OFF" : "ON";
+
+        writer.println(EncrypterDecrypter.encryptMessage("  >>> Server response: Actuator[" + actuatorId +
+                "] on node " + nodeId + " is set to " + state));
     }
 }

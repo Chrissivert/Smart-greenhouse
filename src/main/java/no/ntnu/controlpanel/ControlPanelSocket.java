@@ -66,16 +66,42 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
      * @param rawCommand The command as a string
      */
     private void handleInput(String rawCommand) {
+        System.out.println("Received command: " + rawCommand);
         if (rawCommand == null) {
             return;
         }
         if (rawCommand.equals("updateNodes")) {
             updateNodes();
         }
+        if (rawCommand.contains("Actuator[")&&rawCommand.contains("] on node ")&&rawCommand.contains(" is set to ")) {
+            this.updateActuatorStates(rawCommand);
+        }
     }
 
     private void updateNodes() {
         getNodes();
+
+    }
+    private void updateActuatorStates(String rawCommand){
+        if(rawCommand.contains(">>> Server response:")) { //"   >>> Server response: Actuator[" + actuatorId + "] on node " + nodeId + " is set to " + state
+            String nodeStateInfo = rawCommand.replace(">>> Server response: ", ""); //  Actuator[actuatorId] on node nodeId is set to state
+            nodeStateInfo = nodeStateInfo.replace("Actuator[", ""); // actuatorId] on node nodeId is set to state
+            nodeStateInfo = nodeStateInfo.replace("] on node", ""); // actuatorId nodeId is set to state
+            nodeStateInfo = nodeStateInfo.replace("is set to ", "");// actuatorId nodeId state
+            nodeStateInfo = nodeStateInfo.replace(" ", ",");// ,,actuatorId,nodeId,state
+            nodeStateInfo = nodeStateInfo.replace(",,", "");// actuatorId,nodeId,state
+
+            String[] nodeStateInfoList = nodeStateInfo.split(",");
+            int actuatorId = Integer.parseInt(nodeStateInfoList[0]);
+            int nodeId = Integer.parseInt(nodeStateInfoList[1]);
+            boolean state = nodeStateInfoList[2].equals("ON");
+
+            //update the actuator state in the GUI of other clients
+            logic.onActuatorStateChanged(nodeId, actuatorId, state); //TODO: this is not working
+
+
+        }
+
     }
 
     /**

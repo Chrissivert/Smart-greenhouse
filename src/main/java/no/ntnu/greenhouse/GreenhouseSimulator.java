@@ -185,6 +185,9 @@ public class GreenhouseSimulator {
         } else {
             nodes.get(nodeId).getActuators().get(actuatorId).turnOff();
         }
+        for (ClientHandler client : connectedClients) {
+            client.updateActuatorStates(actuatorId, nodeId, isOn);
+        }
     }
 
     /**
