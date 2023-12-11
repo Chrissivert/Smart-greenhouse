@@ -15,6 +15,8 @@ import no.ntnu.gui.greenhouse.ButtonActionHandler;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
 import no.ntnu.tools.Logger;
 
+import static java.lang.Thread.sleep;
+
 /**
  * Application entrypoint - a simulator for a greenhouse.
  * Works essentially as a server.
@@ -198,6 +200,11 @@ public class GreenhouseSimulator {
         for (Actuator actuator : nodes.get(nodeId).getActuators()) {
             actuator.set(isOn);
             brodcastActuatorStateChange(actuator.getId(), nodeId, !isOn); //boolean isOn is inverted, dont know why, but it works
+            try {
+                sleep(7);
+            } catch (InterruptedException e) {
+                throw new RuntimeException(e);
+            }
         }
     }
 
