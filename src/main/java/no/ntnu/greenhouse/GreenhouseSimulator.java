@@ -9,7 +9,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
-
 import no.ntnu.endclients.ClientHandler;
 import no.ntnu.gui.greenhouse.ButtonActionHandler;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
@@ -187,19 +186,25 @@ public class GreenhouseSimulator {
         } else {
             nodes.get(nodeId).getActuators().get(actuatorId).turnOff();
         }
-        brodcastActuatorStateChange(actuatorId, nodeId, isOn);
+        broadcastActuatorStateChange(actuatorId, nodeId, isOn);
     }
 
-    private void brodcastActuatorStateChange(int actuatorId, int nodeId, boolean isOn) {
+    private void broadcastActuatorStateChange(int actuatorId, int nodeId, boolean isOn) {
         for (ClientHandler client : connectedClients) {
             client.updateActuatorStates(actuatorId, nodeId, isOn);
         }
     }
 
+    /**
+     * Handle a command to turn on or off all actuators in a node.
+     *
+     * @param nodeId The ID of the node containing the actuators
+     * @param isOn   Whether to turn the actuators on or off
+     */
     public void handleAllActuators(int nodeId, boolean isOn) {
         for (Actuator actuator : nodes.get(nodeId).getActuators()) {
             actuator.set(isOn);
-            brodcastActuatorStateChange(actuator.getId(), nodeId, !isOn); //boolean isOn is inverted, dont know why, but it works
+            broadcastActuatorStateChange(actuator.getId(), nodeId, !isOn); //boolean isOn is inverted, dont know why, but it works
             try {
                 sleep(7);
             } catch (InterruptedException e) {
