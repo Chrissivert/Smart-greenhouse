@@ -190,4 +190,21 @@ the most important here, but the networks communication part is.
 The public and private key is a pre-defined variable inside the EncrypterDecrypter class. To change it to
 a different keypair, those variables would need to be changed inside that class. Then, the EncrypterDecrypter
 class would need to be synchronized across all clients, and the server. If server and client are not using the
-same keypair, then decryption errors would occur. 
+same keypair, then decryption errors would occur.
+
+## Threading
+
+When using threading on the client side, there needs to be a way to stop both threads from reading a line at the 
+same time. For example, the communications thread is always listening for a new line pop up at the 
+socketReader.readLine() method. So, lets say a new node is added on the server side GUI. This change needs to be 
+communicated to the client, so that the client GUI will add the node to the view. If the user presses a button
+in the GUI at just the right time, then a error occurs. The error is that the GUI thread and the communications 
+thread are both trying to socketReader.readLine() at the same time, and one reader might end up with the information
+meant for the other.
+
+This project implements a simple boolean lock that stops one of the threads from reading anything as long as the other
+thread is currently expecting a response from the server. This is done by giving reading priority to the GUI thread.
+If the GUI thread is currently awaiting a response from the server, the communications thread loop will never 
+get to read a line before GUI thread is done reading. This is done with the ControlPanelSocket runThread() method,
+the boolean this.readLineIsLocked variable. If the readLineIsLocked = true, the communications thread loop cannot
+read any lines.
