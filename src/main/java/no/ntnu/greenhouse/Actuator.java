@@ -174,12 +174,30 @@ public class Actuator {
     }
 
     /**
+     * Turn on the actuator, without notifying changes.
+     */
+    public void turnOnDoNotNotify() {
+        if (!on) {
+            on = true;
+        }
+    }
+
+    /**
      * Turn off the actuator.
      */
     public void turnOff() {
         if (on) {
             on = false;
             notifyChanges();
+        }
+    }
+
+    /**
+     * Turn off the actuator, without notifying changes.
+     */
+    public void turnOffDoNotNotify() {
+        if (on) {
+            on = false;
         }
     }
 

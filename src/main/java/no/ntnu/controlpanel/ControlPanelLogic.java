@@ -101,6 +101,18 @@ public class ControlPanelLogic implements GreenhouseEventListener, ActuatorListe
     }
 
     /**
+     * Event handler for when the state of an actuator changes.
+     *
+     * @param nodeId     The ID of the node where the actuator is located
+     * @param actuatorId The ID of the actuator whose state changed
+     * @param isOn       The new state of the actuator
+     */
+    @Override
+    public void onActuatorStateChangedButNotReally(int nodeId, int actuatorId, boolean isOn) {
+        listeners.forEach(listener -> listener.onActuatorStateChangedButNotReally(nodeId, actuatorId, isOn));
+    }
+
+    /**
      * Turn on or off all actuators in all connected nodes.
      *
      * @param isOn True to turn on, false to turn off

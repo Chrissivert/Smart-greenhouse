@@ -195,7 +195,7 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
             int nodeId = Integer.parseInt(nodeStateInfoList[1]);
             boolean state = nodeStateInfoList[2].equals("ON");
             Logger.info("Actuator " + actuatorId + " on node " + nodeId + " is now " + state + "." + "    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
-            logic.onActuatorStateChanged(nodeId, actuatorId, state);
+            logic.onActuatorStateChangedButNotReally(nodeId, actuatorId, state);
         }
     }
 
