@@ -92,7 +92,7 @@ public class ControlPanelStarter {
             public void run() {
                 socket.run1();
             }
-        }, 0, 100);
+        }, 0, 1);
         
     }
 
