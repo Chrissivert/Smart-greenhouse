@@ -44,4 +44,7 @@ public interface GreenhouseEventListener {
      * @param isOn       When true, actuator is on; off when false.
      */
     void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn);
+
+
+    void onActuatorStateChangedButNotReally(int nodeId, int actuatorId, boolean isOn);
 }

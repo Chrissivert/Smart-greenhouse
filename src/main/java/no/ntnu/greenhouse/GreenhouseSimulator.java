@@ -205,11 +205,6 @@ public class GreenhouseSimulator {
         for (Actuator actuator : nodes.get(nodeId).getActuators()) {
             actuator.set(isOn);
             broadcastActuatorStateChange(actuator.getId(), nodeId, !isOn); //boolean isOn is inverted, dont know why, but it works
-            try {
-                sleep(7);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
         }
     }
 
