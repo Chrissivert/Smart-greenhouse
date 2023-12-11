@@ -3,7 +3,6 @@ package no.ntnu.gui.greenhouse;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.InputStream;
-
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Node;
@@ -16,14 +15,24 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import no.ntnu.greenhouse.GreenhouseSimulator;
-import no.ntnu.listeners.greenhouse.NodeStateListener;
 
 public class MainGreenhouseGuiWindow extends Scene {
+    /**
+     * The standard width of the window.
+     */
     public static final int WIDTH = 300;
+    /**
+     * The standard height of the window.
+     */
     public static final int HEIGHT = 400;
     private GreenhouseSimulator simulator;
     private ButtonActionHandler buttonActionHandler;
 
+    /**
+     * Create a new window for the greenhouse GUI.
+     *
+     * @param simulator The simulator to use for the GUI.
+     */
     public MainGreenhouseGuiWindow(GreenhouseSimulator simulator) {
         super(new VBox(), WIDTH, HEIGHT);
         this.simulator = simulator;
@@ -119,7 +128,6 @@ public class MainGreenhouseGuiWindow extends Scene {
 
     private Button createTurnOnOffAllActuatorsByType() {
         Button turnOnAllActuatorsButton = new Button("Turn on/off all actuators by type");
-//        turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.controlActuatorsByType("heater", true));
         turnOnAllActuatorsButton.setOnAction(e -> buttonActionHandler.createSetActuatorByTypeStateStage());
         return turnOnAllActuatorsButton;
     }

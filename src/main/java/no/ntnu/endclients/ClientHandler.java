@@ -119,10 +119,20 @@ public class ClientHandler extends Thread {
         }
     }
 
+    /**
+     * Sends a message to the client to update the list of nodes.
+     */
     public void updateNodes() {
         writer.println(EncrypterDecrypter.encryptMessage("updateNodes"));
     }
 
+    /**
+     * Sends a message to the client to update the actuator states.
+     *
+     * @param actuatorId The id of the actuator
+     * @param nodeId    The id of the node
+     * @param isOn     The state of the actuator
+     */
     public void updateActuatorStates(int actuatorId,int nodeId,boolean isOn) {
         String state = isOn ? "OFF" : "ON";
 

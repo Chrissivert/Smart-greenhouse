@@ -6,7 +6,6 @@ import java.util.Map;
 import javafx.application.Application;
 import javafx.application.Platform;
 import javafx.stage.Stage;
-import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.listeners.greenhouse.NodeStateListener;
@@ -20,6 +19,10 @@ public class GreenhouseApplication extends Application implements NodeStateListe
     private final Map<SensorActuatorNode, NodeGuiWindow> nodeWindows = new HashMap<>();
     private Stage mainStage;
 
+    /**
+     * Start the GUI application for the greenhouse simulator.
+     * @param mainStage The main stage of the application
+     */
     @Override
     public void start(Stage mainStage) {
         this.mainStage = mainStage;
@@ -61,6 +64,11 @@ public class GreenhouseApplication extends Application implements NodeStateListe
         launch();
     }
 
+    /**
+     * Event handler for when a node is ready.
+     *
+     * @param node the node which is ready now
+     */
     @Override
     public void onNodeReady(SensorActuatorNode node) {
         Logger.info("Starting window for node " + node.getId());
@@ -69,6 +77,11 @@ public class GreenhouseApplication extends Application implements NodeStateListe
         window.show();
     }
 
+    /**
+     * Event handler for when a node is stopped.
+     *
+     * @param node the node which is stopped now
+     */
     @Override
     public void onNodeStopped(SensorActuatorNode node) {
         simulator.getMap().keySet().remove(node.getId());

@@ -59,6 +59,11 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         launch();
     }
 
+    /**
+     * Start the GUI for the control panel application.
+     *
+     * @param stage The stage
+     */
     @Override
     public void start(Stage stage) {
         if (channel == null) {
@@ -93,11 +98,17 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
     }
 
 
+    /**
+     * Event handler for when a node is added
+     */
     @Override
     public void onNodeAdded(SensorActuatorNodeInfo nodeInfo) {
         Platform.runLater(() -> addNodeTab(nodeInfo));
     }
 
+    /**
+     * Event handler for when a node is removed
+     */
     @Override
     public void onNodeRemoved(int nodeId) {
         Tab nodeTab = nodeTabs.get(nodeId);
@@ -124,6 +135,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         nodeTabPane = null;
     }
 
+    /**
+     * Event handler for when sensor data is received
+     */
     @Override
     public void onSensorData(int nodeId, List<SensorReading> sensors) {
         Logger.info("Sensor data from node " + nodeId);
@@ -135,6 +149,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         }
     }
 
+    /**
+     * Event handler for when an actuator is turned on or off
+     */
     @Override
     public void onActuatorStateChanged(int nodeId, int actuatorId, boolean isOn) {
         String state = isOn ? "ON" : "off";
@@ -246,6 +263,9 @@ public class ControlPanelApplication extends Application implements GreenhouseEv
         return new SensorPane();
     }
 
+    /**
+     * Event handler for when the communication channel is closed
+     */
     @Override
     public void onCommunicationChannelClosed() {
         Logger.info("Communication closed, closing the GUI");

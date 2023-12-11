@@ -193,6 +193,11 @@ public class Actuator {
         return id;
     }
 
+    /**
+     * Get the ID of the node to which this actuator is connected.
+     *
+     * @return The ID of the node
+     */
     public int getNodeId() {
         return nodeId;
     }

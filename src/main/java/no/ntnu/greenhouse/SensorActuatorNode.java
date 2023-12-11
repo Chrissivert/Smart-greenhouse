@@ -18,8 +18,7 @@ import no.ntnu.tools.Logger;
 public class SensorActuatorNode implements ActuatorListener, CommunicationChannelListener {
     private static final long SENSING_DELAY = 5000;
     private final int id;
-
-    public final List<Sensor> sensors = new LinkedList<>();
+    private final List<Sensor> sensors = new LinkedList<>();
     private ActuatorCollection actuators = new ActuatorCollection();
 
     private final List<SensorListener> sensorListeners = new LinkedList<>();

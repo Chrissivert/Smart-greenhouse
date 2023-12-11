@@ -1,6 +1,5 @@
 package no.ntnu.gui.greenhouse;
 
-import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.tools.Logger;
