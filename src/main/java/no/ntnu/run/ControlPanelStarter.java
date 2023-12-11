@@ -42,7 +42,6 @@ public class ControlPanelStarter {
     /**
      * Starts the controlPanelApplication.
      */
-
     private void start() {
         this.logic = new ControlPanelLogic();
         ControlPanelSocket channel = initiateCommunication(logic);
@@ -56,7 +55,6 @@ public class ControlPanelStarter {
      * @param logic The logic of the controlPanel.
      * @return The communicationChannel.
      */
-
     private ControlPanelSocket initiateCommunication(ControlPanelLogic logic) {
         ControlPanelSocket channel = initiateSocketCommunication(logic);
         initiateCommunicationThread();
@@ -73,9 +71,9 @@ public class ControlPanelStarter {
     }
 
     /**
-     * Starts the communication listening loop.
+     * Starts the communication listening loop. Waits x amount of milliseconds before running run1() again.
+     * Change the period of waiting if the scale of the application is larger or smaller.
      */
-
     private void initiateRealCommunication() {
 
         while (socket == null || !socket.isOpen()) {
@@ -101,17 +99,9 @@ public class ControlPanelStarter {
      *
      * @return The communicationChannel.
      */
-
     private CommunicationChannel getCommunicationChannel() {
         return this.logic.getCommunicationChannel();
     }
-
-    /**
-     * Initiates the socket communication of a connected controlPanel.
-     * @param logic The logic of the controlPanel.
-     * @return The communicationChannel.
-     */
-
 
     /**
      * Initiates the socket communication of a connected controlPanel.
