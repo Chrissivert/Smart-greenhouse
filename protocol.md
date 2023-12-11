@@ -53,17 +53,17 @@ identical.
 ## The flow of information and events
 IMPORTANT CONTEXT:
 Both the client side and the server side runs two threads each in parallel. In both of them, one thread
-runs continuously in the JavaFX application, and the other thread runs in the communications class. The
-thread responsible for reading new lines over the communications channel is the latter, the thread that
-runs in the communications class. The thread responsible for writing new lines to the communications
-channel in both client and server is the JavaFX applications thread.
+runs continuously in the JavaFX application, and the other thread runs in the communications class, continuously
+waiting for a new input on the reader.readLine(). The thread responsible for reading new lines over the
+communications channel is the latter, the thread that runs in the communications class. The thread responsible
+for writing new lines to the communications channel in both client and server is the JavaFX applications thread.
 
 Establishing a connection:
 1. The GreenhouseSimulator starts a new thread that waits for a connection from a ControlPanelClient.
-2. The ControlPanelApplication starts and connects to the GreenhouseSimulator.
+2. The ControlPanelSocket starts and connects to the GreenhouseSimulator.
 3. The GreenhouseSimulator accepts the connection and adds a new ClientHandler to the list of clients.
-4. The GreenhouseSimulator thread waits for a message from the ControlPanelClient.
-5. The ControlPanelClient sends a message to the GreenhouseSimulator.
+4. The GreenhouseSimulator thread waits for a message from the ControlPanelSocket.
+5. The ControlPanelSocket sends a message to the GreenhouseSimulator.
 6. The ClientHandler receives the message and sends it to the GreenHouseApplication.
 7. The GreenHouseApplication receives the message and updates accordingly.
 
