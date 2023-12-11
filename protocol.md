@@ -186,3 +186,8 @@ ClientHandler() class. However, the limitation is that the ControlPanelSocket st
 in an unused string, which remain untouched. The missing part is to actually use that data in the control panel
 GUI, so the user can see it. This has also been put a lower priority, since the GUI part is not necessarily 
 the most important here, but the networks communication part is.
+
+The public and private key is a pre-defined variable inside the EncrypterDecrypter class. To change it to
+a different keypair, those variables would need to be changed inside that class. Then, the EncrypterDecrypter
+class would need to be synchronized across all clients, and the server. If server and client are not using the
+same keypair, then decryption errors would occur. 
