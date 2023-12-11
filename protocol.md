@@ -51,12 +51,18 @@ identical.
 ![img.png](images/NetworkArchitecture4.png)
 
 ## The flow of information and events
+IMPORTANT CONTEXT:
+Both the client side and the server side runs two threads each in parallel. In both of them, one thread
+runs continuously in the JavaFX application, and the other thread runs in the communications class. The
+thread responsible for reading new lines over the communications channel is the latter, the thread that
+runs in the communications class. The thread responsible for writing new lines to the communications
+channel in both client and server is the JavaFX applications thread.
 
 Establishing a connection:
-1. The GreenhouseSimulator starts and waits for a connection from a ControlPanelClient.
-2. The ControlPanelClient starts and connects to the GreenhouseSimulator.
-3. The GreenhouseSimulator accepts the connection and creates a new ClientHandler thread.
-4. The ClientHandler thread starts and waits for a message from the ControlPanelClient.
+1. The GreenhouseSimulator starts a new thread that waits for a connection from a ControlPanelClient.
+2. The ControlPanelApplication starts and connects to the GreenhouseSimulator.
+3. The GreenhouseSimulator accepts the connection and adds a new ClientHandler to the list of clients.
+4. The GreenhouseSimulator thread waits for a message from the ControlPanelClient.
 5. The ControlPanelClient sends a message to the GreenhouseSimulator.
 6. The ClientHandler receives the message and sends it to the GreenHouseApplication.
 7. The GreenHouseApplication receives the message and updates accordingly.
@@ -155,4 +161,26 @@ if there is more than one connected to the server it sends the message to all of
 
 Messages sent between the nodes are encrypted using RSA encryption. The current implementation uses a hardcoded
 public key and private key, although the option to generate a random key pair is available. Each message sent
-between the nodes is encrypted and decrypted using the public and private keys.
+between the nodes is encrypted and decrypted using the same public and private keys. This is because we wanted
+confidentiality, integrity and authenticity. We get the confidentiality and integrity by using public-key
+encryption. Since an implementation for public key cryptography was already there when we wanted to also
+implement authenticity, it would be simplest to make all the keys the same. Then, by not sending the keys over
+the network at all, authenticity would be ensured.
+
+## Limitations
+
+There is a 246 byte limit on the encryption, which means that a command will fail to encrypt if it is too long.
+This will make the relevant application (depending on who overloads who with information) forever throw a
+decryption error, since the encrypted content is null, instead of actual content. This can be replicated by
+making a new node at the server side, and fill it with 3 of every actuator and sensor.
+
+This can be fixed by splitting the data into smaller >246 byte sized pieces, and then sending those one at a 
+time. This has not been implemented because of time constraints. It is not a very high priority fix, since 
+encryption is a neat addition to the project, not a necessity.
+
+All necessary methods for communications for updating sensor data onto the control panels are in place.
+Like the updateSensorData() method of the ControlPanelSocket class, and the handleUpdateSensorCommand() of the
+ClientHandler() class. However, the limitation is that the ControlPanelSocket stores the updated sensor data
+in an unused string, which remain untouched. The missing part is to actually use that data in the control panel
+GUI, so the user can see it. This has also been put a lower priority, since the GUI part is not necessarily 
+the most important here, but the networks communication part is.
