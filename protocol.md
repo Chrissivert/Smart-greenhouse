@@ -143,6 +143,8 @@ Error messages:
 
 "No sensor section for node " + nodeId
 
+"Error encrypting the command: Data must not be longer than 245 bytes"
+
 ## An example scenario
 
 1. The GreenhouseSimulator starts and creates initial nodes.
@@ -169,7 +171,7 @@ the network at all, authenticity would be ensured.
 
 ## Limitations
 
-There is a 246 byte limit on the encryption, which means that a command will fail to encrypt if it is too long.
+There is a 245 byte limit on the encryption, which means that a command will fail to encrypt if it is too long.
 This will make the relevant application (depending on who overloads who with information) forever throw a
 decryption error, since the encrypted content is null, instead of actual content. This can be replicated by
 making a new node at the server side, and fill it with 3 of every actuator and sensor.
