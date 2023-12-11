@@ -189,7 +189,14 @@ public class GreenhouseSimulator {
         broadcastActuatorStateChange(actuatorId, nodeId, isOn);
     }
 
-    private void broadcastActuatorStateChange(int actuatorId, int nodeId, boolean isOn) {
+    /**
+     * Broadcast a change in actuator state to all connected clients.
+     *
+     * @param actuatorId The ID of the actuator
+     * @param nodeId     The ID of the node containing the actuator
+     * @param isOn       Whether the actuator is on or off
+     */
+    public void broadcastActuatorStateChange(int actuatorId, int nodeId, boolean isOn) {
         for (ClientHandler client : connectedClients) {
             client.updateActuatorStates(actuatorId, nodeId, isOn);
         }

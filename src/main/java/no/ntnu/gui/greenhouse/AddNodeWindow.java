@@ -10,6 +10,7 @@ import no.ntnu.gui.factory.TextFieldFactory;
 import no.ntnu.greenhouse.DeviceFactory;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
+import no.ntnu.tools.Logger;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -325,38 +326,7 @@ public class AddNodeWindow extends Stage {
         ChoiceBox<String> actuatorType = new ChoiceBox<>();
         actuatorType.getItems().addAll("Window", "Fan", "Heater");
         Button applyActionButton = new Button("Apply Action");
-        applyActionButton.setOnAction(e -> {
-            String selectedActuatorType = actuatorType.getValue();
-            boolean isTurnOn = getTrueOrFalse();
-
-            if (selectedActuatorType != null) {
-                for (SensorActuatorNode node : simulator.nodes.values()) {
-                    for (Actuator actuator : node.getActuators()) {
-                        if (selectedActuatorType.equalsIgnoreCase("Window") && actuator.getType().equalsIgnoreCase("Window")) {
-                            if (isTurnOn) {
-                                actuator.turnOn();
-                            } else {
-                                actuator.turnOff();
-                            }
-                        } else if (selectedActuatorType.equalsIgnoreCase("Fan") && actuator.getType().equalsIgnoreCase("Fan")) {
-                            if (isTurnOn) {
-                                actuator.turnOn();
-                            } else {
-                                actuator.turnOff();
-                            }
-                        } else if (selectedActuatorType.equalsIgnoreCase("Heater") && actuator.getType().equalsIgnoreCase("Heater")) {
-                            if (isTurnOn) {
-                                actuator.turnOn();
-                            } else {
-                                actuator.turnOff();
-                            }
-                        }
-                    }
-                }
-            } else {
-                System.out.println("Please select an actuator type.");
-            }
-        });
+        applyActionButton.setOnAction(e -> buttonActionHandler.handleTurnOffActuatorsByType(actuatorType.getValue(), getTrueOrFalse()));
 
         vBox.getChildren().addAll(actuatorType, createTurnOnOffChoiceBox(), applyActionButton);
 

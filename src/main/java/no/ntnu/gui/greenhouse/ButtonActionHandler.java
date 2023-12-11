@@ -1,5 +1,6 @@
 package no.ntnu.gui.greenhouse;
 
+import no.ntnu.greenhouse.Actuator;
 import no.ntnu.greenhouse.GreenhouseSimulator;
 import no.ntnu.greenhouse.SensorActuatorNode;
 import no.ntnu.tools.Logger;
@@ -53,10 +54,11 @@ public class ButtonActionHandler {
      * Handle the action of changing the state of a specific actuator.
      */
 
-    public void setStateOfActuator(int node, int actuatorId, boolean state) {
-        SensorActuatorNode sensorActuatorNode = GreenhouseSimulator.nodes.get(node);
+    public void setStateOfActuator(int nodeId, int actuatorId, boolean state) {
+        SensorActuatorNode sensorActuatorNode = GreenhouseSimulator.nodes.get(nodeId);
         if (sensorActuatorNode != null) {
             sensorActuatorNode.setActuator(actuatorId, state);
+            simulator.broadcastActuatorStateChange(actuatorId,nodeId,!state);
         }
     }
 
@@ -104,5 +106,21 @@ public class ButtonActionHandler {
     public void getStateOfActuatorStage() {
         AddNodeWindow inputWindow = new AddNodeWindow(simulator);
         inputWindow.createGetActuatorStage();
+    }
+
+    /**
+     * Handle the action of changing the state of all actuators of a specific type.
+     * @param type actuator type
+     * @param trueOrFalse actuator to be turned on or off
+     */
+    public void handleTurnOffActuatorsByType(String type, boolean trueOrFalse) {
+        if (type != null) {
+            GreenhouseSimulator.nodes.values().forEach(node -> node.getActuators().forEach(actuator -> {
+                if (actuator.getType().equalsIgnoreCase(type)) {
+                    actuator.set(trueOrFalse);
+                    simulator.broadcastActuatorStateChange(actuator.getId(),node.getId(),!trueOrFalse);
+                }
+            }));
+        }
     }
 }
