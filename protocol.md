@@ -93,27 +93,48 @@ All messages are sent as strings and parsed. The messages below tell the applica
 "updateSensor - returns updated sensor data to control panel
 
 Examples for how the messages are sent:
+
 Format for Client sending Actuator updates: "actuator[" + actuatorId + "] on node " + nodeId + " is " + state
+
 Format for Client sending Sensor updates: "sensor[" + sensorId + "] on node " + nodeId + " is " + value
+
 Format for Client sending a command: "command[" + command + "] on node " + nodeId + " is " + value
+
+Format for Server sending Actuator state updates: "updateActuatorStates:" + actuatorId + "," + nodeId + "," + state
+
+Format for Server sending GetNodes: nodeId1 + ";" + actuatorId1 + "_" +actuatorType1 + actuatorIdN + "_" + actuatorTypeN + "/" + nodeIdN + ";" + actuatorId1 + "_" +actuatorType1 + actuatorIdN + "_" + actuatorTypeN
 
 ### Error messages
 
 Error messages:
 "actuator not found"
+
 "No actuator section for node " + nodeId
+
 "Incorrect command format: " + rawCommand
+
 "Error encrypting the command."
+
 "Error sending command to actuator " + actuatorId + " on node " + nodeId + ": " + e.getMessage()  e = IOException
+
 "Could not connect to server: " + e.getMessage() e = IOException
+
 "Could not close connection: " + e.getMessage() e = IOException
+
 "while reading from the socket: " + e.getMessage() e = IOException
+
 "Incorrect command format: " + rawCommand
+
 "An error occurred while stopping communication"
+
 "TCP connection not established due to error : " + e.getMessage() e = IOException
+
 "Could not accept client connection: " + e.getMessage() e = IOException
+
 "Failed to toggle an actuator: " + e.getMessage() e = Exception
+
 "Can't remove node " + nodeId + ", there is no Tab for it"
+
 "No sensor section for node " + nodeId
 
 ## An example scenario

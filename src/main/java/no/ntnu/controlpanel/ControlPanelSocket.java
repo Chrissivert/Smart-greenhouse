@@ -188,13 +188,11 @@ public class ControlPanelSocket extends Thread implements CommunicationChannel {
 
     private void updateActuatorStates(String rawCommand){
         if(rawCommand.contains("updateActuatorStates")) {
-            Logger.info(rawCommand + " received");
             String nodeStateInfo = rawCommand.replace("updateActuatorStates:", "");
             String[] nodeStateInfoList = nodeStateInfo.split(",");
             int actuatorId = Integer.parseInt(nodeStateInfoList[0]);
             int nodeId = Integer.parseInt(nodeStateInfoList[1]);
             boolean state = nodeStateInfoList[2].equals("ON");
-            Logger.info("Actuator " + actuatorId + " on node " + nodeId + " is now " + state + "." + "    aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa");
             logic.onActuatorStateWithoutNofify(nodeId, actuatorId, state);
         }
     }
